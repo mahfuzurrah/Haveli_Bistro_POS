@@ -107,7 +107,15 @@ class POSController extends Controller
       return redirect()->back();
 
      }
+     public function refund_view(Request $request): JsonResponse
+     {
+         $orders = $this->order->where('order_status','hold')->get();
 
+         return response()->json([
+             'success' => 1,
+             'view' => view('admin-views.order._quick-view-data-refund', compact('orders'))->render(),
+         ]);
+     }
     public function hold_view(Request $request): JsonResponse
     {
         $orders = $this->order->where('order_status','hold')->get();

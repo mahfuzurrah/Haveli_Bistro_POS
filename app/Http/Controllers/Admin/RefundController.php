@@ -2,11 +2,46 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Model\Admin;
+use App\Model\Order;
+use App\Model\Table;
+use App\Models\User;
+use App\Model\Branch;
+use App\Model\Product;
+use App\Model\Category;
+use App\Model\DeliveryMan;
+use App\Model\OrderDetail;
+use App\Model\Notification;
 use Illuminate\Http\Request;
+use App\Model\ProductByBranch;
+use App\Http\Controllers\Controller;
 
 class RefundController extends Controller
 {
+    public function __construct(
+        private User            $user,
+        private Table           $table,
+        private Admin           $admin,
+        private Branch          $branch,
+        private Product         $product,
+        private Category        $category,
+        private ProductByBranch $product_by_branch,
+        private Order           $order,
+        private OrderDetail     $order_detail,
+        private Notification    $notification,
+        private DeliveryMan     $delivery_man
+    ){}
+
+    public function refund_view(Request $request): JsonResponse
+    {
+        $orders = $this->order->where('order_status','hold')->get();
+dd(1);
+        return response()->json([
+            'success' => 1,
+            'view' => view('admin-views.pos._quick-view-data-hold', compact('orders'))->render(),
+        ]);
+    }
+
     public function refundAddToCart(Request $request): JsonResponse
     {
 

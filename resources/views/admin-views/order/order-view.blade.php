@@ -109,9 +109,8 @@
 
                                             </div>
                                             <div class="p-2 bd-highlight">
-                                                <a class="btn btn-warning" data-id="{{ $order->id }}" data-amount="{{ $order->order_amount }}" data-toggle="modal" id="Refund" data-target="#order-refund">
-                                                    {{translate('Refund')}}
-                                                </a>
+                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund()">
+                                                    {{ translate('Hold') }}</a>
                                             </div>
                                             <div class="p-2 bd-highlight">
                                                 <a class="btn btn-info" href={{route('admin.orders.generate-invoice',[$order['id']])}}>
@@ -1172,70 +1171,19 @@
     </div>
 </div>
 {{-- refund --}}
-<div class="modal fade" id="order-refund" tabindex="-1">
+
+<div class="modal fade" id="quick-view-refund" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{translate('Order Refund')}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{route('admin.pos.customer-store')}}" method="post" id="customer-form">
-                    @csrf
-                    <div class="row pl-2">
-                        <div class="col-12 col-lg-12">
-                            <div class="form-group">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Product ID</th>
-                                            <th>Product Name</th>
-                                            <th>Product Qty</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>demo</td>
-                                            <td>
-                                                <div class="container">
-                                                    <input type="button" onclick="decrementValue()" value="-" />
-                                                    <input type="text" name="quantity" value="1" maxlength="2" max="10" size="1" id="number" />
-                                                    <input type="button" onclick="incrementValue()" value="+" />
-                                                    </div>
-                                        </td>
-                                            <td>
+        <div class="modal-content" id="quick-view-modal-refund">
 
-                                                <button class="btn-danger"><i class="tio-delete"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-                                <label class="input-label">
-                                    {{translate('Total Amout')}}
-                                    <span class="input-label-secondary text-danger">*</span>
-                                </label>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="d-flex justify-content-end">
-                        <button type="reset" class="btn btn-secondary mr-1">{{translate('reset')}}</button>
-                        <button type="submit" id="" class="btn btn-primary">{{translate('Refund')}}</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('script_2')
+
 <script>
     $(document).ready(function(){
     $("#Refund").click(function(){
@@ -1516,5 +1464,32 @@
         }
 
     }
+    </script>
+    <script>
+         function quickViewRefund() {
+            // alert(1);
+            $.ajax({
+                url: '{{ route('admin.pos.refund_view') }}',
+                type: 'GET',
+
+                beforeSend: function() {
+                    $('#loading').show();
+                },
+                success: function(data) {
+                    console.log("success...");
+                    console.log(data);
+
+                    // $("#quick-view").removeClass('fade');
+                    // $("#quick-view").addClass('show');
+
+                    $('#quick-view-refund').modal('show');
+                    $('#quick-view-modal-refund').empty().html(data.view);
+                },
+                complete: function() {
+                    $('#loading').hide();
+                },
+            });
+
+        }
     </script>
 @endpush

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\OfflinePaymentMethodController;
 
 Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
@@ -58,6 +59,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('/', 'POSController@index')->name('index');
             Route::get('quick-view', 'POSController@quick_view')->name('quick-view');
             Route::get('hold-view', 'POSController@hold_view')->name('hold_view');
+            Route::get('refund-view', 'POSController@refund_view')->name('refund_view');
             Route::get('quick-view-void', 'POSController@quick_view_void')->name('quick-view-void');
             Route::post('order-refund', 'POSController@orderRefund')->name('orderRefund');
             Route::post('variant_price', 'POSController@variant_price')->name('variant_price');
