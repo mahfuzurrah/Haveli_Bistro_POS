@@ -534,39 +534,30 @@ class POSController extends Controller
 // if (session()->has('customer_id')) {
 //     session()->forget('customer_id');
 // }
-// if (session()->has('branch_id')) {
-//     session()->forget('branch_id');
+
+// session()->forget('branch_id');
+// session()->forget('table_id');
+// session()->forget('people_number');
+// session()->forget('order_type');
+
+// if($order->branch_id){
+//     Session::put('branch_id', $order->branch_id);
+
 // }
-// if (session()->has('table_id')) {
-//     session()->forget('table_id');
+// if($order->user_id){
+//     Session::put('customer_id', $order->user_id);
 // }
-// if (session()->has('people_number')) {
-//     session()->forget('people_number');
+// if($order->order_type){
+//     Session::put('order_type', $order->order_type);
+
+// }
+// if($order->table_id){
+//     Session::put('table_id', $order->table_id);
 // }
 
-// if (session()->has('order_type')) {
-//     session()->forget('order_type');
+// if($order->number_of_people){
+//     Session::put('people_number', $order->number_of_people);
 // }
-
-
-if($order->branch_id){
-    Session::put('branch_id', $order->branch_id);
-
-}
-if($order->user_id){
-    Session::put('customer_id', $order->user_id);
-}
-if($order->order_type){
-    Session::put('order_type', $order->order_type);
-
-}
-if($order->table_id){
-    Session::put('table_id', $order->table_id);
-}
-
-if($order->number_of_people){
-    Session::put('people_number', $order->number_of_people);
-}
 
 
 $this->order_detail->where('order_id',$order->id)->delete();

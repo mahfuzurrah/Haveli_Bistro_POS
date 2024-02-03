@@ -1187,11 +1187,47 @@
                     <div class="row pl-2">
                         <div class="col-12 col-lg-12">
                             <div class="form-group">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product ID</th>
+                                            <th>Product Name</th>
+                                            <th>Product Qty</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>demo</td>
+                                            <td><div class="product-quantity d-flex align-items-center">
+                                                <div class="product-quantity-group d-flex align-items-center">
+                                                    <button class="btn btn-number text-dark p-2" type="button"
+                                                            data-type="minus" data-field="quantity"
+                                                            disabled="disabled">
+                                                            <i class="tio-remove font-weight-bold"></i>
+                                                    </button>
+                                                    <input type="text" name="quantity"
+                                                           class="form-control input-number text-center cart-qty-field"
+                                                           placeholder="1" value="1" min="1" max="100">
+                                                    <button class="btn btn-number text-dark p-2" type="button" data-type="plus"
+                                                            data-field="quantity">
+                                                            <i class="tio-add font-weight-bold"></i>
+                                                    </button>
+                                                </div>
+                                            </div></td>
+                                            <td>
+
+                                                <button class="btn-danger">delete</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
                                 <label class="input-label">
                                     {{translate('Total Amout')}}
                                     <span class="input-label-secondary text-danger">*</span>
                                 </label>
-                                <input type="text" name="order_amount" class="form-control" value="" placeholder="Refund Amount" required="">
                             </div>
                         </div>
 
@@ -1199,7 +1235,7 @@
 
                     <div class="d-flex justify-content-end">
                         <button type="reset" class="btn btn-secondary mr-1">{{translate('reset')}}</button>
-                        <button type="submit" id="" class="btn btn-primary">{{translate('Submit')}}</button>
+                        <button type="submit" id="" class="btn btn-primary">{{translate('Refund')}}</button>
                     </div>
                 </form>
             </div>

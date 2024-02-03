@@ -1023,7 +1023,7 @@
                         });
 
                         updateCart();
-                        
+                        location.reload();
                     },
                     complete: function() {
                         $('#loading').hide();

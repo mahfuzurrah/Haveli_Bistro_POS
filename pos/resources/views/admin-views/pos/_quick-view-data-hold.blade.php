@@ -11,6 +11,7 @@
             <tr>
                 <th>Hold Id</th>
                 <th>Date</th>
+                <th>Customer</th>
                 <th>Item</th>
                 <th>Total Amount</th>
                 <th>Action</th>
@@ -24,7 +25,7 @@
                 <tr>
                     <td>{{ $item->id }} </td>
                     <td> {{ date('Y-m-d', strtotime($item->created_at)) }}</td>
-                    {{-- <td>{{ isset($item->customer) ? $item->customer->f_name :'Walk in Customer' }} </td> --}}
+                    <td>{{ isset($item->customer) ? $item->customer->f_name :'Walk in Customer' }} </td>
                     <td>{{ $item->details->count() ?? '' }} </td>
                     <td>{{ $item->order_amount ?? '' }} </td>
                     <td>
