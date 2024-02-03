@@ -1200,25 +1200,16 @@
                                         <tr>
                                             <td>1</td>
                                             <td>demo</td>
-                                            <td><div class="product-quantity d-flex align-items-center">
-                                                <div class="product-quantity-group d-flex align-items-center">
-                                                    <button class="btn btn-number text-dark p-2" type="button"
-                                                            data-type="minus" data-field="quantity"
-                                                            disabled="disabled">
-                                                            <i class="tio-remove font-weight-bold"></i>
-                                                    </button>
-                                                    <input type="text" name="quantity"
-                                                           class="form-control input-number text-center cart-qty-field"
-                                                           placeholder="1" value="1" min="1" max="100">
-                                                    <button class="btn btn-number text-dark p-2" type="button" data-type="plus"
-                                                            data-field="quantity">
-                                                            <i class="tio-add font-weight-bold"></i>
-                                                    </button>
-                                                </div>
-                                            </div></td>
+                                            <td>
+                                                <div class="container">
+                                                    <input type="button" onclick="decrementValue()" value="-" />
+                                                    <input type="text" name="quantity" value="1" maxlength="2" max="10" size="1" id="number" />
+                                                    <input type="button" onclick="incrementValue()" value="+" />
+                                                    </div>
+                                        </td>
                                             <td>
 
-                                                <button class="btn-danger">delete</button>
+                                                <button class="btn-danger"><i class="tio-delete"></i></button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -1505,5 +1496,25 @@
         }
 
     </script>
+<script type="text/javascript">
+    function incrementValue()
+    {
+        var value = parseInt(document.getElementById('number').value, 10);
+        value = isNaN(value) ? 0 : value;
+        if(value<10){
+            value++;
+                document.getElementById('number').value = value;
+        }
+    }
+    function decrementValue()
+    {
+        var value = parseInt(document.getElementById('number').value, 10);
+        value = isNaN(value) ? 0 : value;
+        if(value>1){
+            value--;
+                document.getElementById('number').value = value;
+        }
 
+    }
+    </script>
 @endpush
