@@ -202,10 +202,11 @@
                             <div class="pos-title">
                                 <div class="d-flex flex-row bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
+                      @if(!session()->has('hold_btn_hide'))
+                 <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">
+                   {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
+                      @endif
 
-                                        <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">
-                                            {{ translate('Hold') }}<span
-                                                class="badge  ">({{ $hold->count() ?? '' }})</span></a>
 
                                         <div class="p-2 p-sm-4">
                                             <div class="form-group d-flex gap-2">
@@ -611,13 +612,13 @@
                                     <label class="input-label" for="">{{ translate('longitude') }}<span
                                             class="input-label-secondary text-danger">*</span></label>
                                     <input type="text" class="form-control" id="longitude" name="longitude"
-                                        value="{{ $old ? $old['longitude'] : '' }}" readonly required>
+                                        value="{{ $old ? $old['longitude'] : '' }}"  >
                                 </div>
                                 <div class="col-md-6">
                                     <label class="input-label" for="">{{ translate('latitude') }}<span
                                             class="input-label-secondary text-danger">*</span></label>
                                     <input type="text" class="form-control" id="latitude" name="latitude"
-                                        value="{{ $old ? $old['latitude'] : '' }}" readonly required>
+                                        value="{{ $old ? $old['latitude'] : '' }}"  >
                                 </div>
                                 <div class="col-md-12">
                                     <label class="input-label">{{ translate('address') }}</label>

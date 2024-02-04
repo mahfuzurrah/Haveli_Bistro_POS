@@ -539,33 +539,28 @@ class POSController extends Controller
         $request->session()->put('cart', $cart);
     }
 }
-// if (session()->has('customer_id')) {
-//     session()->forget('customer_id');
-// }
 
-// session()->forget('branch_id');
-// session()->forget('table_id');
-// session()->forget('people_number');
-// session()->forget('order_type');
 
-// if($order->branch_id){
-//     Session::put('branch_id', $order->branch_id);
+if($order->branch_id){
+    Session::put('branch_id', $order->branch_id);
 
-// }
-// if($order->user_id){
-//     Session::put('customer_id', $order->user_id);
-// }
-// if($order->order_type){
-//     Session::put('order_type', $order->order_type);
+}
+if($order->user_id){
+    Session::put('customer_id', $order->user_id);
+}
+if($order->order_type){
+    Session::put('order_type', $order->order_type);
 
-// }
-// if($order->table_id){
-//     Session::put('table_id', $order->table_id);
-// }
+}
+if($order->table_id){
+    Session::put('table_id', $order->table_id);
+}
 
-// if($order->number_of_people){
-//     Session::put('people_number', $order->number_of_people);
-// }
+if($order->number_of_people){
+    Session::put('people_number', $order->number_of_people);
+}
+
+Session::put('hold_btn_hide', "hide");
 
 
 $this->order_detail->where('order_id',$order->id)->delete();
@@ -672,7 +667,7 @@ return response()->json([
         $order->coupon_discount_title = $request->coupon_discount_title == 0 ? null : 'coupon_discount_title';
         $order->payment_status = ($order_type == 'take_away') ? 'paid' : (($order_type == 'dine_in' && $request->type != 'pay_after_eating') ? 'paid' : 'unpaid');
         $order->order_status = $order_type == 'take_away' ? 'delivered' : 'confirmed' ;
-        $order->order_type = ($order_type == 'take_away') ? 'pos' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
+        $order->order_type = ($order_type == 'take_away') ? 'take_away' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
         $order->coupon_code = $request->coupon_code ?? null;
         $order->payment_method = $request->type;
         $order->transaction_reference = $request->transaction_reference ?? null;
@@ -799,6 +794,8 @@ return response()->json([
                 session()->forget('people_number');
                 session()->forget('address');
                 session()->forget('order_type');
+                session()->forget('hold_btn_hide');
+
 
 
                 Toastr::success(translate('order_placed_successfully'));
@@ -945,7 +942,7 @@ return response()->json([
         $order->coupon_discount_title = $request->coupon_discount_title == 0 ? null : 'coupon_discount_title';
         $order->payment_status = 'unpaid';
         $order->order_status = 'hold';
-        $order->order_type = ($order_type == 'take_away') ? 'pos' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
+        $order->order_type = ($order_type == 'take_away') ? 'take_away' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
         $order->coupon_code = $request->coupon_code ?? null;
         $order->payment_method = $request->type;
         $order->transaction_reference = $request->transaction_reference ?? null;
@@ -1072,6 +1069,9 @@ return response()->json([
                 session()->forget('people_number');
                 session()->forget('address');
                 session()->forget('order_type');
+                session()->forget('hold_btn_hide');
+
+
 
 
                 Toastr::success(translate('order_placed_successfully'));
@@ -1150,6 +1150,9 @@ return response()->json([
         Session::forget('people_number');
         session()->forget('address');
         session()->forget('order_type');
+        session()->forget('hold_btn_hide');
+
+
 
         return response()->json([], 200);
     }
@@ -1281,6 +1284,7 @@ return response()->json([
         session()->forget('people_number');
         session()->forget('address');
         session()->forget('order_type');
+        session()->forget('hold_btn_hide');
 
         return response()->json();
     }
@@ -1296,6 +1300,7 @@ return response()->json([
         session()->forget('people_number');
         session()->forget('address');
         session()->forget('order_type');
+        session()->forget('hold_btn_hide');
 
         Toastr::success(translate('clear data successfully'));
         return back();
@@ -1421,6 +1426,7 @@ return response()->json([
         Session::forget('people_number');
         session()->forget('address');
         session()->forget('order_type');
+        session()->forget('hold_btn_hide');
 
         return response()->json();
     }
