@@ -209,6 +209,11 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
 
         });
 
+        Route::group(['prefix' => 'time', 'as' => 'time.', 'middleware' => ['module:time_management']], function () {
+            Route::get('add', 'AdminActivityController@index')->name('add');
+
+        });
+
         Route::group(['prefix' => 'category', 'as' => 'category.', 'middleware' => ['module:product_management']], function () {
             Route::get('add', 'CategoryController@index')->name('add');
             Route::get('add-sub-category', 'CategoryController@sub_index')->name('add-sub-category');

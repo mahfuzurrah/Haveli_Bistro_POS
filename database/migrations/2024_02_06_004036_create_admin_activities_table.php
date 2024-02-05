@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('holds', function (Blueprint $table) {
+        Schema::create('admin_activities', function (Blueprint $table) {
             $table->id();
-            $table->bigI();
+            $table->foreignId('admin_id')->constrained();
+            $table->date('start_date')->nullable(); //Check in Date
+            $table->date('end_date')->nullable(); //Check out Date
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('holds');
+        Schema::dropIfExists('admin_activities');
     }
 };
