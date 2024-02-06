@@ -1173,7 +1173,7 @@
 {{-- refund --}}
 
 <div class="modal fade" id="quick-view-refund" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content" id="quick-view-modal-refund">
 
         </div>
@@ -1185,9 +1185,33 @@
 
 @push('script_2')
 <script>
+    function removeFromCartRefund(key) {
+        // alert(1)
+            $.post('{{ route('admin.pos.remove-from-cart-refund') }}', {
+                _token: '{{ csrf_token() }}',
+                key: key
+            }, function(data) {
+                if (data.errors) {
+                    for (var i = 0; i < data.errors.length; i++) {
+                        toastr.error(data.errors[i].message, {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }
+                } else {
+                    // updateCart();
+                    toastr.info('{{ translate('Item has been removed from cart') }}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+
+            });
+        }
     $(document).ready(function() {
 
         $('.increment-btn').click(function(e) {
+            alert(1);
             e.preventDefault();
             var incre_value = $(this).parents('.quantity').find('.cart_count').text();
             var id = $(this).parents('.quantity').find('.cart_count').data('product_id');
@@ -1288,7 +1312,7 @@
                             ProgressBar: true
                         });
 
-                        updateCart();
+
                     },
                     complete: function() {
                         $('#loading').hide();

@@ -5,8 +5,7 @@
     </button>
 </div>
 <div class="modal-body">
-    <form  method="post" id="add-to-refund-form">
-        @csrf
+
         <div class="row pl-2">
             <div class="col-12 col-lg-12">
                 <div class="form-group">
@@ -18,6 +17,7 @@
                                 <th>Product Qty</th>
                                 <th>Unit price</th>
                                 <th> price</th>
+                                <th> Delete</th>
 
                             </tr>
                         </thead>
@@ -38,25 +38,37 @@
 
 <tr>
     <td>{{ $key+1 }}</td>
-    <td>{{ $item['name'] }}</td>
+    <td>{{ Str::limit($item['name'], 20, '...') }} </td>
     <td>
     <div class=" quantity">
-    <button  class="text-danger">-</button>
+    <button  class="text-danger ">-</button>
     <input class="text-center"  type="text" value="2" style="width: 30px; ">
-    <button class=" text-danger">+</button>
+    <button class=" text-danger increment-btn">+</button>
     </div>
 
     </td>
-    <td>{{ $item['price'] }}</td>
-    <td>{{$item['price']*$item['quantity'] ?? '' }}</td>
+    <td>{{ \App\CentralLogics\Helpers::set_symbol($item['price']) }}</td>
+    <td>{{ \App\CentralLogics\Helpers::set_symbol($item['price']*$item['quantity'] ?? '') }}</td>
+    <td>
+
+            <a href="javascript:removeFromCartRefund({{ $key }})"
+                class="btn btn-sm btn-outline-danger square-btn form-control">
+                <i class="tio-delete"></i>
+            </a>
+
+    </td>
 </tr>
+<form  method="post" id="add-to-refund-form">
+    @csrf
+</form>
 @endforeach
 <tr>
     <td></td>
     <td></td>
     <td></td>
+    <td></td>
     <td>Subtotal</td>
-    <td>{{ $subTotal ?? '0' }}</td>
+    <td>{{ \App\CentralLogics\Helpers::set_symbol($subTotal ?? '0') }}</td>
 </tr>
 @php
 $GST=$subTotal*5/100;
@@ -66,27 +78,23 @@ $total=$subTotal+$GST;
     <td></td>
     <td></td>
     <td></td>
+    <td></td>
     <td>GST 5%</td>
-    <td>{{ $GST ?? '0'}}</td>
+    <td>{{ \App\CentralLogics\Helpers::set_symbol($GST ?? '0')}}</td>
 </tr>
 <tr>
     <td></td>
     <td></td>
     <td></td>
     <td>Total</td>
-    <td>{{ $total ?? '0' }}</td>
+    <td>{{ \App\CentralLogics\Helpers::set_symbol($total ?? '0') }}</td>
 </tr>
 
-
 @endif
-
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-            </div>
+  </tbody>
+ </table>
+ </div>
+</div>
 
         </div>
 
@@ -95,5 +103,5 @@ $total=$subTotal+$GST;
             <button type="reset" class="btn btn-secondary mr-1">{{translate('reset')}}</button>
             <button type="submit" id="" onclick="addRefund()" class="btn btn-primary">{{translate('Refund')}}</button>
         </div>
-    </form>
+
 </div>

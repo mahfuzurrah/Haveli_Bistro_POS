@@ -109,7 +109,7 @@ class POSController extends Controller
      }
      public function refund_view(Request $request): JsonResponse
      {
-// dd($request->order_id);
+
         if(session()->has('refund_item')){
             session::forget('refund_item');
         }
@@ -216,7 +216,17 @@ class POSController extends Controller
          ]);
      }
 
+     public function removeFromCartRefund(Request $request): JsonResponse
+     {
+        dd($request->key);
+         if ($request->session()->has('refund_item')) {
+             $refund_item = $request->session()->get('refund_item', collect([]));
+             $refund_item->forget($request->key);
+             $request->session()->put('refund_item', $refund_item);
+         }
 
+         return response()->json([], 200);
+     }
     public function hold_view(Request $request): JsonResponse
     {
         $orders = $this->order->where('order_status','hold')->get();
@@ -443,6 +453,7 @@ class POSController extends Controller
         $product = $this->product->find($request->product_id);
 
         $data = array();
+
         $data['id'] = $product->id;
         $str = '';
         $variations = [];
@@ -451,56 +462,56 @@ class POSController extends Controller
         $addon_total_tax = 0;
         $variation_price = 0;
 
-        $branch_product = $this->product_by_branch->where(['product_id' => $request->id, 'branch_id' => session()->get('branch_id')])->first();
+        $branch_product = $this->product_by_branch->where(['product_id' => $product->id, 'branch_id' => session()->get('branch_id')])->first();
 
         $branch_product_price = 0;
         $discount_data = [];
 
-        // if (isset($branch_product)) {
-        //     $branch_product_variations = $branch_product->variations;
+        if (isset($branch_product)) {
+            $branch_product_variations = $branch_product->variations;
 
-        //     if ($request->variations && count($branch_product_variations)) {
-        //         foreach ($request->variations as $key => $value) {
+            if ($request->variations && count($branch_product_variations)) {
+                foreach ($request->variations as $key => $value) {
 
-        //             if ($value['required'] == 'on' && !isset($value['values'])) {
-        //                 return response()->json([
-        //                     'data' => 'variation_error',
-        //                     'message' => translate('Please select items from') . ' ' . $value['name'],
-        //                 ]);
-        //             }
-        //             if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
-        //                 return response()->json([
-        //                     'data' => 'variation_error',
-        //                     'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
-        //                 ]);
-        //             }
-        //             if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
-        //                 return response()->json([
-        //                     'data' => 'variation_error',
-        //                     'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
-        //                 ]);
-        //             }
-        //         }
-        //         $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
-        //         $variation_price = $variation_data['price'];
-        //         $variations = $request->variations;
+                    if ($value['required'] == 'on' && !isset($value['values'])) {
+                        return response()->json([
+                            'data' => 'variation_error',
+                            'message' => translate('Please select items from') . ' ' . $value['name'],
+                        ]);
+                    }
+                    if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
+                        return response()->json([
+                            'data' => 'variation_error',
+                            'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
+                        ]);
+                    }
+                    if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
+                        return response()->json([
+                            'data' => 'variation_error',
+                            'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
+                        ]);
+                    }
+                }
+                $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
+                $variation_price = $variation_data['price'];
+                $variations = $request->variations;
 
-        //     }
+            }
 
-        //     $branch_product_price = $branch_product['price'];
-        //     $discount_data = [
-        //         'discount_type' => $branch_product['discount_type'],
-        //         'discount' => $branch_product['discount']
-        //     ];
-        // }
+            $branch_product_price = $branch_product['price'];
+            $discount_data = [
+                'discount_type' => $branch_product['discount_type'],
+                'discount' => $branch_product['discount']
+            ];
+        }
 
         $price = $branch_product_price + $variation_price;
         $data['variation_price'] = $variation_price;
 
         $discount_on_product = 0;
 
-        $data['variations'] = '';
-        $data['variant'] = $str;
+        $data['variations'] = $variations;
+    $data['variant'] = $str;
 
         $data['quantity'] = 1;
         $data['price'] = $product->price;
@@ -1819,6 +1830,7 @@ return response()->json([
 
         return response()->json([], 200);
     }
+
 
     /**
      * @param Request $request
