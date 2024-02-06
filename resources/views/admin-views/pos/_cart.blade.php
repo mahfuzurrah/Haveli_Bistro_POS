@@ -205,11 +205,11 @@
                         <input type="radio" value="Amex" id="Amex" name="type" hidden="">
                         <label for="Amex" class="btn btn-bordered px-2 mb-0">{{ translate('Amex') }}</label>
                     </li>
-                    <li id="card_payment_li"
+                    {{-- <li id="card_payment_li"
                         style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
                         <input type="radio" value="Loyalty_Points" id="Loyalty" name="type" hidden="">
                         <label for="Loyalty" class="btn btn-bordered px-2 mb-0">{{ translate('Loyalty') }}</label>
-                    </li>
+                    </li> --}}
                     <li id="pay_after_eating_li"
                         style="display: {{ session('order_type') == 'dine_in' ? 'block' : 'none' }}">
                         <input type="radio" value="pay_after_eating" id="pay_after_eating" name="type"

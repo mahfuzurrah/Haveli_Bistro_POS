@@ -109,8 +109,8 @@
 
                                             </div>
                                             <div class="p-2 bd-highlight">
-                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund()">
-                                                    {{ translate('Hold') }}</a>
+                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund({{ $order['id'] }})">
+                                                    {{ translate('Refund') }}</a>
                                             </div>
                                             <div class="p-2 bd-highlight">
                                                 <a class="btn btn-info" href={{route('admin.orders.generate-invoice',[$order['id']])}}>
@@ -1182,40 +1182,120 @@
 
 @endsection
 
+
 @push('script_2')
+<script>
+    $(document).ready(function() {
+
+        $('.increment-btn').click(function(e) {
+            e.preventDefault();
+            var incre_value = $(this).parents('.quantity').find('.cart_count').text();
+            var id = $(this).parents('.quantity').find('.cart_count').data('product_id');
+            var price = $(this).parents('.quantity').find('.cart_count').data('price');
+
+            // alert(delivery_cost)
+            // var total= $(this).closest('#total_product').find('#prd_total').text();
+            var value = parseInt(incre_value, 10);
+
+            value = isNaN(value) ? 0 : value;
+
+            if (value < 100) {
+                value++;
+                var price_product = price * value;
+                $(this).parents('.quantity').find('.cart_count').text(value);
+                $(this).closest('.single_shop_cart').find('#price').html('<p>' + '&#2547;' +
+                    price_product + '</p>');
+
+
+
+            } else {
+                alert('Quantity shall not be less than 100')
+            }
+        });
+
+        $('.decrement-btn').click(function(e) {
+            e.preventDefault();
+            var decre_value = $(this).parents('.quantity').find('.cart_count').text();
+            var id = $(this).parents('.quantity').find('.cart_count').data('product_id');
+            var price = $(this).parents('.quantity').find('.cart_count').data('price');
+
+
+            var value = parseInt(decre_value, 10);
+            value = isNaN(value) ? 0 : value;
+            if (value > 1) {
+                value--;
+                var price_product = price * value;
+                $(this).parents('.quantity').find('.cart_count').text(value);
+                $(this).closest('.single_shop_cart').find('#price').html('<p>' + '&#2547;' +
+                    price_product + '</p>')
+
+
+            } else {
+                // alert('Quantity shall not be less than 1')
+            }
+        });
+
+    });
+</script>
 
 <script>
-    $(document).ready(function(){
-    $("#Refund").click(function(){
-     var id=$(this).data('id');
-     var amount=$(this).data('amount');
-   $("input[name='order_amount']").val(amount);
+ function addRefund(form_id = 'add-to-refund-form') {
 
-            // $.ajax({
-            //     url: '{{route('admin.pos.orderRefund')}}',
-            //     type: 'POST',
-            //     data: {
-            //         id: id
-            //         amount: amount
-            //     },
-            //     dataType: 'json', // added data type
-            //     beforeSend: function () {
-            //         $('#loading').show();
-            //     },
-            //     success: function (data) {
-            //         console.log("success...");
-            //         console.log(data);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+                $.post({
+                    url: '{{ route('admin.pos.add-to-refund') }}',
+                    data: $('#' + form_id).serializeArray(),
+                    beforeSend: function() {
+                        $('#loading').show();
+                    },
+                    success: function(data) {
+                        console.log(data)
+                        if (data.data == 1) {
+                            Swal.fire({
+                                confirmButtonColor: '#FC6A57',
+                                icon: 'info',
+                                title: '{{ translate('Cart') }}',
+                                confirmButtonText: '{{ translate('Ok') }}',
+                                text: "{{ translate('Product already added in cart') }}"
+                            });
+                            return false;
+                        } else if (data.data == 0) {
+                            Swal.fire({
+                                confirmButtonColor: '#FC6A57',
+                                icon: 'error',
+                                title: '{{ translate('Cart') }}',
+                                confirmButtonText: '{{ translate('Ok') }}',
+                                text: '{{ translate('Sorry, product out of stock') }}.'
+                            });
+                            return false;
+                        } else if (data.data == 'variation_error') {
+                            Swal.fire({
+                                confirmButtonColor: '#FC6A57',
+                                icon: 'error',
+                                title: 'Cart',
+                                text: data.message
+                            });
+                            return false;
+                        }
+                        $('.call-when-done').click();
 
-            //         // $("#quick-view").removeClass('fade');
-            //         // $("#quick-view").addClass('show');
+                        toastr.success('{{ translate('Item has been added in your cart') }}!', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
 
-            //     },
-            //     complete: function () {
-            //         $('#loading').hide();
-            //     },
-            // });
-  });
-});
+                        updateCart();
+                    },
+                    complete: function() {
+                        $('#loading').hide();
+                    }
+                });
+
+        }
 </script>
 
 
@@ -1466,12 +1546,15 @@
     }
     </script>
     <script>
-         function quickViewRefund() {
-            // alert(1);
+         function quickViewRefund(order_id) {
+            // alert(order_id);
             $.ajax({
                 url: '{{ route('admin.pos.refund_view') }}',
                 type: 'GET',
-
+                data: {
+                    order_id: order_id
+                },
+                dataType: 'json',
                 beforeSend: function() {
                     $('#loading').show();
                 },
