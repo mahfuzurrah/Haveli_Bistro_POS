@@ -439,8 +439,8 @@ class POSController extends Controller
      */
     public function addToCart(Request $request): JsonResponse
     {
-        // dd($request->all());
-        $product = $this->product->find($request->id);
+
+        $product = $this->product->find($request->product_id);
 
         $data = array();
         $data['id'] = $product->id;
@@ -456,62 +456,63 @@ class POSController extends Controller
         $branch_product_price = 0;
         $discount_data = [];
 
-        if (isset($branch_product)) {
-            $branch_product_variations = $branch_product->variations;
+        // if (isset($branch_product)) {
+        //     $branch_product_variations = $branch_product->variations;
 
-            if ($request->variations && count($branch_product_variations)) {
-                foreach ($request->variations as $key => $value) {
+        //     if ($request->variations && count($branch_product_variations)) {
+        //         foreach ($request->variations as $key => $value) {
 
-                    if ($value['required'] == 'on' && !isset($value['values'])) {
-                        return response()->json([
-                            'data' => 'variation_error',
-                            'message' => translate('Please select items from') . ' ' . $value['name'],
-                        ]);
-                    }
-                    if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
-                        return response()->json([
-                            'data' => 'variation_error',
-                            'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
-                        ]);
-                    }
-                    if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
-                        return response()->json([
-                            'data' => 'variation_error',
-                            'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
-                        ]);
-                    }
-                }
-                $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
-                $variation_price = $variation_data['price'];
-                $variations = $request->variations;
+        //             if ($value['required'] == 'on' && !isset($value['values'])) {
+        //                 return response()->json([
+        //                     'data' => 'variation_error',
+        //                     'message' => translate('Please select items from') . ' ' . $value['name'],
+        //                 ]);
+        //             }
+        //             if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
+        //                 return response()->json([
+        //                     'data' => 'variation_error',
+        //                     'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
+        //                 ]);
+        //             }
+        //             if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
+        //                 return response()->json([
+        //                     'data' => 'variation_error',
+        //                     'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
+        //                 ]);
+        //             }
+        //         }
+        //         $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
+        //         $variation_price = $variation_data['price'];
+        //         $variations = $request->variations;
 
-            }
+        //     }
 
-            $branch_product_price = $branch_product['price'];
-            $discount_data = [
-                'discount_type' => $branch_product['discount_type'],
-                'discount' => $branch_product['discount']
-            ];
-        }
+        //     $branch_product_price = $branch_product['price'];
+        //     $discount_data = [
+        //         'discount_type' => $branch_product['discount_type'],
+        //         'discount' => $branch_product['discount']
+        //     ];
+        // }
 
         $price = $branch_product_price + $variation_price;
         $data['variation_price'] = $variation_price;
 
-        $discount_on_product = Helpers::discount_calculate($discount_data, $price);
+        $discount_on_product = 0;
 
-        $data['variations'] = $variations;
+        $data['variations'] = '';
         $data['variant'] = $str;
 
         $data['quantity'] = 1;
-        $data['price'] = $price;
+        $data['price'] = $product->price;
+
         $data['name'] = $product->name;
-        $data['discount'] = $discount_on_product;
+        $data['discount'] = 0;
         $data['image'] = $product->image;
         $data['add_ons'] = [];
         $data['add_on_qtys'] = [];
         $data['add_on_prices'] = [];
         $data['add_on_tax'] = [];
-
+        // dd($data);
         if ($request['addon_id']) {
             foreach ($request['addon_id'] as $id) {
                 $addon_price += $request['addon-price' . $id] * $request['addon-quantity' . $id];

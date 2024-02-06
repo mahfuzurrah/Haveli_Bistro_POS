@@ -904,16 +904,16 @@
             }
         }
 
-        function addToCart(form_id = 'add-to-cart-form') {
+        function addToCart(product_id) {
             if (checkAddToCartValidity()) {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     }
                 });
-                $.post({
+                $.get({
                     url: '{{ route('admin.pos.add-to-cart') }}',
-                    data: $('#' + form_id).serializeArray(),
+                    data: {product_id:product_id},
                     beforeSend: function() {
                         $('#loading').show();
                     },

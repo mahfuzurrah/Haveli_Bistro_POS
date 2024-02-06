@@ -41,7 +41,7 @@
     <td>{{ $item['name'] }}</td>
     <td>
     <div class=" quantity">
-    <button class="text-danger">-</button>
+    <button  class="text-danger">-</button>
     <input class="text-center"  type="text" value="2" style="width: 30px; ">
     <button class=" text-danger">+</button>
     </div>
