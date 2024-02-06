@@ -42,7 +42,7 @@
     <td>
     <div class=" quantity">
     <button  class="text-danger ">-</button>
-    <input class="text-center"  type="text" value="2" style="width: 30px; ">
+    <input class="text-center"  type="text" value="{{ $item['quantity'] }}" style="width: 30px; ">
     <button class=" text-danger increment-btn">+</button>
     </div>
 
@@ -83,6 +83,7 @@ $total=$subTotal+$GST;
     <td>{{ \App\CentralLogics\Helpers::set_symbol($GST ?? '0')}}</td>
 </tr>
 <tr>
+    <td></td>
     <td></td>
     <td></td>
     <td></td>

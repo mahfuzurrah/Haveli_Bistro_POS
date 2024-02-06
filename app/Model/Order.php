@@ -68,7 +68,7 @@ class Order extends Model
 
     public function scopePos($query)
     {
-        return $query->where('order_type', '=', 'pos');
+        return $query->where('order_type', '=', 'take_away');
     }
 
     public function scopeDineIn($query)

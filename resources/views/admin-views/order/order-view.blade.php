@@ -1186,80 +1186,33 @@
 @push('script_2')
 <script>
     function removeFromCartRefund(key) {
-        // alert(1)
-            $.post('{{ route('admin.pos.remove-from-cart-refund') }}', {
-                _token: '{{ csrf_token() }}',
-                key: key
-            }, function(data) {
-                if (data.errors) {
-                    for (var i = 0; i < data.errors.length; i++) {
-                        toastr.error(data.errors[i].message, {
-                            CloseButton: true,
-                            ProgressBar: true
-                        });
-                    }
-                } else {
-                    // updateCart();
-                    toastr.info('{{ translate('Item has been removed from cart') }}', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                }
+            // alert(order_id);
+            $.ajax({
+                url: '{{ route('admin.pos.remove-from-cart-refund') }}',
+                type: 'GET',
+                data: {
+                    key: key
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#loading').show();
+                },
+                success: function(data) {
+                    console.log("success...");
+                    console.log(data);
 
+                    // $("#quick-view").removeClass('fade');
+                    // $("#quick-view").addClass('show');
+
+                    $('#quick-view-refund').modal('show');
+                    $('#quick-view-modal-refund').empty().html(data.view);
+                },
+                complete: function() {
+                    $('#loading').hide();
+                },
             });
+
         }
-    $(document).ready(function() {
-
-        $('.increment-btn').click(function(e) {
-            alert(1);
-            e.preventDefault();
-            var incre_value = $(this).parents('.quantity').find('.cart_count').text();
-            var id = $(this).parents('.quantity').find('.cart_count').data('product_id');
-            var price = $(this).parents('.quantity').find('.cart_count').data('price');
-
-            // alert(delivery_cost)
-            // var total= $(this).closest('#total_product').find('#prd_total').text();
-            var value = parseInt(incre_value, 10);
-
-            value = isNaN(value) ? 0 : value;
-
-            if (value < 100) {
-                value++;
-                var price_product = price * value;
-                $(this).parents('.quantity').find('.cart_count').text(value);
-                $(this).closest('.single_shop_cart').find('#price').html('<p>' + '&#2547;' +
-                    price_product + '</p>');
-
-
-
-            } else {
-                alert('Quantity shall not be less than 100')
-            }
-        });
-
-        $('.decrement-btn').click(function(e) {
-            e.preventDefault();
-            var decre_value = $(this).parents('.quantity').find('.cart_count').text();
-            var id = $(this).parents('.quantity').find('.cart_count').data('product_id');
-            var price = $(this).parents('.quantity').find('.cart_count').data('price');
-
-
-            var value = parseInt(decre_value, 10);
-            value = isNaN(value) ? 0 : value;
-            if (value > 1) {
-                value--;
-                var price_product = price * value;
-                $(this).parents('.quantity').find('.cart_count').text(value);
-                $(this).closest('.single_shop_cart').find('#price').html('<p>' + '&#2547;' +
-                    price_product + '</p>')
-
-
-            } else {
-                // alert('Quantity shall not be less than 1')
-            }
-        });
-
-    });
 </script>
 
 <script>

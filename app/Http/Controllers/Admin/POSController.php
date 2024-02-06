@@ -218,14 +218,18 @@ class POSController extends Controller
 
      public function removeFromCartRefund(Request $request): JsonResponse
      {
-        dd($request->key);
+
          if ($request->session()->has('refund_item')) {
              $refund_item = $request->session()->get('refund_item', collect([]));
              $refund_item->forget($request->key);
              $request->session()->put('refund_item', $refund_item);
          }
-
-         return response()->json([], 200);
+        //  dd($refund_item);
+         return response()->json([
+            'success' => 1,
+            'view' => view('admin-views.order._quick-view-data-refund')->render(),
+        ]);
+        //  return response()->json([], 200);
      }
     public function hold_view(Request $request): JsonResponse
     {
@@ -1795,6 +1799,10 @@ return response()->json([
     public function cart_items(): Renderable
     {
         return view('admin-views.pos._cart');
+    }
+    public function cart_items_refund(): Renderable
+    {
+        return view('admin-views.pos._quick-view-data-refund');
     }
 
     /**
