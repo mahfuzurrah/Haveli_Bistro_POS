@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('end_date')->nullable(); //Check out Date
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
+            $table->time('work_time')->nullable();
             $table->timestamps();
         });
     }

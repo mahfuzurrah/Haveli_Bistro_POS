@@ -101,28 +101,27 @@
 
 
                         <!-- Pages -->
-                        <li class="navbar-vertical-aside-has-menu {{Request::is('admin/clock*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
-                            >
-                                <i class="tio-category nav-icon"></i>
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('admin/time*')?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
+                                <i class="tio-clock nav-icon"></i>
                                 <span
                                     class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('clock in/')}}{{translate('clock out')}}</span>
                             </a>
                             <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('admin/clock*')?'block':'none'}}">
-                                <li class="nav-item {{Request::is('admin/clock/add')?'active':''}}">
+                                style="display: {{Request::is('admin/time*')?'block':'none'}}">
+                                <li class="nav-item {{Request::is('admin/time/add')?'active':''}}">
                                     <a class="nav-link " href="{{route('admin.time.add')}}"
-                                       title="{{translate('mark check in/out')}}">
+                                       title="{{translate('mark clock in/out')}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('mark check in/out')}}</span>
+                                        <span class="text-truncate">{{translate('mark clock in/out')}}</span>
                                     </a>
                                 </li>
 
-                                <li class="nav-item {{Request::is('admin/clock/list')?'active':''}}">
-                                    <a class="nav-link " href="{{route('admin.time.add')}}"
-                                       title="{{translate('check-in/out history')}}">
+                                <li class="nav-item {{Request::is('admin/time/list')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.time.list')}}"
+                                       title="{{translate('clock-in/out history')}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('check-In/out history')}}</span>
+                                        <span class="text-truncate">{{translate('clock-In/out history')}}</span>
                                     </a>
                                 </li>
 

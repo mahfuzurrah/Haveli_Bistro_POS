@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', translate('Check-in/Check-out'))
+@section('title', translate('Clock-in / Clock-out'))
 
 @push('css_or_js')
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -13,7 +13,7 @@
             <h2 class="h1 mb-0 d-flex align-items-center gap-2">
                 <img width="20" class="avatar-img" src="{{ asset('assets/admin/img/icons/category.png') }}" alt="">
                 <span class="page-header-title">
-                    {{ translate('Check-in/Check-out') }}
+                    {{ translate('Clock-in / Clock-out') }}
                 </span>
             </h2>
         </div>
@@ -49,8 +49,35 @@
                                     @endforeach
                                 @endif
                                 <div class="d-flex justify-content-start mb-3 gap-3">
-                                    <button type="reset" id="reset" class="btn btn-success">{{ translate('Check In') }}</button>
-                                    <button type="submit" class="btn btn-primary">{{ translate('Check Out') }}</button>
+                                    @if (!isset($checkin))
+                                   <a href="{{ route('admin.time.checkin') }}"><button type="button" id="reset" class="btn btn-success">{{ translate('Clock In') }}</button></a>
+                                    @elseif(!isset($checkin->end_time))
+                                    <a href="javascript:"
+                                    onclick="Swal.fire({
+                                            title: '{{ translate('Do you want to clock out') }}?',
+                                            showDenyButton: true,
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#FC6A57',
+                                            cancelButtonColor: '#363636',
+                                            confirmButtonText: '{{ translate('Yes') }}',
+                                            denyButtonText: `{{ translate('Do not Clock out') }}`,
+                                            }).then((result) => {
+                                            if (result.value) {
+                                            location.href='{{ route('admin.time.checkout') }}';
+                                            } else{
+                                            Swal.fire('Canceled', '', 'info')
+                                            }
+                                            })"><button type="button" class="btn btn-warning">{{ translate('Clock Out') }}</button></a>
+                                    @endif
+                                    @if(isset($checkin))
+                                    <div class="timr_otrdv">
+                                        @if($checkin->end_time == null)
+                                           <h2><div id="timer"></div> </h2>
+                                        @else
+                                        <div class="scuss_tmr"><h2> {{ $checkin->work_time }}   <span>hrs</span></h2></div>
+                                        @endif
+                                    </div>
+					            @endif
                                 </div>
                             </div>
                         </div>
@@ -173,6 +200,38 @@
 
 @push('script_2')
     <script>
+
+        //CALCULATE TIME
+        calculateTime()
+
+        function calculateTime() {
+            var dt = new Date();
+            var hrs = ("0" + dt.getHours()).slice(-2);
+            var mins = ("0" + dt.getMinutes()).slice(-2);
+            var seconds = ("0" + dt.getSeconds()).slice(-2);
+            var time =  hrs + ":" + mins + ":" + seconds;
+            var time_new =  dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+            var start_time = "{{ $checkin->start_time ?? '00:00:00'}}";
+            var date =  "{{ $checkin->start_date ??  date('Y-m-d') }}";
+            var date_new =  "{{ date('Y-m-d') }}";
+            var timeStart = new Date(date +" " + start_time);
+            var timeEnd = new Date(date_new+" " + time_new);
+            if(timeEnd >= timeStart){
+            let d = (new Date(timeEnd)) - (new Date(timeStart));
+            let weekdays     = Math.floor(d/1000/60/60/24/7);
+            let days         = Math.floor(d/1000/60/60/24 - weekdays*7);
+            let hours        = Math.floor(d/1000/60/60    - weekdays*7*24            - days*24);
+            let minutes      = Math.floor(d/1000/60       - weekdays*7*24*60         - days*24*60         - hours*60);
+            let seconds      = Math.floor(d/1000          - weekdays*7*24*60*60      - days*24*60*60      - hours*60*60      - minutes*60);
+            let milliseconds = Math.floor(d               - weekdays*7*24*60*60*1000 - days*24*60*60*1000 - hours*60*60*1000 - minutes*60*1000 - seconds*1000);
+            var totalHours = hours + ":" + minutes + ":" + seconds;
+            $("#timer").text(totalHours);
+            setTimeout('calculateTime()', 1000);
+
+            }
+        }
+    </script>
+    <script>
         $(".lang_link").click(function(e) {
             e.preventDefault();
             $(".lang_link").removeClass('active');
@@ -192,6 +251,7 @@
     </script>
     <script>
         $(document).on('ready', function() {
+
             // INITIALIZATION OF DATATABLES
             // =======================================================
             // var datatable = $.HSCore.components.HSDatatables.init($('#columnSearchDatatable'));
