@@ -110,50 +110,6 @@
                                         <td><div class="text-capitalize">{{$checkin['start_time'] ?? '--'}}</div></td>
                                         <td><div class="text-capitalize">{{$checkin['end_time'] ?? '--'}}</div></td>
                                         <td><div class="text-capitalize">{{$checkin['work_time'] ?? '--'}}</div></td>
-
-                                        {{-- <td>
-                                            <div>
-                                                <img width="50" class="avatar-img rounded" src="{{asset('storage/app/public/category')}}/{{$category['image']}}" onerror="this.src='{{asset('assets/admin/img/icons/category_img.png')}}'" alt="">
-                                            </div>
-                                        </td>
-                                        <td><div class="text-capitalize">{{$category['name']}}</div></td> --}}
-                                        {{-- <td>
-                                                <div class="">
-                                                    <label class="switcher">
-                                                        <input class="switcher_input" type="checkbox" {{$category['status']==1? 'checked' : ''}} id="{{$category['id']}}"
-                                                        onchange="status_change(this)" data-url="{{route('admin.category.status',[$category['id'],1])}}"
-                                                        >
-                                                        <span class="switcher_control"></span>
-                                                    </label>
-                                                </div>
-
-                                        </td>
-                                        <td>
-                                            <div class="">
-                                                <select name="priority" class="custom-select"
-                                                        onchange="location.href='{{ route('admin.category.priority', ['id' => $category['id'], 'priority' => '']) }}' + this.value">
-                                                    @for($i = 1; $i <= 10; $i++)
-                                                        <option value="{{ $i }}" {{ $category->priority == $i ? 'selected' : '' }}>{{ $i }}</option>
-                                                    @endfor
-                                                </select>
-                                            </div>
-                                        </td> --}}
-                                        {{-- <td>
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <a class="btn btn-outline-info btn-sm edit square-btn"
-                                                href="{{route('admin.category.edit',[$category['id']])}}">
-                                                    <i class="tio-edit"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-outline-danger btn-sm delete square-btn"
-                                                    onclick="form_alert('category-{{$category['id']}}','{{translate("Want to delete this")}}')">
-                                                    <i class="tio-delete"></i>
-                                                </button>
-                                            </div>
-                                            <form action="{{route('admin.category.delete',[$category['id']])}}"
-                                                method="post" id="category-{{$category['id']}}">
-                                                @csrf @method('delete')
-                                            </form>
-                                        </td> --}}
                                     </tr>
                                 @endforeach
                                 </tbody>

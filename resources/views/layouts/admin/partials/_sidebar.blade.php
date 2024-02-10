@@ -556,6 +556,13 @@
                             </li>
 
                             <!-- Pages -->
+                                    <li class="nav-item {{Request::is('admin/time/report')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.time.report')}}">
+                                            <i class="tio-chart-pie-1 nav-icon"></i>
+                                            <span
+                                                class="text-truncate">{{translate('clock')}} {{translate('report')}}</span>
+                                        </a>
+                                    </li>
                                     <li class="nav-item {{Request::is('admin/report/earning')?'active':''}}">
                                         <a class="nav-link " href="{{route('admin.report.earning')}}">
                                             <i class="tio-chart-pie-1 nav-icon"></i>

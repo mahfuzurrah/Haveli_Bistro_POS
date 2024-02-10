@@ -73,4 +73,18 @@ class AdminActivityController extends Controller
         $checkins = AdminActivity::where('admin_id',$admin_id)->latest()->paginate(Helpers::getPagination());
         return view('admin-views.admin_activity.list', compact('checkins'));
     }
+
+    public function report(Request $request)
+    {
+        $checkins = AdminActivity::where(function($query) use($request){
+            if ($request->has('admin_id') && $request->has('from') && $request->has('to')) {
+                $start_date = $request->from;
+                $end_date = $request->to;
+                $query->where('admin_id', $request->admin_id)
+                ->whereDate('start_date' ,'>=' , $start_date)
+                ->whereDate('end_date','<=' , $end_date);
+            }
+        })->latest()->paginate(Helpers::getPagination());
+        return view('admin-views.report.clock_report', compact('checkins'));
+    }
 }
