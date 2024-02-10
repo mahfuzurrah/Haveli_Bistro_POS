@@ -1971,4 +1971,9 @@
   'role_name' => 'Role name',
   'NID' => 'NID',
   'Role' => 'Role',
+  'driving_License' => 'Driving License',
+  'Search by name, email or phone' => 'Search by name, email or phone',
+  'Employee_Role_Table' => 'Employee Role Table',
+  'select_Identity_Type' => 'Select Identity Type',
+  'employee_table' => 'Employee table',
 );

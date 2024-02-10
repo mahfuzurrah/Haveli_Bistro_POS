@@ -5,18 +5,19 @@
     </button>
 </div>
 <div class="modal-body">
-
+    <form  method="post" id="add-to-refund-form">
+        @csrf
         <div class="row pl-2">
             <div class="col-12 col-lg-12">
                 <div class="form-group">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th> ID</th>
-                                <th>Product Name</th>
-                                <th>Product Qty</th>
-                                <th>Unit price</th>
-                                <th> price</th>
+                                <th> No</th>
+                                <th>Item Name</th>
+                                <th>Item Qty.</th>
+                                <th>Item Price</th>
+                                <th> Total</th>
                                 <th> Delete</th>
 
                             </tr>
@@ -40,27 +41,24 @@
     <td>{{ $key+1 }}</td>
     <td>{{ Str::limit($item['name'], 20, '...') }} </td>
     <td>
-    <div class=" quantity">
-    <button  class="text-danger ">-</button>
-    <input class="text-center"  type="text" value="{{ $item['quantity'] }}" style="width: 30px; ">
-    <button class=" text-danger increment-btn">+</button>
-    </div>
+        <div class="container">
+            <input type="button" onclick="decrementValue()" value="-" />
+            <input class="text-center" type="number" name="quantity" value="1" maxlength="2" max="10" size="1" id="number" />
+            <input type="button" onclick="incrementValue()" value="+" />
+            </div>
 
     </td>
     <td>{{ \App\CentralLogics\Helpers::set_symbol($item['price']) }}</td>
     <td>{{ \App\CentralLogics\Helpers::set_symbol($item['price']*$item['quantity'] ?? '') }}</td>
     <td>
-
             <a href="javascript:removeFromCartRefund({{ $key }})"
                 class="btn btn-sm btn-outline-danger square-btn form-control">
                 <i class="tio-delete"></i>
             </a>
-
     </td>
 </tr>
-<form  method="post" id="add-to-refund-form">
-    @csrf
-</form>
+
+
 @endforeach
 <tr>
     <td></td>
@@ -93,16 +91,37 @@ $total=$subTotal+$GST;
 
 @endif
   </tbody>
- </table>
- </div>
-</div>
+  </table>
+  </div>
+  </div>
 
         </div>
 
 
         <div class="d-flex justify-content-end">
-            <button type="reset" class="btn btn-secondary mr-1">{{translate('reset')}}</button>
+
             <button type="submit" id="" onclick="addRefund()" class="btn btn-primary">{{translate('Refund')}}</button>
         </div>
 
 </div>
+<script type="text/javascript">
+    function incrementValue()
+    {
+        var value = parseInt(document.getElementById('number').value, 10);
+        value = isNaN(value) ? 0 : value;
+        if(value<10){
+            value++;
+                document.getElementById('number').value = value;
+        }
+    }
+    function decrementValue()
+    {
+        var value = parseInt(document.getElementById('number').value, 10);
+        value = isNaN(value) ? 0 : value;
+        if(value>1){
+            value--;
+                document.getElementById('number').value = value;
+        }
+
+    }
+    </script>

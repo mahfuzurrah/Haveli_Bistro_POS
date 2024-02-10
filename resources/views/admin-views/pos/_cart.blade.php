@@ -83,9 +83,19 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control qty" data-key="{{ $key }}"
-                                        value="{{ $cartItem['quantity'] }}" min="1"
-                                        onkeyup="updateQuantity(event)">
+
+                                         <div class=" quantity d-flex align-items-center">
+                                            <button class=" text-dark" id="decrease" type="button">
+                                                    <i class="tio-remove font-weight-bold"></i>
+                                            </button>
+                                            <input id="quantityValue"  type="number" class="form-control qty" data-key="{{ $key }}"
+                                            value="{{ $cartItem['quantity'] }}" min="1"
+                                            onkeyup="updateQuantity(event)" >
+                                            <button class=" text-dark " id="increase" type="button">
+                                                    <i class="tio-add font-weight-bold"></i>
+                                            </button>
+                                        </div>
+
                                 </td>
                                 <td>
                                     <div class="">

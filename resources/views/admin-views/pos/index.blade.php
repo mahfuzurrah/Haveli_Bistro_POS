@@ -681,6 +681,77 @@
 
     <!-- JS Plugins Init. -->
     <script>
+         $(document).on('ready', function() {
+           $("#increase").click(function(){
+            var value=$(this).parents('.quantity').find('#quantityValue').val();
+            value++
+            $(this).parents('.quantity').find('#quantityValue').val(value)
+            updateQuantityValue(value)
+           })
+
+        });
+        $(document).on('ready', function() {
+           $("#decrease").click(function(){
+            var value=$(this).parents('.quantity').find('#quantityValue').val();
+            value--
+            $(this).parents('.quantity').find('#quantityValue').val(value)
+            updateQuantityValue(value)
+           })
+
+        });
+        function updateQuantityValue(value) {
+            // var element = $(e.target);
+            var minValue = value;
+            // maxValue = parseInt(element.attr('max'));
+            var valueCurrent = parseInt(element.val());
+
+            var key = element.data('key');
+            if (valueCurrent >= minValue) {
+                $.post('{{ route('admin.pos.updateQuantity') }}', {
+                    _token: '{{ csrf_token() }}',
+                    key: key,
+                    quantity: valueCurrent
+                }, function(data) {
+                    updateCart();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '{{ translate('Cart') }}',
+                    confirmButtonText: '{{ translate('Ok') }}',
+                    text: '{{ translate('Sorry, the minimum value was reached') }}'
+                });
+                element.val(element.data('oldValue'));
+            }
+            // if (valueCurrent <= maxValue) {
+            //     $(".btn-number[data-type='plus'][data-field='" + name + "']").removeAttr('disabled')
+            // } else {
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Cart',
+            //         text: 'Sorry, stock limit exceeded.'
+            //     });
+            //     $(this).val($(this).data('oldValue'));
+            // }
+
+
+            // Allow: backspace, delete, tab, escape, enter and .
+            if (e.type == 'keydown') {
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            }
+
+        };
         $(document).on('ready', function() {
             @if ($order)
                 $('#refund-cash').modal('show');
