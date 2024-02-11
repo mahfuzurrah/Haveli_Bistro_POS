@@ -85,6 +85,23 @@ class AdminActivityController extends Controller
                 ->whereDate('end_date','<=' , $end_date);
             }
         })->latest()->paginate(Helpers::getPagination());
-        return view('admin-views.report.clock_report', compact('checkins'));
+        $time_arr = [];
+        foreach($checkins as $checkin){
+            $time_arr[] = $checkin->work_time;
+        }
+         $time_arr;
+         $time = strtotime('00:00:00');
+         $total_time = 0;
+         foreach( $time_arr as $ele )
+         {
+            $sec_time = strtotime($ele) - $time;
+            $total_time = $total_time + $sec_time;
+         }
+         $hours = intval($total_time / 3600);
+         $total_time = $total_time - ($hours * 3600);
+         $min = intval($total_time / 60);
+         $sec = $total_time - ($min * 60);
+         $total_hours =  $hours.":".$min.":".$sec;
+        return view('admin-views.report.clock_report', compact('checkins','total_hours'));
     }
 }

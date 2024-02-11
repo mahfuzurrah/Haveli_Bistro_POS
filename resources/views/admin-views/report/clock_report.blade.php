@@ -98,21 +98,18 @@
                             </div>
                         </div>
                     </form>
-
+                    @if (request()->input('admin_id') != null)
                     <div class="mt-3">
                         <strong class="mr-5">
-                            {{translate('Total Hours')}} : 00:00
+                            {{translate('Total Hours')}} : {{ $total_hours ?? "00:00:00" }}
                             <span id="delivered_qty"></span>
                         </strong>
                         <strong class="mr-5">
-                            {{translate('Total Shifts')}} : 0
-                            <span id="delivered_qty"></span>
-                        </strong>
-                        <strong class="mr-5">
-                            {{translate('Avg Hours')}} : 00:00
+                            {{translate('Total Shifts')}} : {{ count($checkins) ?? '0' }}
                             <span id="delivered_qty"></span>
                         </strong>
                     </div>
+                    @endif
                 </div>
             </div>
             <!-- End Header -->
