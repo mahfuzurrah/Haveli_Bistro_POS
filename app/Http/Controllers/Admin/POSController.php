@@ -124,11 +124,10 @@ class POSController extends Controller
             $addon_total_tax = 0;
             $variation_price = 0;
 
-            $branch_product = $this->product_by_branch->where(['product_id' => $product->product_id, 'branch_id' => session()->get('branch_id')])->first();
+            $branch_product = $this->product_by_branch->where(['product_id' => $product->product_id, 'branch_id' => $order->branch_id])->first();
 
             $branch_product_price = 0;
             $discount_data = [];
-
             if (isset($branch_product)) {
                 $branch_product_variations = $branch_product->variations;
 
