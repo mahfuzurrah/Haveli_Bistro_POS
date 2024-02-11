@@ -460,8 +460,25 @@ class POSController extends Controller
 
         $product = $this->product->find($request->product_id);
 
-        $data = array();
+        // $cart_check=session()->get('cart')->first()->id;
+        // if($cart_check==$product){
+        //     if ($request->session()->has('cart')) {
+        //         $cart = $request->session()->get('cart');
+        //         foreach($cart as $item){
+        //             $item['quantity']=1;
+        //             $request->session()->put('cart', $item);
+        //         }
 
+        //     } else {
+        //         $cart = collect([$data]);
+        //         $request->session()->put('cart', $cart);
+        //     }
+
+        //     return response()->json([
+        //         'data' => $data
+        //     ]);
+        // }
+        $data = array();
         $data['id'] = $product->id;
         $str = '';
         $variations = [];
@@ -556,6 +573,7 @@ class POSController extends Controller
             $cart = collect([$data]);
             $request->session()->put('cart', $cart);
         }
+
         return response()->json([
             'data' => $data
         ]);

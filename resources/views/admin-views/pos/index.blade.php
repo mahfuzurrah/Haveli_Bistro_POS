@@ -126,7 +126,7 @@
         <!-- ========================= SECTION CONTENT ========================= -->
         <section class="section-content padding-y-sm bg-default mt-3">
             <div class="container-fluid">
-                <div class="row gy-3 gx-2">
+                <div class="row ">
                     <div class="col-lg-7">
                         <div class="card">
                             <!-- POS Title -->
@@ -202,14 +202,17 @@
                             <div class="pos-title">
                                 <div class="d-flex flex-row bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
-                      @if(!session()->has('hold_btn_hide'))
-                 <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">
-                   {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
-                      @endif
+
 
 
                                         <div class="p-2 p-sm-4">
+
+
                                             <div class="form-group d-flex gap-2">
+                                                @if(!session()->has('hold_btn_hide'))
+                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">
+                                                  {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
+                                                     @endif
                                                 <select onchange="store_key('customer_id',this.value)" id='customer'
                                                     name="customer_id"
                                                     data-placeholder="{{ translate('Walk_In_Customer') }}"
@@ -221,14 +224,10 @@
                                                             {{ $customer['f_name'] . ' ' . $customer['l_name'] }}</option>
                                                     @endforeach
                                                 </select>
-                                                <button class="btn btn-success rounded text-nowrap" id="add_new_customer"
-                                                    type="button" data-toggle="modal" data-target="#add-customer"
-                                                    title="Add Customer">
-                                                    <i class="tio-add"></i>
-                                                    {{ translate('Customer') }}
-                                                </button>
+
+
                                             </div>
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label for="branch"
                                                     class="font-weight-semibold fz-16 text-dark">{{ translate('select_branch') }}</label>
                                                 <select onchange="store_key('branch_id',this.value)" id='branch'
@@ -241,7 +240,9 @@
                                                             {{ $branch['name'] }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div> --}}
+
+
 
                                             <div class="form-group">
                                                 <label

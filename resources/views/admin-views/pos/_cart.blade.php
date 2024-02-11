@@ -48,12 +48,12 @@
                             <tr>
                                 <td>
                                     <div class="media align-items-center gap-10">
-                                        <img class="avatar avatar-sm"
+                                        {{-- <img class="avatar avatar-sm"
                                             src="{{ asset('storage/app/public/product') }}/{{ $cartItem['image'] }}"
                                             onerror="this.src='{{ asset('assets/admin/img/160x160/img2.jpg') }}'"
-                                            alt="{{ $cartItem['name'] }} image">
+                                            alt="{{ $cartItem['name'] }} image"> --}}
                                         <div class="media-body">
-                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 10) }}
+                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 20) }}
                                             </h5>
                                             <small>{{ Str::limit($cartItem['variant'], 20) }}</small>
                                             <small class="d-block">
@@ -85,15 +85,11 @@
                                 <td>
 
                                          <div class=" quantity d-flex align-items-center">
-                                            <button class=" text-dark" id="decrease" type="button">
-                                                    <i class="tio-remove font-weight-bold"></i>
-                                            </button>
+
                                             <input id="quantityValue"  type="number" class="form-control qty" data-key="{{ $key }}"
                                             value="{{ $cartItem['quantity'] }}" min="1"
                                             onkeyup="updateQuantity(event)" >
-                                            <button class=" text-dark " id="increase" type="button">
-                                                    <i class="tio-add font-weight-bold"></i>
-                                            </button>
+
                                         </div>
 
                                 </td>
