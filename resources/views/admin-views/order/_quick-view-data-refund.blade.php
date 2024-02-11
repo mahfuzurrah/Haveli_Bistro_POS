@@ -1,11 +1,11 @@
 <div class="modal-header p-2">
-    <h4 class="modal-title product-title">Order Id : {{ $order->id ?? '' }}</h4>
+    <h4 class="modal-title product-title">Order Details</h4>
     <button class="close call-when-done" type="button" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 <div class="modal-body">
-    <form  method="post" id="add-to-refund-form">
+    <form   id="add-to-refund-form">
         @csrf
         <div class="row pl-2">
             <div class="col-12 col-lg-12">
@@ -30,20 +30,20 @@
     $GST=0;
     $total=0;
    @endphp
-@foreach (session()->get('refund_item') as $key=>$item)
+  @foreach (session()->get('refund_item') as $key=>$item)
 
- @php
+  @php
     $subTotal+=$item['price']*$item['quantity'];
- @endphp
+   @endphp
 
 
-<tr>
+  <tr>
     <td>{{ $key+1 }}</td>
     <td>{{ Str::limit($item['name'], 20, '...') }} </td>
     <td>
         <div class="container">
             <input type="button" onclick="decrementValue()" value="-" />
-            <input class="text-center" type="number" name="quantity" value="1" maxlength="2" max="10" size="1" id="number" />
+            <input class="text-center" type="number" name="refund_product_qty" value="{{ $item['quantity'] }}" maxlength="2" max="10" size="1" id="number" />
             <input type="button" onclick="incrementValue()" value="+" />
             </div>
 
@@ -57,6 +57,7 @@
             </a>
     </td>
 </tr>
+<input type="hidden" value="{{ $item['id'] }}" name="refund_product_id">
 
 
 @endforeach
@@ -97,11 +98,14 @@ $total=$subTotal+$GST;
 
         </div>
 
+<input type="hidden" value="{{ $order->id }}" name="refund_order_id">
 
-        <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end">
 
-            <button type="submit" id="" onclick="addRefund()" class="btn btn-primary">{{translate('Refund')}}</button>
-        </div>
+        <button type="submit" id="" onclick="addRefund()" class="btn btn-primary">{{translate('Refund')}}</button>
+    </div>
+</form>
+
 
 </div>
 <script type="text/javascript">

@@ -556,77 +556,16 @@ class POSController extends Controller
             'data' => $data
         ]);
     }
-     public function addToRefund(Request $request): JsonResponse
+     public function addRefund(Request $request): JsonResponse
     {
-        dd($request->all());
-        $order = $this->order->find($request->refund_order_id);
+
+
+        $refund_order = $this->order->find($request->refund_order_id);
         $refund_product_id = $request->refund_product_id;
         $refund_quantity = $request->refund_quantity;
+        $product=OrderDetail::where('order_id',$request->refund_order_id)->get();
+// dd($product);
 
-
-
-
-        if ($order_type == 'dine_in'){
-            if (!session()->has('table_id')){
-                Toastr::error(translate('please select a table number'));
-                return back();
-            }
-            if (!session()->has('people_number')){
-                Toastr::error(translate('please enter people number'));
-                return back();
-            }
-
-            $table = Table::find(session('table_id'));
-            if (isset($table) && session('people_number') > $table->capacity  || session('people_number') < 1 ) {
-                Toastr::error(translate('enter valid people number between 1 to '. $table->capacity));
-                return back();
-            }
-        }
-
-        $delivery_charge = 0;
-        // store customer address for home delivery
-        if ($order_type == 'home_delivery'){
-           if (!session()->has('customer_id')){
-               Toastr::error(translate('please select a customer'));
-               return back();
-           }
-
-           if (!session()->has('address')){
-               Toastr::error(translate('please select a delivery address'));
-               return back();
-           }
-
-           $address_data = session()->get('address');
-           $distance = $address_data['distance'] ?? 0;
-           $delivery_type = Helpers::get_business_settings('delivery_management');
-           if ($delivery_type['status'] == 1){
-               $delivery_charge = Helpers::get_delivery_charge($distance);
-           }else{
-               $delivery_charge = Helpers::get_business_settings('delivery_charge');
-           }
-
-            $address = [
-                'address_type' => 'Home',
-                'contact_person_name' => $address_data['contact_person_name'],
-                'contact_person_number' => $address_data['contact_person_number'],
-                'address' => $address_data['address'],
-                'floor' => $address_data['floor'],
-                'road' => $address_data['road'],
-                'house' => $address_data['house'],
-                'longitude' => (string)$address_data['longitude'],
-                'latitude' => (string)$address_data['latitude'],
-                'user_id' => session()->get('customer_id'),
-                'is_guest' => 0,
-            ];
-            $customer_address = CustomerAddress::create($address);
-        }
-
-        $cart = $request->session()->get('cart');
-        $total_tax_amount = 0;
-        $total_addon_price = 0;
-        $total_addon_tax = 0;
-        $product_price = 0;
-        $order_details = [];
 
         $order_id = 100000 + $this->order->all()->count() + 1;
         if ($this->order->find($order_id)) {
@@ -635,17 +574,16 @@ class POSController extends Controller
 
         $order = $this->order;
         $order->id = $order_id;
-
-        $order->user_id = session()->get('customer_id') ?? null;
-        $order->coupon_discount_title = $request->coupon_discount_title == 0 ? null : 'coupon_discount_title';
-        $order->payment_status = ($order_type == 'take_away') ? 'paid' : (($order_type == 'dine_in' && $request->type != 'pay_after_eating') ? 'paid' : 'unpaid');
-        $order->order_status = $order_type == 'take_away' ? 'delivered' : 'confirmed' ;
-        $order->order_type = ($order_type == 'take_away') ? 'take_away' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
-        $order->coupon_code = $request->coupon_code ?? null;
-        $order->payment_method = $request->type;
-        $order->transaction_reference = $request->transaction_reference ?? null;
-        $order->delivery_charge = $delivery_charge;
-        $order->delivery_address_id = $order_type == 'home_delivery' ? $customer_address->id : null;
+        $order->user_id = $refund_order->user_id ?? null;
+        $order->coupon_discount_title = $refund_order->coupon_discount_title == 0 ? null : 'coupon_discount_title';
+        $order->payment_status = $refund_order->payment_status ?? 'paid';
+        $order->order_status = 'Refund';
+        $order->order_type = $refund_order->order_type;
+        $order->coupon_code = $refund_order->coupon_code ?? null;
+        $order->payment_method = $refund_order->type;
+        $order->transaction_reference = $refund_order->transaction_reference ?? null;
+        $order->delivery_charge = $refund_order->delivery_charge;
+        $order->delivery_address_id = $refund_order->delivery_address_id ?? '';
         $order->delivery_date = Carbon::now()->format('Y-m-d');
         $order->delivery_time = Carbon::now()->format('H:i:s');
         $order->order_note = null;
@@ -658,12 +596,12 @@ class POSController extends Controller
         // check if discount is more than total price
         $total_price_for_discount_validation = 0;
 
-        foreach ($cart as $c) {
+        foreach ($product as $c) {
             if (is_array($c)) {
                 $discount_on_product = 0;
                 $discount = 0;
-                $product_subtotal = ($c['price']) * $c['quantity'];
-                $discount_on_product += ($c['discount'] * $c['quantity']);
+                $product_subtotal = ($c['price']) * $refund_quantity;
+                $discount_on_product += ($c['discount'] * $refund_quantity);
 
                 $total_price_for_discount_validation += $c['price'];
 
@@ -698,8 +636,8 @@ class POSController extends Controller
                     $or_d = [
                         'product_id' => $c['id'],
                         'product_details' => $product,
-                        'quantity' => $c['quantity'],
-                        'price' => $price,
+                        'quantity' => $refund_quantity,
+                        'price' => $product->price,
                         'tax_amount' => Helpers::tax_calculate($product, $price),
                         'discount_on_product' => $discount,
                         'discount_type' => 'discount_on_product',
@@ -713,7 +651,7 @@ class POSController extends Controller
                         'created_at' => now(),
                         'updated_at' => now()
                     ];
-                    $total_tax_amount += $or_d['tax_amount'] * $c['quantity'];
+                    $total_tax_amount += $refund_order->total_tax_amount * $refund_quantity;
                     $total_addon_price += $addon_data['total_add_on_price'];
 
                     $total_addon_tax += $c['addon_total_tax'];
@@ -747,11 +685,11 @@ class POSController extends Controller
             $order->total_tax_amount = $total_tax_amount;
             $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax+$gst;
             $order->coupon_discount_amount = 0.00;
-            $order->branch_id = session()->get('branch_id');
-            $order->table_id = session()->get('table_id');
-            $order->number_of_people = session()->get('people_number');
+            $order->branch_id = $refund_order->branch_id;
+            $order->table_id = $refund_order->table_id;
+            $order->number_of_people = $refund_order->number_of_people;
 
-            if (session('branch_id')) {
+            if ($refund_order) {
                 $order->save();
 
                 foreach ($order_details as $key => $item) {
@@ -771,7 +709,7 @@ class POSController extends Controller
 
 
 
-                Toastr::success(translate('order_placed_successfully'));
+                Toastr::success(translate('order_Refund_successfully'));
 
                 //send notification to kitchen
                 if ($order->order_type == 'dine_in') {
@@ -826,7 +764,7 @@ class POSController extends Controller
         //Toastr::warning(translate('failed_to_place_order'));
         return back();
     }
-    public function addRefund(Request $request): RedirectResponse
+    public function addReddfund(Request $request): RedirectResponse
     {
         dd(1);
         if ($request->session()->has('cart')) {
@@ -1100,6 +1038,11 @@ class POSController extends Controller
         }
         //Toastr::warning(translate('failed_to_place_order'));
         return back();
+
+
+
+
+
     }
 
      public function holdAddToCart(Request $request): JsonResponse

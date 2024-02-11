@@ -1250,7 +1250,7 @@ $('.decrement-btn').click(function (e) {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     }
                 });
-                $.post({
+                $.get({
                     url: '{{ route('admin.pos.add-to-refund') }}',
                     data: $('#' + form_id).serializeArray(),
                     beforeSend: function() {
