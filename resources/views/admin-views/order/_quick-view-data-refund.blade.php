@@ -1,5 +1,5 @@
 <div class="modal-header p-2">
-    <h4 class="modal-title product-title">Order Details</h4>
+    <h4 class="modal-title product-title">Order Id:{{ session()->get('refund_order_id') }}</h4>
     <button class="close call-when-done" type="button" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -41,12 +41,7 @@
     <td>{{ $key+1 }}</td>
     <td>{{ Str::limit($item['name'], 20, '...') }} </td>
     <td>
-        <div class="container">
-            <input type="button" onclick="decrementValue()" value="-" />
-            <input class="text-center" type="number" name="refund_product_qty" value="{{ $item['quantity'] }}" maxlength="2" max="10" size="1" id="number" />
-            <input type="button" onclick="incrementValue()" value="+" />
-            </div>
-
+        {{ $item['quantity'] }}
     </td>
     <td>{{ \App\CentralLogics\Helpers::set_symbol($item['price']) }}</td>
     <td>{{ \App\CentralLogics\Helpers::set_symbol($item['price']*$item['quantity'] ?? '') }}</td>
@@ -57,7 +52,7 @@
             </a>
     </td>
 </tr>
-<input type="hidden" value="{{ $item['id'] }}" name="refund_product_id">
+<input type="hidden" value="{{ $item['id'] }}" name="refund_product_id[]">
 
 
 @endforeach
@@ -98,7 +93,7 @@ $total=$subTotal+$GST;
 
         </div>
 
-<input type="hidden" value="{{ $order->id }}" name="refund_order_id">
+<input type="hidden" value="{{ session()->get('refund_order_id')}}" name="refund_order_id">
 
     <div class="d-flex justify-content-end">
 

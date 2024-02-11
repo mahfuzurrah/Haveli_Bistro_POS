@@ -101,7 +101,7 @@ class POSController extends Controller
         // dd($request->order_id);
          $order = $this->order->findOrFail($request->order_id);
          $order->update([
-            'order_status'=>'Cancel',
+            'order_status'=>'Void',
             'order_amount'=>'0.0'
          ]);
       return redirect()->back();
@@ -113,6 +113,10 @@ class POSController extends Controller
         if(session()->has('refund_item')){
             session::forget('refund_item');
         }
+        if(session()->has('refund_order_id')){
+            session::forget('refund_order_id');
+        }
+       session()->put('refund_order_id', $request->order_id);
         $order = $this->order->findOrFail($request->order_id);
         foreach($order->details as $product){
             $data = array();
@@ -218,12 +222,13 @@ class POSController extends Controller
      public function removeFromCartRefund(Request $request): JsonResponse
      {
 
+
          if ($request->session()->has('refund_item')) {
              $refund_item = $request->session()->get('refund_item', collect([]));
              $refund_item->forget($request->key);
              $request->session()->put('refund_item', $refund_item);
          }
-        //  dd($refund_item);
+
          return response()->json([
             'success' => 1,
             'view' => view('admin-views.order._quick-view-data-refund')->render(),
@@ -561,11 +566,8 @@ class POSController extends Controller
 
         $refund_order = $this->order->find($request->refund_order_id);
         $refund_product_id = $request->refund_product_id;
-        $refund_quantity = $request->refund_quantity;
-        $product=OrderDetail::where('order_id',$request->refund_order_id)->get();
-// dd($product);
-
-
+        $refund_quantity = $request->refund_product_qty;
+        $order_product=$this->order_detail::where('order_id',$request->refund_order_id)->whereIn('product_id',$request->refund_product_id)->get();
         $order_id = 100000 + $this->order->all()->count() + 1;
         if ($this->order->find($order_id)) {
             $order_id = $this->order->orderBy('id', 'DESC')->first()->id + 1;
@@ -573,16 +575,17 @@ class POSController extends Controller
 
         $order = $this->order;
         $order->id = $order_id;
+        $order->refund_order_id = $request->refund_order_id;
         $order->user_id = $refund_order->user_id ?? null;
-        $order->coupon_discount_title = $refund_order->coupon_discount_title == 0 ? null : 'coupon_discount_title';
+        $order->coupon_discount_title = $refund_order->coupon_discount_title ?? '';
         $order->payment_status = $refund_order->payment_status ?? 'paid';
         $order->order_status = 'Refund';
         $order->order_type = $refund_order->order_type;
         $order->coupon_code = $refund_order->coupon_code ?? null;
-        $order->payment_method = $refund_order->type;
+        $order->payment_method = $refund_order->type ?? '';
         $order->transaction_reference = $refund_order->transaction_reference ?? null;
         $order->delivery_charge = $refund_order->delivery_charge;
-        $order->delivery_address_id = $refund_order->delivery_address_id ?? '';
+        $order->delivery_address_id = null;
         $order->delivery_date = Carbon::now()->format('Y-m-d');
         $order->delivery_time = Carbon::now()->format('H:i:s');
         $order->order_note = null;
@@ -594,92 +597,97 @@ class POSController extends Controller
 
         // check if discount is more than total price
         $total_price_for_discount_validation = 0;
+        $product_price=0;
+        $total_tax_amount=0;
+        $discount_on_product = 0;
+        $discount = 0;
+        $total_addon_tax=0;
+        $total_addon_price=0;
+        foreach ($order_product as $c) {
 
-        foreach ($product as $c) {
-            if (is_array($c)) {
-                $discount_on_product = 0;
-                $discount = 0;
-                $product_subtotal = ($c['price']) * $refund_quantity;
-                $discount_on_product += ($c['discount'] * $refund_quantity);
+
+
+
+                $product_subtotal = ($c['price']) * $c['quantity'];
+
+                $discount_on_product += ($c['discount_on_product'] * $c['quantity']);
 
                 $total_price_for_discount_validation += $c['price'];
 
-                $product = $this->product->find($c['id']);
+                $product = $this->product->find($c['product_id']);
                 if ($product) {
                     $price = $c['price'];
 
-                    $product = Helpers::product_data_formatting($product);
-                    $addon_data = Helpers::calculate_addon_price(AddOn::whereIn('id', $c['add_ons'])->get(), $c['add_on_qtys']);
 
-                    //*** addon quantity integer casting ***
-                    array_walk($c['add_on_qtys'], function (&$add_on_qtys) {
-                        $add_on_qtys = (int)$add_on_qtys;
-                    });
+                    $product = Helpers::product_data_formatting($product);
+
+                    $addon_data = $c['add_on_ids'];
+
+                        $add_on_qtys = $c['add_on_qtys'];
+
                     //***end***
 
-                    $branch_product = $this->product_by_branch->where(['product_id' => $c['id'], 'branch_id' => session()->get('branch_id')])->first();
+                    $branch_product = $this->product_by_branch->where(['product_id' => $c['product_id'], 'branch_id' => $refund_order->branch_id])->first();
 
                     $discount_data = [];
                     if (isset($branch_product)) {
-                        $variation_data = Helpers::get_varient($branch_product->variations, $c['variations']);
+                        $variation_data = $c['variation'];
 
                         $discount_data = [
                             'discount_type' => $branch_product['discount_type'],
                             'discount' => $branch_product['discount']
                         ];
+
                     }
 
+
                     $discount = Helpers::discount_calculate($discount_data, $price);
-                    $variations = $variation_data['variations'];
+
+                    // $variations = $variation_data['variations'];
 
                     $or_d = [
-                        'product_id' => $c['id'],
+                        'product_id' => $c['product_id'],
                         'product_details' => $product,
-                        'quantity' => $refund_quantity,
+                        'quantity' => $c['quantity'],
                         'price' => $product->price,
                         'tax_amount' => Helpers::tax_calculate($product, $price),
                         'discount_on_product' => $discount,
                         'discount_type' => 'discount_on_product',
                         //'variant' => json_encode($c['variant']),
-                        'variation' => json_encode($variations),
-                        'add_on_ids' => json_encode($addon_data['addons']),
-                        'add_on_qtys' => json_encode($c['add_on_qtys']),
-                        'add_on_prices' => json_encode($c['add_on_prices']),
-                        'add_on_taxes' => json_encode($c['add_on_tax']),
-                        'add_on_tax_amount' => $c['addon_total_tax'],
+                        'variation' => $c['variation'],
+                        'add_on_ids' => $c['add_on_ids'],
+                        'add_on_qtys' => $c['add_on_qtys'],
+                        'add_on_prices' => $c['add_on_prices'],
+                        'add_on_taxes' => $c['add_on_tax'],
+                        'add_on_tax_amount' => $c['add_on_tax_amount'],
                         'created_at' => now(),
                         'updated_at' => now()
                     ];
-                    $total_tax_amount += $refund_order->total_tax_amount * $refund_quantity;
-                    $total_addon_price += $addon_data['total_add_on_price'];
+
+
+                    $total_tax_amount += $refund_order->total_tax_amount * $c['quantity'];
+
+                    // $total_addon_price += $addon_data['total_add_on_price'];
 
                     $total_addon_tax += $c['addon_total_tax'];
 
                     $product_price += $product_subtotal - $discount_on_product;
+
                     $total_product_main_price += $product_subtotal;
+
                     $order_details[] = $or_d;
+
                 }
-            }
+
         }
 
         $total_price = $product_price + $total_addon_price;
-        if (isset($cart['extra_discount'])) {
-            $extra_discount = $cart['extra_discount_type'] == 'percent' && $cart['extra_discount'] > 0 ? (($total_product_main_price * $cart['extra_discount']) / 100) : $cart['extra_discount'];
-            $total_price -= $extra_discount;
-        }
-        if (isset($cart['extra_discount']) && $cart['extra_discount_type'] == 'amount') {
-            if ($cart['extra_discount'] > $total_price_for_discount_validation) {
-                Toastr::error(translate('discount_can_not_be_more_total_product_price'));
-                return back();
-            }
-        }
 
-        $tax = isset($cart['tax']) ? $cart['tax'] : 0;
 
-        $total_tax_amount = ($tax > 0) ? (($total_price * $tax) / 100) : $total_tax_amount;
+
         $gst=($total_price*5)/100;
 
-        try {
+
             $order->extra_discount = $extra_discount ?? 0;
             $order->total_tax_amount = $total_tax_amount;
             $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax+$gst;
@@ -688,7 +696,6 @@ class POSController extends Controller
             $order->table_id = $refund_order->table_id;
             $order->number_of_people = $refund_order->number_of_people;
 
-            if ($refund_order) {
                 $order->save();
 
                 foreach ($order_details as $key => $item) {
@@ -696,72 +703,15 @@ class POSController extends Controller
                 }
                 $this->order_detail->insert($order_details);
 
-                session()->forget('cart');
-                session(['last_order' => $order->id]);
-                session()->forget('customer_id');
-                session()->forget('branch_id');
-                session()->forget('table_id');
-                session()->forget('people_number');
-                session()->forget('address');
-                session()->forget('order_type');
-                session()->forget('hold_btn_hide');
-
-
-
                 Toastr::success(translate('order_Refund_successfully'));
 
                 //send notification to kitchen
-                if ($order->order_type == 'dine_in') {
-                    $notification = $this->notification;
-                    $notification->title = "You have a new order from POS - (Order Confirmed). ";
-                    $notification->description = $order->id;
-                    $notification->status = 1;
 
-                    try {
-                        Helpers::send_push_notif_to_topic($notification, "kitchen-{$order->branch_id}", 'general');
-                        Toastr::success(translate('Notification sent successfully!'));
-                    } catch (\Exception $e) {
-                        Toastr::warning(translate('Push notification failed!'));
-                    }
-                }
                 //send notification to customer for home delivery
-                if ($order->order_type == 'delivery'){
-                    $value = Helpers::order_status_update_message('confirmed');
-                    $customer = $this->user->find($order->user_id);
-                    $fcm_token = $customer?->fcm_token;
 
-                    if ($value && isset($fcm_token)) {
-                        $data = [
-                            'title' => translate('Order'),
-                            'description' => $value,
-                            'order_id' => $order_id,
-                            'image' => '',
-                            'type' => 'order_status',
-                        ];
-                        Helpers::send_push_notif_to_device($fcm_token, $data);
-                    }
-                    //send email
-                    try {
-                        $emailServices = Helpers::get_business_settings('mail_config');
-                        $order_mail_status = Helpers::get_business_settings('place_order_mail_status_user');
-                        if (isset($emailServices['status']) && $emailServices['status'] == 1 && $order_mail_status == 1 && isset($customer)) {
-                            Mail::to($customer->email)->send(new \App\Mail\OrderPlaced($order_id));
-                        }
-                    }catch (\Exception $e) {
-                        //dd($e);
-                    }
-                }
 
-                return back();
-            } else {
-                Toastr::warning(translate('Branch select is required'));
-            }
+               return response()->json(['success'=>true]);
 
-        } catch (\Exception $e) {
-            info($e);
-        }
-        //Toastr::warning(translate('failed_to_place_order'));
-        return back();
     }
     public function addReddfund(Request $request): RedirectResponse
     {

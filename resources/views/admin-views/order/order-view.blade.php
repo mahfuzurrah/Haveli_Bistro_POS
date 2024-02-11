@@ -96,6 +96,7 @@
                                             </div>
                                         @endif
                                         @if(!$order->order_amount==0.0)
+                                        @if ($order['refund_order_id']==null)
                                         <div class="d-flex flex-row bd-highlight mb-3">
                                             <div class=" p-2 bd-highlight">
 
@@ -108,6 +109,7 @@
                                                 </form>
 
                                             </div>
+
                                             <div class="p-2 bd-highlight">
                                                 <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund({{ $order['id'] }})">
                                                     {{ translate('Refund') }}</a>
@@ -118,6 +120,8 @@
                                                 </a>
                                             </div>
                                           </div>
+                                            @endif
+
                                           @endif
 
                                     </div>
@@ -1213,7 +1217,7 @@ $('.decrement-btn').click(function (e) {
 
 });
     function removeFromCartRefund(key) {
-            // alert(order_id);
+
             $.ajax({
                 url: '{{ route('admin.pos.remove-from-cart-refund') }}',
                 type: 'GET',
@@ -1227,7 +1231,6 @@ $('.decrement-btn').click(function (e) {
                 success: function(data) {
                     console.log("success...");
                     console.log(data);
-
                     // $("#quick-view").removeClass('fade');
                     // $("#quick-view").addClass('show');
 
@@ -1257,37 +1260,9 @@ $('.decrement-btn').click(function (e) {
                         $('#loading').show();
                     },
                     success: function(data) {
-                        console.log(data)
-                        if (data.data == 1) {
-                            Swal.fire({
-                                confirmButtonColor: '#FC6A57',
-                                icon: 'info',
-                                title: '{{ translate('Cart') }}',
-                                confirmButtonText: '{{ translate('Ok') }}',
-                                text: "{{ translate('Product already added in cart') }}"
-                            });
-                            return false;
-                        } else if (data.data == 0) {
-                            Swal.fire({
-                                confirmButtonColor: '#FC6A57',
-                                icon: 'error',
-                                title: '{{ translate('Cart') }}',
-                                confirmButtonText: '{{ translate('Ok') }}',
-                                text: '{{ translate('Sorry, product out of stock') }}.'
-                            });
-                            return false;
-                        } else if (data.data == 'variation_error') {
-                            Swal.fire({
-                                confirmButtonColor: '#FC6A57',
-                                icon: 'error',
-                                title: 'Cart',
-                                text: data.message
-                            });
-                            return false;
-                        }
-                        $('.call-when-done').click();
 
-                        toastr.success('{{ translate('Item has been added in your cart') }}!', {
+                        console.log(data)
+                        toastr.success('{{ translate('Item has been Refund Successfully') }}!', {
                             CloseButton: true,
                             ProgressBar: true
                         });

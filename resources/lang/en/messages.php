@@ -1976,4 +1976,6 @@
   'Employee_Role_Table' => 'Employee Role Table',
   'select_Identity_Type' => 'Select Identity Type',
   'employee_table' => 'Employee table',
+  'order_Refund_successfully' => 'Order Refund successfully',
+  'Item has been Refund Successfully' => 'Item has been Refund Successfully',
 );
