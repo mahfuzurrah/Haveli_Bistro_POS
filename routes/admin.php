@@ -63,10 +63,13 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('quick-view-void', 'POSController@quick_view_void')->name('quick-view-void');
             Route::post('order-refund', 'POSController@orderRefund')->name('orderRefund');
             Route::post('variant_price', 'POSController@variant_price')->name('variant_price');
-            Route::post('add-to-cart', 'POSController@addToCart')->name('add-to-cart');
+            Route::get('add-to-cart', 'POSController@addToCart')->name('add-to-cart');
+            Route::get('add-to-refund', 'POSController@addRefund')->name('add-to-refund');
             Route::get('hold-add-to-cart', 'POSController@holdAddToCart')->name('hold-add-to-cart');
             Route::post('remove-from-cart', 'POSController@removeFromCart')->name('remove-from-cart');
+            Route::get('remove-from-cart-refund', 'POSController@removeFromCartRefund')->name('remove-from-cart-refund');
             Route::post('cart-items', 'POSController@cart_items')->name('cart_items');
+            Route::get('cart-items-refund', 'POSController@cart_items_refund')->name('cart_items_refund');
             Route::post('update-quantity', 'POSController@updateQuantity')->name('updateQuantity');
             Route::post('empty-cart', 'POSController@emptyCart')->name('emptyCart');
             Route::post('tax', 'POSController@update_tax')->name('tax');

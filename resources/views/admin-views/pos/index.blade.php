@@ -126,7 +126,7 @@
         <!-- ========================= SECTION CONTENT ========================= -->
         <section class="section-content padding-y-sm bg-default mt-3">
             <div class="container-fluid">
-                <div class="row gy-3 gx-2">
+                <div class="row ">
                     <div class="col-lg-7">
                         <div class="card">
                             <!-- POS Title -->
@@ -202,14 +202,17 @@
                             <div class="pos-title">
                                 <div class="d-flex flex-row bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
-                      @if(!session()->has('hold_btn_hide'))
-                 <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">
-                   {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
-                      @endif
+
 
 
                                         <div class="p-2 p-sm-4">
+
+
                                             <div class="form-group d-flex gap-2">
+                                                @if(!session()->has('hold_btn_hide'))
+                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">
+                                                  {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
+                                                     @endif
                                                 <select onchange="store_key('customer_id',this.value)" id='customer'
                                                     name="customer_id"
                                                     data-placeholder="{{ translate('Walk_In_Customer') }}"
@@ -221,14 +224,10 @@
                                                             {{ $customer['f_name'] . ' ' . $customer['l_name'] }}</option>
                                                     @endforeach
                                                 </select>
-                                                <button class="btn btn-success rounded text-nowrap" id="add_new_customer"
-                                                    type="button" data-toggle="modal" data-target="#add-customer"
-                                                    title="Add Customer">
-                                                    <i class="tio-add"></i>
-                                                    {{ translate('Customer') }}
-                                                </button>
+
+
                                             </div>
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label for="branch"
                                                     class="font-weight-semibold fz-16 text-dark">{{ translate('select_branch') }}</label>
                                                 <select onchange="store_key('branch_id',this.value)" id='branch'
@@ -241,7 +240,9 @@
                                                             {{ $branch['name'] }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div> --}}
+
+
 
                                             <div class="form-group">
                                                 <label
@@ -681,6 +682,77 @@
 
     <!-- JS Plugins Init. -->
     <script>
+         $(document).on('ready', function() {
+           $("#increase").click(function(){
+            var value=$(this).parents('.quantity').find('#quantityValue').val();
+            value++
+            $(this).parents('.quantity').find('#quantityValue').val(value)
+            updateQuantityValue(value)
+           })
+
+        });
+        $(document).on('ready', function() {
+           $("#decrease").click(function(){
+            var value=$(this).parents('.quantity').find('#quantityValue').val();
+            value--
+            $(this).parents('.quantity').find('#quantityValue').val(value)
+            updateQuantityValue(value)
+           })
+
+        });
+        function updateQuantityValue(value) {
+            // var element = $(e.target);
+            var minValue = value;
+            // maxValue = parseInt(element.attr('max'));
+            var valueCurrent = parseInt(element.val());
+
+            var key = element.data('key');
+            if (valueCurrent >= minValue) {
+                $.post('{{ route('admin.pos.updateQuantity') }}', {
+                    _token: '{{ csrf_token() }}',
+                    key: key,
+                    quantity: valueCurrent
+                }, function(data) {
+                    updateCart();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '{{ translate('Cart') }}',
+                    confirmButtonText: '{{ translate('Ok') }}',
+                    text: '{{ translate('Sorry, the minimum value was reached') }}'
+                });
+                element.val(element.data('oldValue'));
+            }
+            // if (valueCurrent <= maxValue) {
+            //     $(".btn-number[data-type='plus'][data-field='" + name + "']").removeAttr('disabled')
+            // } else {
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Cart',
+            //         text: 'Sorry, stock limit exceeded.'
+            //     });
+            //     $(this).val($(this).data('oldValue'));
+            // }
+
+
+            // Allow: backspace, delete, tab, escape, enter and .
+            if (e.type == 'keydown') {
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            }
+
+        };
         $(document).on('ready', function() {
             @if ($order)
                 $('#refund-cash').modal('show');
@@ -904,16 +976,16 @@
             }
         }
 
-        function addToCart(form_id = 'add-to-cart-form') {
+        function addToCart(product_id) {
             if (checkAddToCartValidity()) {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     }
                 });
-                $.post({
+                $.get({
                     url: '{{ route('admin.pos.add-to-cart') }}',
-                    data: $('#' + form_id).serializeArray(),
+                    data: {product_id:product_id},
                     beforeSend: function() {
                         $('#loading').show();
                     },
