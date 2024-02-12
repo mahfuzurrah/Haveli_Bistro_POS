@@ -48,12 +48,12 @@
                             <tr>
                                 <td>
                                     <div class="media align-items-center gap-10">
-                                        <img class="avatar avatar-sm"
+                                        {{-- <img class="avatar avatar-sm"
                                             src="{{ asset('storage/app/public/product') }}/{{ $cartItem['image'] }}"
                                             onerror="this.src='{{ asset('assets/admin/img/160x160/img2.jpg') }}'"
-                                            alt="{{ $cartItem['name'] }} image">
+                                            alt="{{ $cartItem['name'] }} image"> --}}
                                         <div class="media-body">
-                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 10) }}
+                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 30) }}
                                             </h5>
                                             <small>{{ Str::limit($cartItem['variant'], 20) }}</small>
                                             <small class="d-block">

@@ -74,7 +74,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 d-none">
                             <div class="card card-body h-100">
                                 <div class="form-group">
                                     <label class="font-weight-bold text-dark">{{translate('product_Image')}}</label>
