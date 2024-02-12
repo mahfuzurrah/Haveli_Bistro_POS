@@ -91,6 +91,45 @@
                             <!-- End POS -->
                         @endif
 
+                        {{-- TIME MANAGEMENT --}}
+                        @if(Helpers::module_permission_check(MANAGEMENT_SECTION['time_management']))
+                        <li class="nav-item">
+                            <small
+                                class="nav-subtitle">{{translate('time')}} {{translate('management')}}</small>
+                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                        </li>
+
+
+                        <!-- Pages -->
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('admin/time*')?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
+                                <i class="tio-clock nav-icon"></i>
+                                <span
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('clock in/')}}{{translate('clock out')}}</span>
+                            </a>
+                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                style="display: {{Request::is('admin/time*')?'block':'none'}}">
+                                <li class="nav-item {{Request::is('admin/time/add')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.time.add')}}"
+                                       title="{{translate('mark clock in/out')}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{translate('mark clock in/out')}}</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item {{Request::is('admin/time/list')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.time.list')}}"
+                                       title="{{translate('clock-in/out history')}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{translate('clock-In/out history')}}</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    @endif
+
                         @if(Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
                             <li class="nav-item">
                                 <small
@@ -517,6 +556,13 @@
                             </li>
 
                             <!-- Pages -->
+                                    <li class="nav-item {{Request::is('admin/time/report')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.time.report')}}">
+                                            <i class="tio-chart-pie-1 nav-icon"></i>
+                                            <span
+                                                class="text-truncate">{{translate('clock')}} {{translate('report')}}</span>
+                                        </a>
+                                    </li>
                                     <li class="nav-item {{Request::is('admin/report/earning')?'active':''}}">
                                         <a class="nav-link " href="{{route('admin.report.earning')}}">
                                             <i class="tio-chart-pie-1 nav-icon"></i>
