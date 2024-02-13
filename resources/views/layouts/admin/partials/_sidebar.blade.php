@@ -215,7 +215,7 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <li
+                                    {{-- <li
                                         class="nav-item {{ Request::is('admin/orders/list/out_for_delivery') ? 'active' : '' }}">
                                         <a class="nav-link "
                                             href="{{ route('admin.orders.list', ['out_for_delivery']) }}"
@@ -228,8 +228,8 @@
                                                 </span>
                                             </span>
                                         </a>
-                                    </li>
-                                    <li class="nav-item {{ Request::is('admin/orders/list/delivered') ? 'active' : '' }}">
+                                    </li> --}}
+                                    {{-- <li class="nav-item {{ Request::is('admin/orders/list/delivered') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['delivered']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -240,8 +240,8 @@
                                                 </span>
                                             </span>
                                         </a>
-                                    </li>
-                                    <li class="nav-item {{ Request::is('admin/orders/list/returned') ? 'active' : '' }}">
+                                    </li> --}}
+                                    {{-- <li class="nav-item {{ Request::is('admin/orders/list/returned') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['returned']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -252,8 +252,8 @@
                                                 </span>
                                             </span>
                                         </a>
-                                    </li>
-                                    <li class="nav-item {{ Request::is('admin/orders/list/failed') ? 'active' : '' }}">
+                                    </li> --}}
+                                    {{-- <li class="nav-item {{ Request::is('admin/orders/list/failed') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['failed']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -264,7 +264,7 @@
                                                 </span>
                                             </span>
                                         </a>
-                                    </li>
+                                    </li> --}}
 
                                     <li class="nav-item {{ Request::is('admin/orders/list/canceled') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['canceled']) }}"
@@ -279,7 +279,7 @@
                                         </a>
                                     </li>
 
-                                    <li class="nav-item {{ Request::is('admin/orders/list/schedule') ? 'active' : '' }}">
+                                    {{-- <li class="nav-item {{ Request::is('admin/orders/list/schedule') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['schedule']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -290,13 +290,13 @@
                                                 </span>
                                             </span>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </li>
                             <!-- End Pages -->
                         @endif
 
-                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
+                        {{-- @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
                             <li
                                 class="navbar-vertical-aside-has-menu {{ Request::is('admin/table/order/list/*') || Request::is('admin/table/order/details/*') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
@@ -305,7 +305,6 @@
                                     <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
                                         {{ translate('table order') }}
                                     </span>
-                                    {{-- <label class="badge badge-danger">{{translate('addon')}}</label> --}}
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                     style="display: {{ Request::is('admin/table/order*') ? 'block' : 'none' }}">
@@ -405,7 +404,7 @@
                                 </ul>
                             </li>
                             <!-- End Pages -->
-                        @endif
+                        @endif --}}
 
                         @if (Helpers::module_permission_check(MANAGEMENT_SECTION['product_management']))
                             <li class="nav-item">
@@ -505,7 +504,7 @@
                                         </a>
                                     </li>
                                     <!-- REVIEWS -->
-                                    <li
+                                    {{-- <li
                                         class="navbar-vertical-aside-has-menu {{ Request::is('admin/reviews*') ? 'active' : '' }}">
                                         <a class="js-navbar-vertical-aside-menu-link nav-link"
                                             href="{{ route('admin.reviews.list') }}">
@@ -515,7 +514,7 @@
                                                 {{ translate('product') }} {{ translate('reviews') }}
                                             </span>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </li>
                             <!-- End Pages -->

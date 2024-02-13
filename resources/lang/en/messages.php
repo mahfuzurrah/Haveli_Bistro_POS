@@ -2071,4 +2071,9 @@
   'Ex : 88017*****' => 'Ex : 88017*****',
   'Ex : 778*******' => 'Ex : 778*******',
   'Online' => 'Online',
+  'you_can_not_change_the_status_of delivered order' => 'You can not change the status of delivered order',
+  'Attribute added successfully!' => 'Attribute added successfully!',
+  'Want to delete this attribute ?' => 'Want to delete this attribute ?',
+  'Update attribute' => 'Update attribute',
+  'Update_Attribute' => 'Update Attribute',
 );
