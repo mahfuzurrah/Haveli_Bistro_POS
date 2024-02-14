@@ -100,10 +100,9 @@
                                         <div class="d-flex flex-row bd-highlight mb-3">
                                             <div class=" p-2 bd-highlight">
 
-                                                <form action="{{ route('admin.pos.quick-view-void') }}" method="get">
-
+                                                <form id="voidFormId" action="{{ route('admin.pos.quick-view-void') }}" method="get">
                                                     <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                                    <button class="btn btn-danger" type="submit">
+                                                    <button class="btn btn-danger submit-void-form" type="button">
                                                         {{translate('Void')}}
                                                     </button>
                                                 </form>
@@ -1190,6 +1189,25 @@
 @push('script_2')
 <script>
     $(document).ready(function () {
+
+        $('body').on('click', '.submit-void-form', function() {
+            Swal.fire({
+                title: '{{translate("Are you sure?")}}',
+                text: '{{translate("You want to void this order?")}}',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: 'default',
+                confirmButtonColor: '#FC6A57',
+                cancelButtonText: '{{translate("No")}}',
+                confirmButtonText:'{{translate("Yes")}}',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    $('form#voidFormId').submit();
+                }
+            })
+        });
+
 
 $('.increment-btn').click(function (e) {
 

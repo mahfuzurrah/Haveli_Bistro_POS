@@ -11,6 +11,9 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\RedirectResponse;
+use App\Models\Register;
+
+use Brian2694\Toastr\Facades\Toastr;
 
 class LoginController extends Controller
 {
@@ -115,6 +118,11 @@ class LoginController extends Controller
      */
     public function logout(): RedirectResponse
     {
+        $register = Register::where('admin_id', auth('admin')->user()->id)->whereDate('open_time', date('Y-m-d'))->opened()->first();
+        if ($register) {
+            Toastr::warning(translate('Please close you register first!'));
+            return redirect()->route('admin.registers.create', [$register->id]);
+        }
         auth()->guard('admin')->logout();
         return redirect()->route('admin.auth.login');
     }

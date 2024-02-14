@@ -212,6 +212,13 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
 
         });
 
+        Route::group(['prefix' => 'registers', 'as' => 'registers.', 'middleware' => ['module:register_management']], function () {
+            Route::get('/', 'RegisterController@index')->name('index');
+            Route::get('create/{id?}', 'RegisterController@create')->name('create');
+            Route::post('open', 'RegisterController@store')->name('openStore');
+            Route::post('close/{id}', 'RegisterController@update')->name('closeStore');
+        });
+
         Route::group(['prefix' => 'time', 'as' => 'time.', 'middleware' => ['module:time_management']], function () {
             Route::get('add', 'AdminActivityController@index')->name('add');
             Route::get('clock-in', 'AdminActivityController@checkin')->name('checkin');
