@@ -151,7 +151,17 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-sm" type="button"><span>{{ translate('Print') }}</span></button>
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <a class="btn btn-sm btn-outline-primary square-btn" href="#">
+                                                            <i class="tio-invisible"></i>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-outline-info square-btn" href="#">
+                                                            <i class="tio-edit"></i>
+                                                        </a>
+                                                        <a href="#" class="btn btn-sm btn-outline-success square-btn" target="_blank">
+                                                            <i class="tio-print"></i>
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach

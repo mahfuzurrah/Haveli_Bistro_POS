@@ -140,4 +140,9 @@ class RegisterController extends Controller
     {
         //
     }
+
+    public function print($id)
+    {
+        
+    }
 }
