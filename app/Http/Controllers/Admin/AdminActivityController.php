@@ -76,7 +76,7 @@ class AdminActivityController extends Controller
 
     public function report(Request $request)
     {
-        $checkins = AdminActivity::where(function($query) use($request){
+        $checkins = AdminActivity::with('admin')->where(function($query) use($request){
             if ($request->has('admin_id') && $request->has('from') && $request->has('to')) {
                 $start_date = $request->from;
                 $end_date = $request->to;
