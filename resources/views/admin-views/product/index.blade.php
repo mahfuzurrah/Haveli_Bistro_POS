@@ -159,10 +159,9 @@
                                     </div>
                                 </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 d-none">
                             <div class="card card-body h-100">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-dark">{{translate('product_Image')}}</label>
+                                <div class="font-weight-bold text-dark">{{translate('product_Image')}}</label>
                                     <small class="text-danger">* ( {{translate('ratio')}} 1:1 )</small>
                                     <div class="d-flex justify-content-center mt-4">
                                         <div class="upload-file">
