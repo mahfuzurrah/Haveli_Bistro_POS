@@ -105,7 +105,7 @@
                                             <span class="text-truncate sidebar--badge-container">
                                                 {{translate('orders')}}
                                                 <span class="badge badge-soft-info badge-pill ml-1">
-                                                    {{\App\Model\Order::Pos()->count()}}
+                                                    {{\App\Model\Order::count()}}
                                                 </span>
                                             </span>
                                         </a>
@@ -177,7 +177,7 @@
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
                                     <i class="tio-shopping-cart nav-icon"></i>
                                     <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                        {{translate('order')}}
+                                        {{translate('Takeout order')}}
                                     </span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
@@ -284,6 +284,18 @@
                                         </a>
                                     </li>
 
+                                    <li class="nav-item {{Request::is('admin/orders/list/hold')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.orders.list',['hold'])}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('hold')}}
+                                                    <span class="badge badge-soft-dark badge-pill ml-1">
+                                                    {{\App\Model\Order::notPos()->notDineIn()->where(['order_status'=>'hold'])->notSchedule()->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+
                                     <li class="nav-item {{Request::is('admin/orders/list/schedule')?'active':''}}">
                                         <a class="nav-link " href="{{route('admin.orders.list',['schedule'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -374,6 +386,17 @@
                                                 {{translate('canceled')}}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
                                                     {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'canceled'])->notSchedule()->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/table/order/list/hold')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('hold')}}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'hold'])->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>

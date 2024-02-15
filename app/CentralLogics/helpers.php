@@ -400,7 +400,7 @@ class Helpers
 
     public static function tax_calculate($product, $price)
     {
-        
+
         if ($product['tax_type'] == 'percent') {
             $price_tax = ($price / 100) * $product['tax'];
         } else {
