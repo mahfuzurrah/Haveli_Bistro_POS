@@ -2115,4 +2115,6 @@
   'Register ID : ' => 'Register ID : ',
   'Shift : ' => 'Shift : ',
   'Cash Amount' => 'Cash Amount',
+  'Note' => 'Note',
+  'Register Open & Close' => 'Register Open & Close',
 );

@@ -36,9 +36,9 @@
                                     <h5 class="text-capitalize">
                                         {{translate('Status')}} :
                                         @if($register->close_time)
-                                        <label class="badge-soft-success px-2 rounded">{{ translate('Closed') }}</label>
+                                        <label class="badge-soft-success px-2 rounded">{{ translate('Close') }}</label>
                                         @else
-                                        <label class="badge-soft-danger px-2 rounded">{{ translate('Opened') }}</label>
+                                        <label class="badge-soft-danger px-2 rounded">{{ translate('Open') }}</label>
                                         @endif
                                     </h5>
                                 </div>

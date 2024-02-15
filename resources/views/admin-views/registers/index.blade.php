@@ -13,7 +13,7 @@
             <h2 class="h1 mb-0 d-flex align-items-center gap-2">
                 <img width="20" class="avatar-img" src="{{asset('assets/admin/img/icons/category.png')}}" alt="">
                 <span class="page-header-title">
-                    {{translate('Registers Open/Close')}} {{translate('List')}}
+                    {{translate('Register Open & Close')}} {{translate('List')}}
                 </span>
             </h2>
         </div>
@@ -144,10 +144,10 @@
                                                 <td>
                                                     <div class="text-capitalize">  
                                                         @if($register->close_time)
-                                                        <label class="badge badge-soft-info px-2 rounded">{{ translate('Closed') }}</label>
+                                                        <label class="badge badge-soft-info px-2 rounded">{{ translate('Close') }}</label>
                                                         @else
                                                         <label class="badge badge-soft-danger px-2 rounded">
-                                                            <a href="{{route('admin.registers.create', [$register->id])}}" title="{{translate('Close')}}">{{ translate('Opened') }}</a>
+                                                            <a href="{{route('admin.registers.create', [$register->id])}}" title="{{translate('Close')}}">{{ translate('Open') }}</a>
                                                         </label>
                                                         @endif
                                                     </div>
