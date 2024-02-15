@@ -5,7 +5,10 @@
 @push('css_or_js')
 
 @endpush
-
+@php
+    $openedRegister = App\Models\Register::where('admin_id', auth('admin')->user()->id)->whereDate('open_time', date('Y-m-d'))->opened()->first();
+    $batchStatus = $openedRegister ? 'open' : 'close';
+@endphp
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
@@ -96,20 +99,21 @@
                                             </div>
                                         @endif
                                         @if(!$order->order_amount==0.0)
+                                        @if ($order['refund_order_id']==null)
                                         <div class="d-flex flex-row bd-highlight mb-3">
                                             <div class=" p-2 bd-highlight">
 
-                                                <form action="{{ route('admin.pos.quick-view-void') }}" method="get">
-
+                                                <form id="voidFormId" action="{{ route('admin.pos.quick-view-void') }}" method="get">
                                                     <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                                    <button class="btn btn-danger" type="submit">
+                                                    <button class="btn btn-danger submit-void-form" type="button">
                                                         {{translate('Void')}}
                                                     </button>
                                                 </form>
 
                                             </div>
-                                            <div class="p-2 bd-highlight ml-2">
-                                                <a href="#" class="btn btn-sm btn-primary  "onclick="quickViewRefund()">
+
+                                            <div class="p-2 bd-highlight">
+                                                <a href="#" class="btn btn-sm btn-primary refund-button" onclick="quickViewRefund({{ $order['id'] }})">
                                                     {{ translate('Refund') }}</a>
                                             </div>
                                             <div class="p-2 bd-highlight ml-2">
@@ -118,6 +122,8 @@
                                                 </a>
                                             </div>
                                           </div>
+                                            @endif
+
                                           @endif
 
                                     </div>
@@ -1163,7 +1169,7 @@
 {{-- refund --}}
 
 <div class="modal fade" id="quick-view-refund" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content" id="quick-view-modal-refund">
 
         </div>
@@ -1172,40 +1178,125 @@
 
 @endsection
 
+
 @push('script_2')
+<script>
+    var batchStatus = "{{$batchStatus}}";
+
+    $(document).ready(function () {
+
+        $('body').on('click', '.submit-void-form', function() {
+
+           if(batchStatus == 'close') {
+                Swal.fire({
+                    title: '',
+                    text: '{{translate("Batch Closed, Process Refund.")}}',
+                    type: 'warning',
+                });
+           } else {
+                Swal.fire({
+                    title: '{{translate("Are you sure?")}}',
+                    text: '{{translate("You want to void this order?")}}',
+                    type: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: 'default',
+                    confirmButtonColor: '#FC6A57',
+                    cancelButtonText: '{{translate("No")}}',
+                    confirmButtonText:'{{translate("Yes")}}',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        $('form#voidFormId').submit();
+                    }
+                });
+           }
+        });
+
+
+$('.increment-btn').click(function (e) {
+
+    e.preventDefault();
+    var incre_value = $(this).parents('.quantity').find('.qty-input').val();
+    var value = parseInt(incre_value, 10);
+    value = isNaN(value) ? 0 : value;
+    if(value<10){
+        value++;
+        $(this).parents('.quantity').find('.qty-input').val(value);
+    }
+
+});
+
+$('.decrement-btn').click(function (e) {
+    e.preventDefault();
+    var decre_value = $(this).parents('.quantity').find('.qty-input').val();
+    var value = parseInt(decre_value, 10);
+    value = isNaN(value) ? 0 : value;
+    if(value>1){
+        value--;
+        $(this).parents('.quantity').find('.qty-input').val(value);
+    }
+});
+
+});
+    function removeFromCartRefund(key) {
+
+            $.ajax({
+                url: '{{ route('admin.pos.remove-from-cart-refund') }}',
+                type: 'GET',
+                data: {
+                    key: key
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#loading').show();
+                },
+                success: function(data) {
+                    console.log("success...");
+                    console.log(data);
+                    // $("#quick-view").removeClass('fade');
+                    // $("#quick-view").addClass('show');
+
+                    $('#quick-view-refund').modal('show');
+                    $('#quick-view-modal-refund').empty().html(data.view);
+                },
+                complete: function() {
+                    $('#loading').hide();
+                },
+            });
+
+        }
+</script>
 
 <script>
-    $(document).ready(function(){
-    $("#Refund").click(function(){
-     var id=$(this).data('id');
-     var amount=$(this).data('amount');
-   $("input[name='order_amount']").val(amount);
+ function addRefund(form_id = 'add-to-refund-form') {
 
-            // $.ajax({
-            //     url: '{{route('admin.pos.orderRefund')}}',
-            //     type: 'POST',
-            //     data: {
-            //         id: id
-            //         amount: amount
-            //     },
-            //     dataType: 'json', // added data type
-            //     beforeSend: function () {
-            //         $('#loading').show();
-            //     },
-            //     success: function (data) {
-            //         console.log("success...");
-            //         console.log(data);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+                $.get({
+                    url: '{{ route('admin.pos.add-to-refund') }}',
+                    data: $('#' + form_id).serializeArray(),
+                    beforeSend: function() {
+                        $('#loading').show();
+                    },
+                    success: function(data) {
 
-            //         // $("#quick-view").removeClass('fade');
-            //         // $("#quick-view").addClass('show');
+                        console.log(data)
+                        toastr.success('{{ translate('Item has been Refund Successfully') }}!', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
 
-            //     },
-            //     complete: function () {
-            //         $('#loading').hide();
-            //     },
-            // });
-  });
-});
+
+                    },
+                    complete: function() {
+                        $('#loading').hide();
+                    }
+                });
+
+        }
 </script>
 
 
@@ -1456,12 +1547,24 @@
     }
     </script>
     <script>
-         function quickViewRefund() {
-            // alert(1);
+         function quickViewRefund(order_id, ) {
+
+            if (batchStatus == 'open') {
+                Swal.fire({
+                    title: '',
+                    text: '{{translate("Batch Opened, Process Void.")}}',
+                    type: 'warning',
+                });
+                return false;
+            }
+
             $.ajax({
                 url: '{{ route('admin.pos.refund_view') }}',
                 type: 'GET',
-
+                data: {
+                    order_id: order_id
+                },
+                dataType: 'json',
                 beforeSend: function() {
                     $('#loading').show();
                 },

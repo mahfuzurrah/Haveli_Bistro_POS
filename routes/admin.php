@@ -63,10 +63,13 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('quick-view-void', 'POSController@quick_view_void')->name('quick-view-void');
             Route::post('order-refund', 'POSController@orderRefund')->name('orderRefund');
             Route::post('variant_price', 'POSController@variant_price')->name('variant_price');
-            Route::post('add-to-cart', 'POSController@addToCart')->name('add-to-cart');
+            Route::get('add-to-cart', 'POSController@addToCart')->name('add-to-cart');
+            Route::get('add-to-refund', 'POSController@addRefund')->name('add-to-refund');
             Route::get('hold-add-to-cart', 'POSController@holdAddToCart')->name('hold-add-to-cart');
             Route::post('remove-from-cart', 'POSController@removeFromCart')->name('remove-from-cart');
+            Route::get('remove-from-cart-refund', 'POSController@removeFromCartRefund')->name('remove-from-cart-refund');
             Route::post('cart-items', 'POSController@cart_items')->name('cart_items');
+            Route::get('cart-items-refund', 'POSController@cart_items_refund')->name('cart_items_refund');
             Route::post('update-quantity', 'POSController@updateQuantity')->name('updateQuantity');
             Route::post('empty-cart', 'POSController@emptyCart')->name('emptyCart');
             Route::post('tax', 'POSController@update_tax')->name('tax');
@@ -207,6 +210,18 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('ajax-change-delivery-time-date/{order_id}', 'OrderController@ajax_change_delivery_time_date')->name('ajax-change-delivery-time-date');
             Route::get('verify-offline-payment/{order_id}/{status}', 'OrderController@verify_offline_payment');
 
+        });
+
+        Route::group(['prefix' => 'registers', 'as' => 'registers.', 'middleware' => ['module:register_management']], function () {
+            Route::get('/', 'RegisterController@index')->name('index');
+            Route::get('export', 'RegisterController@exportExcel')->name('exportExcel');
+            Route::get('create/{id?}', 'RegisterController@create')->name('create');
+            Route::post('open', 'RegisterController@store')->name('openStore');
+            Route::post('close/{id}', 'RegisterController@closeRegister')->name('closeStore');
+            Route::post('update/{id}', 'RegisterController@update')->name('update');
+            Route::get('{id}/edit', 'RegisterController@edit')->name('edit');
+            Route::get('{id}/show', 'RegisterController@show')->name('show');
+            Route::get('{id}/print', 'RegisterController@print')->name('print');
         });
 
         Route::group(['prefix' => 'time', 'as' => 'time.', 'middleware' => ['module:time_management']], function () {

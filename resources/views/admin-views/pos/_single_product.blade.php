@@ -1,9 +1,11 @@
 <div class="pos-product-item card" onclick="quickView('{{$product->id}}')">
     <div class="pos-product-item_thumb d-none">
+<div class="pos-product-item card" onclick="addToCart('{{$product->id}}')">
+    {{-- <div class="pos-product-item_thumb">
         <img src="{{asset('storage/app/public/product')}}/{{$product['image']}}"
                 onerror="this.src='{{asset('assets/admin/img/160x160/img2.jpg')}}'"
                 class="img-fit">
-    </div>
+    </div> --}}
 
     <div class="pos-product-item_content clickable">
         <div class="pos-product-item_title">
@@ -30,7 +32,7 @@
             }
         ?>
         <div class="pos-product-item_price">
-            {{ \App\CentralLogics\Helpers::set_symbol(($price- \App\CentralLogics\Helpers::discount_calculate($discount_data, $price))) }}
+            {{ \App\CentralLogics\Helpers::set_symbol(($price)) }}
         </div>
     </div>
 </div>

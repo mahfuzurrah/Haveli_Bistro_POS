@@ -53,7 +53,7 @@
                                             onerror="this.src='{{ asset('assets/admin/img/160x160/img2.jpg') }}'"
                                             alt="{{ $cartItem['name'] }} image"> --}}
                                         <div class="media-body">
-                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 30) }}
+                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 20) }}
                                             </h5>
                                             <small>{{ Str::limit($cartItem['variant'], 20) }}</small>
                                             <small class="d-block">
@@ -83,9 +83,15 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control qty" data-key="{{ $key }}"
-                                        value="{{ $cartItem['quantity'] }}" min="1"
-                                        onkeyup="updateQuantity(event)">
+
+                                         <div class=" quantity d-flex align-items-center">
+
+                                            <input id="quantityValue"  type="number" class="form-control qty" data-key="{{ $key }}"
+                                            value="{{ $cartItem['quantity'] }}" min="1"
+                                            onkeyup="updateQuantity(event)" >
+
+                                        </div>
+
                                 </td>
                                 <td>
                                     <div class="">
@@ -205,11 +211,11 @@
                         <input type="radio" value="Amex" id="Amex" name="type" hidden="">
                         <label for="Amex" class="btn btn-bordered px-2 mb-0">{{ translate('Amex') }}</label>
                     </li>
-                    <li id="card_payment_li"
+                    {{-- <li id="card_payment_li"
                         style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
                         <input type="radio" value="Loyalty_Points" id="Loyalty" name="type" hidden="">
                         <label for="Loyalty" class="btn btn-bordered px-2 mb-0">{{ translate('Loyalty') }}</label>
-                    </li>
+                    </li> --}}
                     <li id="pay_after_eating_li"
                         style="display: {{ session('order_type') == 'dine_in' ? 'block' : 'none' }}">
                         <input type="radio" value="pay_after_eating" id="pay_after_eating" name="type"
