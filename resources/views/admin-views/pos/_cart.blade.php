@@ -53,8 +53,7 @@
                                             onerror="this.src='{{ asset('assets/admin/img/160x160/img2.jpg') }}'"
                                             alt="{{ $cartItem['name'] }} image"> --}}
                                         <div class="media-body">
-                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 30) }}
-
+                                            <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 20) }}
                                             </h5>
                                             <small>{{ Str::limit($cartItem['variant'], 20) }}</small>
                                             <small class="d-block">

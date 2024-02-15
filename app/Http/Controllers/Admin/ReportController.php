@@ -29,9 +29,12 @@ class ReportController extends Controller
      */
     public function order_index(): Renderable
     {
+        $lastdate = Carbon::createFromFormat('m/d/Y', now()->format('m/d/Y'))
+                        ->endOfMonth()
+                        ->format('Y-m-d');
         if (session()->has('from_date') == false) {
             session()->put('from_date', date('Y-m-01'));
-            session()->put('to_date', date('Y-m-30'));
+            session()->put('to_date', $lastdate);
         }
 
         return view('admin-views.report.order-index');
@@ -43,6 +46,14 @@ class ReportController extends Controller
      */
     public function earning_index(Request $request): Renderable
     {
+        $lastdate = Carbon::createFromFormat('m/d/Y', now()->format('m/d/Y'))
+                        ->endOfMonth()
+                        ->format('Y-m-d');
+        if (session()->has('from_date') == false) {
+            session()->put('from_date', date('Y-m-01'));
+            session()->put('to_date', $lastdate);
+        }
+
         $from = Carbon::parse($request->from)->startOfDay();
         $to = Carbon::parse($request->to)->endOfDay();
 
@@ -50,12 +61,21 @@ class ReportController extends Controller
             Toastr::warning(translate('Invalid date range!'));
         }
 
-        $orders = $this->order->where(['order_status' => 'delivered'])
-            ->when($request->from && $request->to, function ($q) use ($from, $to) {
+        $orders = $this->order->where(['order_status' => 'delivered']);
+        if($request->from && $request->to) {
+            $orders =   $orders->when($request->from && $request->to, function ($q) use ($from, $to) {
                 session()->put('from_date', $from);
                 session()->put('to_date', $to);
                 $q->whereBetween('created_at', [$from, $to]);
-            })->get();
+            });
+        }
+        else {
+            session()->put('from_date', date('Y-m-01'));
+            session()->put('to_date', $lastdate);
+            $orders =   $orders->whereBetween('created_at', [session('from_date'), session('to_date')]);
+        }
+
+        $orders = $orders->get();
 
         $add_on_tax_amount = 0;
 
@@ -71,10 +91,7 @@ class ReportController extends Controller
         //$total_tax = $orders->sum('total_tax_amount');
         $total_sold = $orders->sum('order_amount');
 
-        if (session()->has('from_date') == false) {
-            session()->put('from_date', date('Y-m-01'));
-            session()->put('to_date', date('Y-m-30'));
-        }
+
 
         return view('admin-views.report.earning-index', compact('total_tax', 'total_sold', 'from', 'to'));
     }

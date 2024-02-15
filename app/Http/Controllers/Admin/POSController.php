@@ -1775,7 +1775,8 @@ return response()->json([
         $from = $request['from'];
         $to = $request['to'];
 
-        $query = $this->order->pos()->with(['customer', 'branch']);
+        // $query = $this->order->pos()->with(['customer', 'branch']);
+        $query = $this->order->with(['customer', 'branch']);
         $branches = $this->branch->all();
 
         if ($request->has('search')) {
@@ -1963,8 +1964,8 @@ return response()->json([
         $request->validate([
             'f_name' => 'required',
             'l_name' => 'required',
-            'phone' => 'required|min:10|max:10',
-            'email' => 'nullable|email',
+            'phone' => 'required',
+            'email' => 'required|email',
         ]);
 
         $user_phone = $this->user->where('phone', $request->phone)->first();

@@ -76,13 +76,13 @@
                                 <div class="col-sm-4">
                                     <div class="">
                                         <input type="date" name="from" id="from_date"
-                                            class="form-control" required>
+                                            class="form-control" required value="{{ \Carbon\Carbon::parse(session('from_date'))->format('Y-m-d')  }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="">
                                         <input type="date" name="to" id="to_date"
-                                            class="form-control" required>
+                                            class="form-control" required value="{{ \Carbon\Carbon::parse(session('to_date'))->format('Y-m-d')  }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">

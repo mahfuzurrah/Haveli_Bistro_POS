@@ -1,7 +1,7 @@
 <?php return array (
   'Dashboard' => 'Dashboard',
   'welcome' => 'Welcome',
-  'Monitor_your_business_analytics_and_statistics' => '',
+  'Monitor_your_business_analytics_and_statistics' => 'Monitor your business analytics and statistics',
   'Business_Analytics' => 'Business Analytics',
   'Overall Statistics' => 'Overall Statistics',
   'Today' => 'Today',
