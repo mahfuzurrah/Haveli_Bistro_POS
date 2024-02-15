@@ -105,7 +105,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li>
-                                    <a type="submit" class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.registers.exportExcel', request()->all()) }}">
                                         <img width="14" src="{{asset('assets/admin/img/icons/excel.png')}}" alt="">
                                         {{translate('excel')}}
                                     </a>
@@ -146,16 +146,18 @@
                                                         @if($register->close_time)
                                                         <label class="badge badge-soft-info px-2 rounded">{{ translate('Closed') }}</label>
                                                         @else
-                                                        <label class="badge badge-soft-danger px-2 rounded">{{ translate('Opened') }}</label>
+                                                        <label class="badge badge-soft-danger px-2 rounded">
+                                                            <a href="{{route('admin.registers.create', [$register->id])}}" title="{{translate('Close')}}">{{ translate('Opened') }}</a>
+                                                        </label>
                                                         @endif
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex justify-content-center gap-2">
-                                                        <a class="btn btn-sm btn-outline-primary square-btn" href="#">
+                                                        <a class="btn btn-sm btn-outline-primary square-btn" href="{{ route('admin.registers.show', [$register->id]) }}">
                                                             <i class="tio-invisible"></i>
                                                         </a>
-                                                        <a class="btn btn-sm btn-outline-info square-btn" href="#">
+                                                        <a class="btn btn-sm btn-outline-info square-btn" href="{{ route('admin.registers.edit', [$register->id]) }}">
                                                             <i class="tio-edit"></i>
                                                         </a>
                                                         <a href="#" class="btn btn-sm btn-outline-success square-btn" target="_blank">

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Register;
 
 use Brian2694\Toastr\Facades\Toastr;
+use Rap2hpoutre\FastExcel\FastExcel;
+use App\CentralLogics\Helpers;
 
 class RegisterController extends Controller
 {
@@ -87,7 +89,8 @@ class RegisterController extends Controller
      */
     public function show($id)
     {
-        //
+        $register = Register::where('admin_id', auth('admin')->user()->id)->findOrFail($id);
+        return view('admin-views.registers.show', ['register' => $register]);
     }
 
     /**
@@ -98,7 +101,14 @@ class RegisterController extends Controller
      */
     public function edit($id)
     {
-        //
+        $register = Register::find($id) ?? null;
+
+        if (!$register) {
+            Toastr::warning(translate('Something went wrong!'));
+            return back();   
+        }
+        
+        return view('admin-views.registers.edit', ['register' => $register]);
     }
 
     /**
@@ -108,7 +118,7 @@ class RegisterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function closeRegister(Request $request, $id)
     {
         $request->validate([
             'amount'     => 'required|numeric',
@@ -130,6 +140,28 @@ class RegisterController extends Controller
         return redirect(route('admin.registers.create'));
     }
 
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'shift'     => 'required',
+            'open_amount'     => 'required|numeric',
+            'close_amount'    => 'required|numeric',
+        ]);
+
+        $register = Register::where('admin_id', auth('admin')->user()->id)->findOrFail($id);
+
+        $register->update($request->except(['_token', 'lang'])); 
+
+        if (!$register) {
+            Toastr::error(translate('Something went wrong!'));
+            return back();
+        }
+
+        Toastr::success(translate('Register Successfully Updated!'));
+        return redirect(route('admin.registers.index'));
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -143,6 +175,36 @@ class RegisterController extends Controller
 
     public function print($id)
     {
-        
+
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $registers = Register::where('admin_id', auth('admin')->user()->id)->where(function($query) use($request) {
+            if ($request->shift) {
+                $query->where('shift', $request->shift);
+            }
+            if ($request->from) {
+                $endTime = $request->to ?? date('Y-m-d');
+                $query->whereDate('open_time', '>=', $request->from)->whereDate('open_time', '<=', $endTime);
+            }
+        })->latest()->get();
+
+        $data = array();
+
+        foreach ($registers as $key => $register) {
+            $data[] = array(
+                'SL' => ++$key,
+                'Shift' => 'Shift '.$register->shift,
+                'Open Time' => date('M, d Y h:m A', strtotime($register->open_time)),
+                'Open amount' => Helpers::set_symbol($register->open_amount),
+                'Open Note' => $register->open_notes,
+                'Close Time' => date('M, d Y h:m A', strtotime($register->open_time)),
+                'Close amount' => Helpers::set_symbol($register->open_amount),
+                'Close Note' => $register->open_notes,
+            );
+        }
+
+        return (new FastExcel($data))->download('registers.xlsx');
     }
 }
