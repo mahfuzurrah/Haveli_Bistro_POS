@@ -5,7 +5,10 @@
 @push('css_or_js')
 
 @endpush
-
+@php 
+    $openedRegister = App\Models\Register::where('admin_id', auth('admin')->user()->id)->whereDate('open_time', date('Y-m-d'))->opened()->first();
+    $batchStatus = $openedRegister ? 'open' : 'close';
+@endphp
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
@@ -110,7 +113,7 @@
                                             </div>
 
                                             <div class="p-2 bd-highlight">
-                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund({{ $order['id'] }})">
+                                                <a href="#" class="btn btn-sm btn-primary refund-button" onclick="quickViewRefund({{ $order['id'] }})">
                                                     {{ translate('Refund') }}</a>
                                             </div>
                                             <div class="p-2 bd-highlight">
@@ -1188,24 +1191,35 @@
 
 @push('script_2')
 <script>
+    var batchStatus = "{{$batchStatus}}";
+
     $(document).ready(function () {
 
         $('body').on('click', '.submit-void-form', function() {
-            Swal.fire({
-                title: '{{translate("Are you sure?")}}',
-                text: '{{translate("You want to void this order?")}}',
-                type: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: 'default',
-                confirmButtonColor: '#FC6A57',
-                cancelButtonText: '{{translate("No")}}',
-                confirmButtonText:'{{translate("Yes")}}',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    $('form#voidFormId').submit();
-                }
-            })
+
+           if(batchStatus == 'close') {
+                Swal.fire({
+                    title: '',
+                    text: '{{translate("Batch Closed, Process Refund.")}}',
+                    type: 'warning',
+                });
+           } else {
+                Swal.fire({
+                    title: '{{translate("Are you sure?")}}',
+                    text: '{{translate("You want to void this order?")}}',
+                    type: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: 'default',
+                    confirmButtonColor: '#FC6A57',
+                    cancelButtonText: '{{translate("No")}}',
+                    confirmButtonText:'{{translate("Yes")}}',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        $('form#voidFormId').submit();
+                    }
+                });
+           }
         });
 
 
@@ -1543,8 +1557,17 @@ $('.decrement-btn').click(function (e) {
     }
     </script>
     <script>
-         function quickViewRefund(order_id) {
-            // alert(order_id);
+         function quickViewRefund(order_id, ) {
+            
+            if (batchStatus == 'open') {
+                Swal.fire({
+                    title: '',
+                    text: '{{translate("Batch Opened, Process Void.")}}',
+                    type: 'warning',
+                });
+                return false;
+            }
+
             $.ajax({
                 url: '{{ route('admin.pos.refund_view') }}',
                 type: 'GET',

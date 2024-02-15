@@ -2117,4 +2117,8 @@
   'Cash Amount' => 'Cash Amount',
   'Note' => 'Note',
   'Register Open & Close' => 'Register Open & Close',
+  'Batch Closed, Process Refund' => 'Batch Closed, Process Refund',
+  'Batch Opened, Process Void' => 'Batch Opened, Process Void',
+  'Batch Opened, Process Void.' => 'Batch Opened, Process Void.',
+  'Batch Closed, Process Refund.' => 'Batch Closed, Process Refund.',
 );
