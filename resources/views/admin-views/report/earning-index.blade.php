@@ -76,13 +76,13 @@
                                 <div class="col-sm-4">
                                     <div class="">
                                         <input type="date" name="from" id="from_date"
-                                            class="form-control" required>
+                                            class="form-control" required value="{{ \Carbon\Carbon::parse(session('from_date'))->format('Y-m-d')  }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="">
                                         <input type="date" name="to" id="to_date"
-                                            class="form-control" required>
+                                            class="form-control" required value="{{ \Carbon\Carbon::parse(session('to_date'))->format('Y-m-d')  }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -164,7 +164,8 @@
                                             <div class="media-body">
                                                 <h4 class="mb-1">{{translate('total')}} {{translate('tax')}}</h4>
                                                 <span class="font-size-sm text-warning">
-                                                <i class="tio-trending-up"></i> {{ \App\CentralLogics\Helpers::set_symbol(round(abs($total_tax))) }}
+
+                                                <i class="tio-trending-up"></i> {{ \App\CentralLogics\Helpers::set_symbol($total_tax) }}
                                                 </span>
                                             </div>
                                         </div>
@@ -175,7 +176,7 @@
                                         <!-- Circle -->
                                         <div class="js-circle"
                                             data-hs-circles-options='{
-                                            "value": {{$total_tax=='0.01'?0:round(((abs($total_tax))/$total_sold)*100)}},
+                                            "value": {{$total_tax=='0.01'?0:(($total_tax/$total_sold)*100)}},
                                             "maxValue": 100,
                                             "duration": 2000,
                                             "isViewportInit": true,

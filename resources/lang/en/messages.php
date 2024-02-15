@@ -2124,4 +2124,6 @@
   'Print ' => 'Print ',
   'Batch Open, Process Void.' => 'Batch Open, Process Void.',
   'Batch Close, Process Refund.' => 'Batch Close, Process Refund.',
+  'Takeout order' => 'Takeout order',
+  '(Scheduled)' => '(Scheduled)',
 );

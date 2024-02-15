@@ -208,6 +208,7 @@ class OrderController extends Controller
         ];
 
         $orders = $query->notPos()->notDineIn()->latest()->paginate(Helpers::getPagination())->appends($query_param);
+        // $orders = $query->latest()->paginate(Helpers::getPagination())->appends($query_param);
         return view('admin-views.order.list', compact('orders', 'status', 'search', 'from', 'to', 'order_count'));
     }
 
