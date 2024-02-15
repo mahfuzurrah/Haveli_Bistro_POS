@@ -192,7 +192,7 @@
                                 <input id="datatableSearch_" type="search" name="search"
                                         class="form-control"
                                         placeholder="{{translate('Search by Order ID, Order Status or Transaction Reference')}}" aria-label="Search"
-                                        value="{{$search}}" required autocomplete="off">
+                                        value="{{$search}}" autocomplete="off">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-primary">
                                     {{translate('Search')}}
