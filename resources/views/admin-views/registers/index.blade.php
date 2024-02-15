@@ -139,7 +139,7 @@
                                                 <td><div class="text-capitalize"> {{ translate('Shift') }} {{ $register->shift }}</div></td>
                                                 <td><div class="text-capitalize">${{ number_format($register->open_amount,2) }}</div></td>
                                                 <td><div class="text-capitalize">{{ $register->open_time }}</div></td>
-                                                <td><div class="text-capitalize">${{ number_format($register->open_amount, 2) }}</div></td>
+                                                <td><div class="text-capitalize">${{ number_format($register->close_amount, 2) }}</div></td>
                                                 <td><div class="text-capitalize">{{ $register->close_time ?? '--' }}</div></td>
                                                 <td>
                                                     <div class="text-capitalize">  
