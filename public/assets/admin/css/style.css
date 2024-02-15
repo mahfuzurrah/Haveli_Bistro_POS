@@ -478,6 +478,8 @@
   overflow: hidden;
   border-radius: 5px !important;
   position: relative;
+  border: 1px solid #000;
+  margin: 10px 10px;
 }
 
 .pos-product-item_thumb {
