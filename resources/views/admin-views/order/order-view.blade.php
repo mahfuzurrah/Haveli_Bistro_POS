@@ -112,7 +112,7 @@
 
                                             </div>
 
-                                            <div class="p-2 bd-highlight">
+                                            <div class="p-2 bd-highlight ml-2">
                                                 <a href="#" class="btn btn-sm btn-primary refund-button" onclick="quickViewRefund({{ $order['id'] }})">
                                                     {{ translate('Refund') }}</a>
                                             </div>

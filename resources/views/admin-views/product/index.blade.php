@@ -25,7 +25,7 @@
                     @csrf
                     <div class="row g-2">
                         <div class="col-lg-6">
-                            <div class="card card-body h-100">
+                            <div class="card card-body">
                                 @php($data = Helpers::get_business_settings('language'))
                                 @php($default_lang = Helpers::get_default_language())
 
@@ -73,6 +73,91 @@
                                     </div>
                                 @endif
                             </div>
+                                <div class="row mt-2 g-2">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                    <div class="text-dark">{{ translate('turning visibility off will not show this product in the user app and website') }}</div>
+                                                    <div class="d-flex gap-3 align-items-center">
+                                                        <h5>{{translate('Visibility')}}</h5>
+                                                        <label class="switcher">
+                                                            <input class="switcher_input" type="checkbox" checked="checked" name="status">
+                                                            <span class="switcher_control"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <h4 class="mb-0 d-flex gap-2 align-items-center">
+                                                    <i class="tio-watches"></i>
+                                                    {{translate('Availability')}}
+                                                </h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row g-2">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label class="input-label">{{translate('available_From')}}</label>
+                                                            <input type="time" name="available_time_starts" class="form-control" value="10:30:00"
+                                                                   placeholder="{{translate('Ex : 10:30 am')}}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label class="input-label">{{translate('available_Till')}}</label>
+                                                            <input type="time" name="available_time_ends" class="form-control" value="19:30:00" placeholder="{{translate('5:45 pm')}}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <h4 class="mb-0 d-flex gap-2 align-items-center">
+                                                    <i class="tio-puzzle"></i>
+                                                    {{translate('Addons')}}
+                                                </h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label class="input-label">{{translate('Select_Addons')}}</label>
+                                                    <select name="addon_ids[]" class="form-control" id="choose_addons" multiple="multiple">
+                                                        @foreach(\App\Model\AddOn::orderBy('name')->get() as $addon)
+                                                            <option value="{{$addon['id']}}">{{$addon['name']}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <h4 class="mb-0 d-flex gap-2 align-items-center">
+                                                    <i class="tio-label"></i>
+                                                    {{translate('tags')}}
+                                                </h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="">
+                                                            <label class="input-label">{{translate('search_tag')}}</label>
+                                                            <input type="text" class="form-control" name="tags" placeholder="Enter tags" data-role="tagsinput">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                         <div class="col-lg-6 d-none">
                             <div class="card card-body h-100">
@@ -258,93 +343,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between gap-3">
-                                                <div class="text-dark">{{ translate('turning visibility off will not show this product in the user app and website') }}</div>
-                                                <div class="d-flex gap-3 align-items-center">
-                                                    <h5>{{translate('Visibility')}}</h5>
-                                                    <label class="switcher">
-                                                        <input class="switcher_input" type="checkbox" checked="checked" name="status">
-                                                        <span class="switcher_control"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="card h-100">
-                                        <div class="card-header">
-                                            <h4 class="mb-0 d-flex gap-2 align-items-center">
-                                                <i class="tio-watches"></i>
-                                                {{translate('Availability')}}
-                                            </h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row g-2">
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label class="input-label">{{translate('available_From')}}</label>
-                                                        <input type="time" name="available_time_starts" class="form-control" value="10:30:00"
-                                                               placeholder="{{translate('Ex : 10:30 am')}}" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label class="input-label">{{translate('available_Till')}}</label>
-                                                        <input type="time" name="available_time_ends" class="form-control" value="19:30:00" placeholder="{{translate('5:45 pm')}}" required>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="card h-100">
-                                        <div class="card-header">
-                                            <h4 class="mb-0 d-flex gap-2 align-items-center">
-                                                <i class="tio-puzzle"></i>
-                                                {{translate('Addons')}}
-                                            </h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label class="input-label">{{translate('Select_Addons')}}</label>
-                                                <select name="addon_ids[]" class="form-control" id="choose_addons" multiple="multiple">
-                                                    @foreach(\App\Model\AddOn::orderBy('name')->get() as $addon)
-                                                        <option value="{{$addon['id']}}">{{$addon['name']}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="card h-100">
-                                        <div class="card-header">
-                                            <h4 class="mb-0 d-flex gap-2 align-items-center">
-                                                <i class="tio-label"></i>
-                                                {{translate('tags')}}
-                                            </h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="">
-                                                        <label class="input-label">{{translate('search_tag')}}</label>
-                                                        <input type="text" class="form-control" name="tags" placeholder="Enter tags" data-role="tagsinput">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div class="card mt-3">

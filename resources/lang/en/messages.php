@@ -2139,4 +2139,5 @@
   'Batch Opened, Process Void' => 'Batch Opened, Process Void',
   'Batch Opened, Process Void.' => 'Batch Opened, Process Void.',
   'Batch Closed, Process Refund.' => 'Batch Closed, Process Refund.',
+  'Add new product dd' => 'Add new product dd',
 );

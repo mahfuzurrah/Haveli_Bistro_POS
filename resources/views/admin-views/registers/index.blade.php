@@ -48,7 +48,7 @@
                                 @else
                                 <div class="row gy-4">
                                     <div class="col-md-6 mb-4">
-                                        <input type="hidden" name="lang[]" value="{{ $default_lang }}"> 
+                                        <input type="hidden" name="lang[]" value="{{ $default_lang }}">
                                         <input name="position" value="0" class="d--none">
                                     </div>
                                 </div>
@@ -139,10 +139,10 @@
                                                 <td><div class="text-capitalize"> {{ translate('Shift') }} {{ $register->shift }}</div></td>
                                                 <td><div class="text-capitalize">${{ number_format($register->open_amount,2) }}</div></td>
                                                 <td><div class="text-capitalize">{{ $register->open_time }}</div></td>
-                                                <td><div class="text-capitalize">${{ number_format($register->open_amount, 2) }}</div></td>
+                                                <td><div class="text-capitalize">${{ number_format($register->close_amount, 2) }}</div></td>
                                                 <td><div class="text-capitalize">{{ $register->close_time ?? '--' }}</div></td>
                                                 <td>
-                                                    <div class="text-capitalize">  
+                                                    <div class="text-capitalize">
                                                         @if($register->close_time)
                                                         <label class="badge badge-soft-info px-2 rounded">{{ translate('Close') }}</label>
                                                         @else
