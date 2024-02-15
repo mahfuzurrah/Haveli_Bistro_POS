@@ -1775,7 +1775,8 @@ return response()->json([
         $from = $request['from'];
         $to = $request['to'];
 
-        $query = $this->order->pos()->with(['customer', 'branch']);
+        // $query = $this->order->pos()->with(['customer', 'branch']);
+        $query = $this->order->with(['customer', 'branch']);
         $branches = $this->branch->all();
 
         if ($request->has('search')) {
