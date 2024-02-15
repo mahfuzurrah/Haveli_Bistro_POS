@@ -115,7 +115,7 @@
                             <!-- End POS -->
                         @endif
 
-                        
+
 
                         {{-- TIME MANAGEMENT --}}
                         @if(Helpers::module_permission_check(MANAGEMENT_SECTION['time_management']))

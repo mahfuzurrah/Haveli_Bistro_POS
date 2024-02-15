@@ -5,7 +5,7 @@
 @push('css_or_js')
 
 @endpush
-@php 
+@php
     $openedRegister = App\Models\Register::where('admin_id', auth('admin')->user()->id)->whereDate('open_time', date('Y-m-d'))->opened()->first();
     $batchStatus = $openedRegister ? 'open' : 'close';
 @endphp
@@ -1558,7 +1558,7 @@ $('.decrement-btn').click(function (e) {
     </script>
     <script>
          function quickViewRefund(order_id, ) {
-            
+
             if (batchStatus == 'open') {
                 Swal.fire({
                     title: '',

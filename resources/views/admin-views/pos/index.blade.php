@@ -132,7 +132,7 @@
                             <!-- POS Title -->
                             <div class="pos-title">
                                 <div class="d-flex flex-row bd-highlight mb-3">
-                                    <div class="p-2 bd-highlight">
+                                    <div class="p-2 bd-highlight mr-3">
                                         <h4 class="mb-0">{{ translate('station') }}</h4>
                                     </div>
                                     <div class="p-2 bd-highlight">
@@ -206,8 +206,6 @@
 
 
                                         <div class="p-2 p-sm-4">
-
-
                                             <div class="form-group d-flex gap-2">
                                                 @if(!session()->has('hold_btn_hide'))
                                                 <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewHold()">

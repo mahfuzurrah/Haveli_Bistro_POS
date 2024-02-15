@@ -122,6 +122,8 @@
                                 <th>
                                     {{translate('SL')}}
                                 </th>
+                                {{-- @if (request()->input('admin_id') != null) --}}
+                                <th>{{translate('Employee Name')}}</th>
                                 <th>{{translate('Start Date')}}</th>
                                 <th>{{translate('End Date')}}</th>
                                 <th>{{translate('Start Time')}}</th>
@@ -134,7 +136,7 @@
                             @forelse($checkins as $key=>$checkin)
                             <tr>
                                 <td>{{$checkins->firstitem()+$key}}</td>
-                                <td><div class="text-capitalize">{{$checkin['start_date'] ?? '--'}}</div></td>
+                                <td><div class="text-capitalize">{{$checkin['admin']['admin_name'] ?? '--'}}</div></td>
                                 <td><div class="text-capitalize">{{$checkin['end_date'] ?? '--'}}</div></td>
                                 <td><div class="text-capitalize">{{$checkin['start_time'] ?? '--'}}</div></td>
                                 <td><div class="text-capitalize">{{$checkin['end_time'] ?? '--'}}</div></td>
