@@ -683,6 +683,11 @@
     <!-- JS Plugins Init. -->
     <script>
          $(document).on('ready', function() {
+
+            if ($('.sidebar-toggle').length) {
+                $('.sidebar-toggle').trigger('click');
+            }
+
            $("#increase").click(function(){
             var value=$(this).parents('.quantity').find('#quantityValue').val();
             value++

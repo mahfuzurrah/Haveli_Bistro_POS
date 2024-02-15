@@ -212,6 +212,18 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
 
         });
 
+        Route::group(['prefix' => 'registers', 'as' => 'registers.', 'middleware' => ['module:register_management']], function () {
+            Route::get('/', 'RegisterController@index')->name('index');
+            Route::get('export', 'RegisterController@exportExcel')->name('exportExcel');
+            Route::get('create/{id?}', 'RegisterController@create')->name('create');
+            Route::post('open', 'RegisterController@store')->name('openStore');
+            Route::post('close/{id}', 'RegisterController@closeRegister')->name('closeStore');
+            Route::post('update/{id}', 'RegisterController@update')->name('update');
+            Route::get('{id}/edit', 'RegisterController@edit')->name('edit');
+            Route::get('{id}/show', 'RegisterController@show')->name('show');
+            Route::get('{id}/print', 'RegisterController@print')->name('print');
+        });
+
         Route::group(['prefix' => 'time', 'as' => 'time.', 'middleware' => ['module:time_management']], function () {
             Route::get('add', 'AdminActivityController@index')->name('add');
             Route::get('clock-in', 'AdminActivityController@checkin')->name('checkin');

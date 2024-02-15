@@ -26,7 +26,7 @@
 
                     <div class="navbar-nav-wrap-content-left d-none d-xl-block">
                         <!-- Navbar Vertical Toggle -->
-                        <button type="button" class="js-navbar-vertical-aside-toggle-invoker close">
+                        <button type="button" class="js-navbar-vertical-aside-toggle-invoker close sidebar-toggle">
                             <i class="tio-first-page navbar-vertical-aside-toggle-short-align" data-toggle="tooltip" data-placement="right" title="" data-original-title="Collapse"></i>
                             <i class="tio-last-page navbar-vertical-aside-toggle-full-align"></i>
                         </button>
@@ -57,6 +57,30 @@
                         </li>
 {{--                        @endif--}}
                         <!-- End Dashboards -->
+
+                        @if(Helpers::module_permission_check(MANAGEMENT_SECTION['register_management']))
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/registers*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
+                                    <i class="tio-clock nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Register')}} {{translate('Open / Close')}}</span>
+                                </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub" style="display: {{Request::is('admin/registers*')?'block':'none'}}">
+                                    <li class="nav-item {{Request::is('admin/registers/create')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.registers.create')}}" title="{{translate('Register')}} {{translate('Open / Close')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('Open / Close')}}</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item {{Request::is('admin/registers')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.registers.index')}}" title="{{translate('List')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('List')}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
 
                         @if(Helpers::module_permission_check(MANAGEMENT_SECTION['pos_management']))
 
@@ -90,6 +114,8 @@
                             </li>
                             <!-- End POS -->
                         @endif
+
+                        
 
                         {{-- TIME MANAGEMENT --}}
                         @if(Helpers::module_permission_check(MANAGEMENT_SECTION['time_management']))

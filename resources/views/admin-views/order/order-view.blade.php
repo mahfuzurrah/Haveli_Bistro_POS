@@ -5,7 +5,10 @@
 @push('css_or_js')
 
 @endpush
-
+@php 
+    $openedRegister = App\Models\Register::where('admin_id', auth('admin')->user()->id)->whereDate('open_time', date('Y-m-d'))->opened()->first();
+    $batchStatus = $openedRegister ? 'open' : 'close';
+@endphp
 @section('content')
     <div class="content container-fluid">
         <!-- Page Header -->
@@ -100,10 +103,9 @@
                                         <div class="d-flex flex-row bd-highlight mb-3">
                                             <div class=" p-2 bd-highlight">
 
-                                                <form action="{{ route('admin.pos.quick-view-void') }}" method="get">
-
+                                                <form id="voidFormId" action="{{ route('admin.pos.quick-view-void') }}" method="get">
                                                     <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                                    <button class="btn btn-danger" type="submit">
+                                                    <button class="btn btn-danger submit-void-form" type="button">
                                                         {{translate('Void')}}
                                                     </button>
                                                 </form>
@@ -111,7 +113,7 @@
                                             </div>
 
                                             <div class="p-2 bd-highlight">
-                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund({{ $order['id'] }})">
+                                                <a href="#" class="btn btn-sm btn-primary refund-button" onclick="quickViewRefund({{ $order['id'] }})">
                                                     {{ translate('Refund') }}</a>
                                             </div>
                                             <div class="p-2 bd-highlight">
@@ -1189,7 +1191,37 @@
 
 @push('script_2')
 <script>
+    var batchStatus = "{{$batchStatus}}";
+
     $(document).ready(function () {
+
+        $('body').on('click', '.submit-void-form', function() {
+
+           if(batchStatus == 'close') {
+                Swal.fire({
+                    title: '',
+                    text: '{{translate("Batch Closed, Process Refund.")}}',
+                    type: 'warning',
+                });
+           } else {
+                Swal.fire({
+                    title: '{{translate("Are you sure?")}}',
+                    text: '{{translate("You want to void this order?")}}',
+                    type: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: 'default',
+                    confirmButtonColor: '#FC6A57',
+                    cancelButtonText: '{{translate("No")}}',
+                    confirmButtonText:'{{translate("Yes")}}',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        $('form#voidFormId').submit();
+                    }
+                });
+           }
+        });
+
 
 $('.increment-btn').click(function (e) {
 
@@ -1525,8 +1557,17 @@ $('.decrement-btn').click(function (e) {
     }
     </script>
     <script>
-         function quickViewRefund(order_id) {
-            // alert(order_id);
+         function quickViewRefund(order_id, ) {
+            
+            if (batchStatus == 'open') {
+                Swal.fire({
+                    title: '',
+                    text: '{{translate("Batch Open, Process Void.")}}',
+                    type: 'warning',
+                });
+                return false;
+            }
+
             $.ajax({
                 url: '{{ route('admin.pos.refund_view') }}',
                 type: 'GET',
