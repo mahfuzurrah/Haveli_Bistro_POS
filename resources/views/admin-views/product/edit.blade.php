@@ -88,7 +88,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6 d-none">
+                        <div class="col-lg-6">
                             <div class="card h-100">
                                 <div class="card-body">
                                     <div class="form-group">
@@ -108,7 +108,7 @@
                                         </center> -->
 
 
-                                        <div class="d-flex justify-content-center mt-4 d-none">
+                                        <div class="d-flex justify-content-center mt-4">
                                             <div class="upload-file">
                                                 <input type="file" name="image" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*" class="upload-file__input">
                                                 <div class="upload-file__img_drag upload-file__img">

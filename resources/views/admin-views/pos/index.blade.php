@@ -203,11 +203,6 @@
                                 <div class="d-flex flex-row bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
 
-                      @if(!session()->has('hold_btn_hide'))
-                 <a href="#" class="btn btn-sm btn-primary  d-none" onclick="quickViewHold()">
-                   {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
-                      @endif
-
 
 
                                         <div class="p-2 p-sm-4">
@@ -232,9 +227,7 @@
 
 
                                             </div>
-
-                                            <div class="form-group d-none">
-
+                                            {{-- <div class="form-group">
                                                 <label for="branch"
                                                     class="font-weight-semibold fz-16 text-dark">{{ translate('select_branch') }}</label>
                                                 <select onchange="store_key('branch_id',this.value)" id='branch'
@@ -310,11 +303,11 @@
 
                                                 <div class="form-group d-flex flex-wrap flex-sm-nowrap gap-2">
                                                     <input type="number" value="{{ session('people_number') }}"
-                                                        name="number_of_people" max="20" step="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2"
+                                                        name="number_of_people" step="1"
                                                         oninput="this.value = this.value.replace(/[^\d]/g, '')"
                                                         onkeyup="store_key('people_number',this.value)"
-                                                        id="number_of_people" class="form-control"
-                                                        min="1"
+                                                        id="number_of_people" class="form-control" id="number_of_people"
+                                                        min="1" max="99"
                                                         placeholder="{{ translate('Number Of People') }}">
                                                 </div>
                                             </div>
@@ -400,20 +393,21 @@
                                     <div class="form-group">
                                         <label class="input-label">
                                             {{ translate('Email') }}
-                                            <span class="input-label-secondary text-danger"></span>
+                                            <span class="input-label-secondary text-danger">*</span>
                                         </label>
                                         <input type="email" name="email" class="form-control" value=""
-                                            placeholder="Ex : ex@example.com" >
+                                            placeholder="Ex : ex@example.com" required="">
                                     </div>
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <div class="form-group">
                                         <label class="input-label">
                                             {{ translate('Phone') }}
+                                            (<span>{{ translate('with_country_code') }}</span>)
                                             <span class="input-label-secondary text-danger">*</span>
                                         </label>
-                                        <input type="text" minlength="10" maxlength="10" name="phone" class="form-control" value=""
-                                            placeholder="{{ translate('Ex : 778*******') }}" required="">
+                                        <input type="text" name="phone" class="form-control" value=""
+                                            placeholder="{{ translate('Ex : +88017*****') }}" required="">
                                     </div>
                                 </div>
                             </div>

@@ -46,6 +46,7 @@
   'pos' => 'Pos',
   'New Sale' => 'New Sale',
   'order' => 'Order',
+  'Takeout order' => 'Takeout Order',
   'management' => 'Management',
   'all' => 'All',
   'scheduled' => 'Scheduled',
