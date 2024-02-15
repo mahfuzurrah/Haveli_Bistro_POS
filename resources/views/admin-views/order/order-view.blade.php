@@ -1562,7 +1562,7 @@ $('.decrement-btn').click(function (e) {
             if (batchStatus == 'open') {
                 Swal.fire({
                     title: '',
-                    text: '{{translate("Batch Opened, Process Void.")}}',
+                    text: '{{translate("Batch Open, Process Void.")}}',
                     type: 'warning',
                 });
                 return false;
