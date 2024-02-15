@@ -160,7 +160,7 @@
                                                         <a class="btn btn-sm btn-outline-info square-btn" href="{{ route('admin.registers.edit', [$register->id]) }}">
                                                             <i class="tio-edit"></i>
                                                         </a>
-                                                        <a href="#" class="btn btn-sm btn-outline-success square-btn" target="_blank">
+                                                        <a href="{{ route('admin.registers.print', [$register->id]) }}" class="btn btn-sm btn-outline-success square-btn" target="_blank">
                                                             <i class="tio-print"></i>
                                                         </a>
                                                     </div>

@@ -13,7 +13,7 @@ class Register extends Model
 
     public function admin()
     {
-        return $this->belongsTo(App\Model\Admin::class);
+        return $this->belongsTo(\App\Model\Admin::class, 'admin_id');
     }
 
     public function scopeOpened($query)

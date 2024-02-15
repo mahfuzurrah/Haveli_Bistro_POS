@@ -2111,4 +2111,8 @@
   'Close Amount' => 'Close Amount',
   'Open Amount' => 'Open Amount',
   'Go Back' => 'Go Back',
+  'Name : ' => 'Name : ',
+  'Register ID : ' => 'Register ID : ',
+  'Shift : ' => 'Shift : ',
+  'Cash Amount' => 'Cash Amount',
 );

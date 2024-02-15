@@ -175,7 +175,8 @@ class RegisterController extends Controller
 
     public function print($id)
     {
-
+        $register = Register::findOrFail($id);
+        return view('admin-views.registers.print', ['register' => $register]);
     }
 
     public function exportExcel(Request $request)
