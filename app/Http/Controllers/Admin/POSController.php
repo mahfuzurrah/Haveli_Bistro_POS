@@ -1963,8 +1963,8 @@ return response()->json([
         $request->validate([
             'f_name' => 'required',
             'l_name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email',
+            'phone' => 'required|min:10|max:10',
+            'email' => 'nullable|email',
         ]);
 
         $user_phone = $this->user->where('phone', $request->phone)->first();

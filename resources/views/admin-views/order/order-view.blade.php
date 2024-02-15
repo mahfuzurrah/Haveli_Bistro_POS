@@ -109,12 +109,12 @@
                                                 </form>
 
                                             </div>
+                                            <div class="p-2 bd-highlight ml-2">
+                                                <a href="#" class="btn btn-sm btn-primary  "onclick="quickViewRefund()">
 
-                                            <div class="p-2 bd-highlight">
-                                                <a href="#" class="btn btn-sm btn-primary  " onclick="quickViewRefund({{ $order['id'] }})">
                                                     {{ translate('Refund') }}</a>
                                             </div>
-                                            <div class="p-2 bd-highlight">
+                                            <div class="p-2 bd-highlight ml-2">
                                                 <a class="btn btn-info" href={{route('admin.orders.generate-invoice',[$order['id']])}}>
                                                     <i class="tio-print"></i>
                                                 </a>
@@ -332,26 +332,16 @@
 
                                     <dt class="col-6">
                                         <div class="d-flex max-w220 ml-auto">
-                                            <span>{{translate('tax')}} / {{translate('vat')}}</span>
+                                            <span>{{translate('vat')}} 5%</span>
                                             <span>:</span>
                                         </div>
                                     </dt>
                                     <dd class="col-6 text-dark text-right">{{ \App\CentralLogics\Helpers::set_symbol($total_tax + $add_ons_tax_cost) }}</dd>
 
-                                    <dt class="col-6">
-
-                                        <div class="d-flex max-w220 ml-auto">
-                                            <span>{{translate('addon')}} {{translate('cost')}}</span>
-                                            <span>:</span>
-                                        </div>
-                                    </dt>
-                                    <dd class="col-6 text-dark text-right">
-                                        {{ \App\CentralLogics\Helpers::set_symbol($add_ons_cost) }}
-                                    </dd>
 
                                     <dt class="col-6">
                                         <div class="d-flex max-w220 ml-auto">
-                                            <span>{{translate('item')}} {{translate('discount')}}</span>
+                                            <span>{{translate('Online')}} {{translate('discount')}}</span>
                                             <span>:</span>
                                         </div>
                                     </dt>
@@ -367,7 +357,7 @@
                                     <dd class="col-6 text-dark text-right">
                                         {{ \App\CentralLogics\Helpers::set_symbol($sub_total =$sub_total+$total_tax+$add_ons_cost-$total_dis_on_pro + $add_ons_tax_cost) }}</dd>
 
-                                    <dt class="col-6">
+                                    {{-- <dt class="col-6">
 
                                         <div class="d-flex max-w220 ml-auto">
                                             <span>{{translate('coupon')}} {{translate('discount')}}</span>
@@ -375,7 +365,7 @@
                                         </div>
                                     </dt>
                                     <dd class="col-6 text-dark text-right">
-                                        - {{ \App\CentralLogics\Helpers::set_symbol($order['coupon_discount_amount']) }}</dd>
+                                        - {{ \App\CentralLogics\Helpers::set_symbol($order['coupon_discount_amount']) }}</dd> --}}
 
                                     <dt class="col-6">
                                         <div class="d-flex max-w220 ml-auto">
@@ -385,21 +375,21 @@
                                     </dt>
                                     <dd class="col-6 text-dark text-right">
                                         - {{ \App\CentralLogics\Helpers::set_symbol($order['extra_discount']) }}</dd>
-                                    <dt class="col-6">
+                                    {{-- <dt class="col-6">
                                         <div class="d-flex max-w220 ml-auto">
                                             <span>
                                                 {{translate('delivery')}} {{translate('fee')}}</span>
                                             <span>:</span>
                                         </div>
-                                    </dt>
-                                    <dd class="col-6 text-dark text-right">
+                                    </dt> --}}
+                                    {{-- <dd class="col-6 text-dark text-right">
                                         @if($order['order_type']=='take_away')
                                             @php($del_c=0)
                                         @else
                                             @php($del_c=$order['delivery_charge'])
                                         @endif
                                         {{ \App\CentralLogics\Helpers::set_symbol($del_c) }}
-                                    </dd>
+                                    </dd> --}}
 
                                     <dt class="col-6 border-top pt-2 fz-16 font-weight-bold">
                                         <div class="d-flex max-w220 ml-auto">
@@ -407,7 +397,7 @@
                                         <span>:</span>
                                         </div>
                                     </dt>
-                                    <dd class="col-6 border-top pt-2 fz-16 font-weight-bold text-dark text-right">{{ \App\CentralLogics\Helpers::set_symbol($sub_total - $order['coupon_discount_amount'] - $order['extra_discount'] + $del_c) }}</dd>
+                                    <dd class="col-6 border-top pt-2 fz-16 font-weight-bold text-dark text-right">{{ \App\CentralLogics\Helpers::set_symbol($sub_total - $order['coupon_discount_amount'] - $order['extra_discount']) }}</dd>
 
                                     <!-- partial payment-->
                                     @if ($order->order_partial_payments->isNotEmpty())
