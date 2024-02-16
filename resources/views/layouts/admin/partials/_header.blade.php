@@ -6,10 +6,10 @@
                 @php($restaurant_logo=\App\Model\BusinessSetting::where(['key'=>'logo'])->first()->value)
                 <a class="navbar-brand" href="{{route('admin.dashboard')}}" aria-label="">
                     <img class="navbar-brand-logo" style="object-fit: contain;"
-                         onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'"
+                         onerror="this.src='{{asset('assets/admin/img/logo.png')}}'"
                          src="{{asset('storage/app/public/restaurant/'.$restaurant_logo)}}" alt="Logo">
                     <img class="navbar-brand-logo-mini" style="object-fit: contain;"
-                         onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'"
+                         onerror="this.src='{{asset('assets/admin/img/logo.png')}}'"
                          src="{{asset('storage/app/public/restaurant/'.$restaurant_logo)}}"
                          alt="Logo">
                 </a>
@@ -26,13 +26,13 @@
                        data-toggle="tooltip" data-placement="right" title="Expand"></i>
                 </button>
                 <!-- End Navbar Vertical Toggle -->
+                
             </div>
 
             <!-- Secondary Content -->
             <div class="navbar-nav-wrap-content-right">
                 <!-- Navbar -->
                 <ul class="navbar-nav align-items-center flex-row">
-
                     <li class="nav-item d-none d-sm-inline-block">
                         <div class="hs-unfold">
                             <div class="bg-white p-1 rounded">
