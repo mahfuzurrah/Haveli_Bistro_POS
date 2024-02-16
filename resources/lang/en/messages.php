@@ -2145,4 +2145,5 @@
   'Batch Close, Process Refund.' => 'Batch Close, Process Refund.',
   'Takeout order' => 'Takeout order',
   '(Scheduled)' => '(Scheduled)',
+  'Please do clock out first!' => 'Please do clock out first!',
 );

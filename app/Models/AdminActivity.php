@@ -18,4 +18,14 @@ class AdminActivity extends Model
         return $this->belongsTo(Admin::class, 'admin_id');
     }
 
+    public function scopeOpened($query)
+    {
+        return $query->whereNull('end_date');
+    }
+
+    public function scopeClosed($query)
+    {
+        return $query->whereNotNull('end_date');
+    }
+
 }
