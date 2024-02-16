@@ -323,7 +323,7 @@
                             <!-- End Pages -->
                         @endif
 
-                        {{-- @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
+                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
                             <li
                                 class="navbar-vertical-aside-has-menu {{ Request::is('admin/table/order/list/*') || Request::is('admin/table/order/details/*') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
@@ -431,7 +431,7 @@
                                 </ul>
                             </li>
                             <!-- End Pages -->
-                        @endif --}}
+                        @endif
 
                         @if (Helpers::module_permission_check(MANAGEMENT_SECTION['product_management']))
                             <li class="nav-item">
