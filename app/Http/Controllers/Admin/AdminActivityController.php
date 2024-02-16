@@ -20,8 +20,6 @@ class AdminActivityController extends Controller
     {
         $date = date('Y-m-d');
         $admin_id = auth('admin')->user()->id;
-        $checkin = AdminActivity::where('admin_id',$admin_id)->whereDate('start_date', $date)->first();
-
         $checkin = AdminActivity::where('admin_id',$admin_id)->where(function($query) use ($date){
             $query->where('start_date', $date)
             ->orWhere('start_date', date('Y-m-d',strtotime("-1 days")))
