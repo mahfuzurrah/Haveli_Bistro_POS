@@ -8,10 +8,10 @@
                     @php($restaurant_logo = \App\Model\BusinessSetting::where(['key' => 'logo'])->first()->value)
                     <a class="navbar-brand" href="{{ route('admin.dashboard') }}" aria-label="Front">
                         <img class="navbar-brand-logo" style="object-fit: contain;"
-                            onerror="this.src='{{ asset('assets/admin/img/160x160/img2.jpg') }}'"
+                            onerror="this.src='{{ asset('assets/admin/img/logo.png') }}'"
                             src="{{ asset('storage/app/public/restaurant/' . $restaurant_logo) }}" alt="Logo">
                         <img class="navbar-brand-logo-mini" style="object-fit: contain;"
-                            onerror="this.src='{{ asset('assets/admin/img/160x160/img2.jpg') }}'"
+                            onerror="this.src='{{ asset('assets/admin/img/logo.png') }}'"
                             src="{{ asset('storage/app/public/restaurant/' . $restaurant_logo) }}" alt="Logo">
                     </a>
                     <!-- End Logo -->
@@ -51,7 +51,7 @@
 
                     <ul class="navbar-nav navbar-nav-lg nav-tabs">
                         <!-- Dashboards -->
-                        {{--                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['dashboard_management'])) --}}
+                        {{-- @if (Helpers::module_permission_check(MANAGEMENT_SECTION['dashboard_management'])) --}}
                         <li class="navbar-vertical-aside-has-menu {{ Request::is('admin') ? 'show' : '' }}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link" href="{{ route('admin.dashboard') }}"
                                 title="{{ translate('Dashboards') }}">
@@ -323,7 +323,7 @@
                             <!-- End Pages -->
                         @endif
 
-                        {{-- @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
+                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
                             <li
                                 class="navbar-vertical-aside-has-menu {{ Request::is('admin/table/order/list/*') || Request::is('admin/table/order/details/*') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
@@ -431,7 +431,7 @@
                                 </ul>
                             </li>
                             <!-- End Pages -->
-                        @endif --}}
+                        @endif
 
                         @if (Helpers::module_permission_check(MANAGEMENT_SECTION['product_management']))
                             <li class="nav-item">
