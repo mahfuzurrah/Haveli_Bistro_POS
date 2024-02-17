@@ -2146,4 +2146,10 @@
   'Takeout order' => 'Takeout order',
   '(Scheduled)' => '(Scheduled)',
   'Please do clock out first!' => 'Please do clock out first!',
+  'Both Copy' => 'Both Copy',
+  'Customer Copy' => 'Customer Copy',
+  'Marchant Copy' => 'Marchant Copy',
+  '
+                    Invalid date range ' => '
+                    Invalid date range ',
 );
