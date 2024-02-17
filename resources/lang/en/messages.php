@@ -2146,4 +2146,5 @@
   'Takeout order' => 'Takeout order',
   '(Scheduled)' => '(Scheduled)',
   'Please do clock out first!' => 'Please do clock out first!',
+  'Payment reference code is added!' => 'Payment reference code is added!',
 );
