@@ -496,8 +496,7 @@
                                         <input type="button" style="font-size: 20px;"
                                             class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
                                             value="{{ translate('Print Receipt') }}" />
-                                        {{-- <a href="{{ url()->previous() }}"
-                                        class="btn btn-danger non-printable">{{ translate('No Receipt') }}</a> --}}
+                                        
                                     </left>
 
                                     <hr class="non-printable">
@@ -505,10 +504,7 @@
                                 <div class="row m-auto" id="printableArea">
                                     @include('admin-views.pos.order.invoice')
                                 </div>
-
                             </div>
-
-
                         </div>
                     @endif
                 </div>

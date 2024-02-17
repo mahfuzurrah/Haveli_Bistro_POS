@@ -23,7 +23,7 @@
         </div>
         <!-- End Page Header -->
 
-        <div class="row" id="printableArea">
+        <div class="row" id="printableArea-">
             <div class="col-lg-8 mb-3 mb-lg-0">
                 <!-- Card -->
                 <div class="card mb-3 mb-lg-5">
@@ -117,9 +117,11 @@
                                                     {{ translate('Refund') }}</a>
                                             </div>
                                             <div class="p-2 bd-highlight">
-                                                <a class="btn btn-info" href={{route('admin.orders.generate-invoice',[$order['id']])}}>
+                                                <!-- <a class="btn btn-info" href={{route('admin.orders.generate-invoice',[$order['id']])}}>
                                                     <i class="tio-print"></i>
-                                                </a>
+                                                </a> -->
+                                                <button class="btn btn-info" onclick="print_invoice('{{$order->id}}')"><i class="tio-print"></i></button>                                          
+                                                
                                             </div>
                                           </div>
                                             @endif
@@ -1167,6 +1169,9 @@
         </div>
 
     @endif
+
+   
+    
     <!-- End Modal -->
    {{-- void modal  --}}
    <div class="modal fade" id="quick-view" tabindex="-1">
@@ -1185,11 +1190,12 @@
         </div>
     </div>
 </div>
-
+@include('admin-views/includes/invoice-modal')
 @endsection
 
 
 @push('script_2')
+<script src="{{asset('assets/admin')}}/js/invoice-print.js"></script>
 <script>
     var batchStatus = "{{$batchStatus}}";
 

@@ -302,35 +302,11 @@
         <!-- End Card -->
     </div>
 
-    <div class="modal fade" id="print-invoice" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{translate('print')}} {{translate('invoice')}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body row" style="font-family: emoji;">
-                    <div class="col-md-12">
-                        <center>
-                            <input type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
-                                value="{{translate('Print Receipt.')}}"/>
-                            <a href="{{url()->previous()}}" class="btn btn-danger non-printable">{{translate('No Receipt')}}</a>
-                        </center>
-                        <hr class="non-printable">
-                    </div>
-                    <div class="row" id="printableArea" style="margin: auto;">
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('admin-views/includes/invoice-modal')
 @endsection
 
 @push('script_2')
+<script src="{{asset('assets/admin')}}/js/invoice-print.js"></script>
     <script>
         $(document).on('ready', function () {
             // INITIALIZATION OF SELECT2
@@ -339,45 +315,6 @@
                 var select2 = $.HSCore.components.HSSelect2.init($(this));
             });
         });
-    </script>
-
-    <script>
-        function print_invoice(order_id) {
-            $.get({
-                url: '{{url('/')}}/admin/pos/invoice/'+order_id,
-                dataType: 'json',
-                beforeSend: function () {
-                    $('#loading').show();
-                },
-                success: function (data) {
-                    console.log("success...")
-                    $('#print-invoice').modal('show');
-                    $('#printableArea').empty().html(data.view);
-                },
-                complete: function () {
-                    $('#loading').hide();
-                },
-            });
-        }
-
-        function printDiv(divName) {
-
-            if($('html').attr('dir') === 'rtl') {
-                $('html').attr('dir', 'ltr')
-                var printContents = document.getElementById(divName).innerHTML;
-                document.body.innerHTML = printContents;
-                $('#printableAreaContent').attr('dir', 'rtl')
-                window.print();
-                $('html').attr('dir', 'rtl')
-                location.reload();
-            }else{
-                var printContents = document.getElementById(divName).innerHTML;
-                document.body.innerHTML = printContents;
-                window.print();
-                location.reload();
-            }
-
-        }
     </script>
     <script>
         function filter_branch_orders(id) {
