@@ -334,96 +334,93 @@
                                     </span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="display: {{ Request::is('admin/table/order*') ? 'block' : 'none' }}">
-                                    <li class="nav-item {{ Request::is('admin/table/order/list/all') ? 'active' : '' }}">
-                                        <a class="nav-link" href="{{ route('admin.table.order.list', ['all']) }}"
-                                            title="">
+                                    style="display: {{Request::is('admin/table/order*')?'block':'none'}}">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/all')?'active':''}}">
+                                        <a class="nav-link" href="{{route('admin.table.order.list',['all'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('all') }}
+                                                {{translate('all')}}
                                                 <span class="badge badge-soft-info badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->dineIn()->notSchedule()->count() }}
+                                                    {{\App\Model\Order::notPos()->dineIn()->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li
-                                        class="nav-item {{ Request::is('admin/table/order/list/confirmed') ? 'active' : '' }}">
-                                        <a class="nav-link"
-                                            href="{{ route('admin.table.order.list', ['confirmed']) }}"
-                                            title="">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/confirmed')?'active':''}}">
+                                        <a class="nav-link" href="{{route('admin.table.order.list',['confirmed'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('confirmed') }}
+                                                {{translate('confirmed')}}
                                                 <span class="badge badge-soft-info badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'confirmed'])->notSchedule()->count() }}
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'confirmed'])->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li
-                                        class="nav-item {{ Request::is('admin/table/order/list/cooking') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['cooking']) }}"
-                                            title="">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/cooking')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['cooking'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('cooking') }}
+                                                {{translate('cooking')}}
                                                 <span class="badge badge-soft-warning badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'cooking'])->notSchedule()->count() }}
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'cooking'])->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{ Request::is('admin/table/order/list/done') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['done']) }}"
-                                            title="">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/done')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['done'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('Ready_For_Serve') }}
+                                                {{translate('Ready_For_Serve')}}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'done'])->notSchedule()->count() }}
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'done'])->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li
-                                        class="nav-item {{ Request::is('admin/table/order/list/completed') ? 'active' : '' }}">
-                                        <a class="nav-link "
-                                            href="{{ route('admin.table.order.list', ['completed']) }}"
-                                            title="">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/completed')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['completed'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('completed') }}
+                                                {{translate('completed')}}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'completed'])->notSchedule()->count() }}
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'completed'])->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li
-                                        class="nav-item {{ Request::is('admin/table/order/list/canceled') ? 'active' : '' }}">
-                                        <a class="nav-link "
-                                            href="{{ route('admin.table.order.list', ['canceled']) }}"
-                                            title="">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/canceled')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['canceled'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('canceled') }}
+                                                {{translate('canceled')}}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'canceled'])->notSchedule()->count() }}
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'canceled'])->notSchedule()->count()}}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{ Request::is('admin/table/order/running') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.table.order.running') }}"
-                                            title="">
+                                    <li class="nav-item {{Request::is('admin/table/order/list/hold')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('on_table') }}
+                                                {{translate('hold')}}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'hold'])->notSchedule()->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/table/order/running')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.running')}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('on_table')}}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                    {{ \App\Model\Order::with('table_order')->whereHas('table_order', function ($q) {
-                                                            $q->where('branch_table_token_is_expired', 0);
-                                                        })->count() }}
+                                                    {{\App\Model\Order::with('table_order')->whereHas('table_order', function($q){
+                                                                    $q->where('branch_table_token_is_expired', 0);
+                                                                })->count()}}
                                                 </span>
                                             </span>
                                         </a>
