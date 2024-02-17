@@ -137,6 +137,7 @@
                             <tr>
                                 <td>{{$checkins->firstitem()+$key}}</td>
                                 <td><div class="text-capitalize">{{$checkin['admin']['admin_name'] ?? '--'}}</div></td>
+                                <td><div class="text-capitalize">{{$checkin['start_date'] ?? '--'}}</div></td>
                                 <td><div class="text-capitalize">{{$checkin['end_date'] ?? '--'}}</div></td>
                                 <td><div class="text-capitalize">{{$checkin['start_time'] ?? '--'}}</div></td>
                                 <td><div class="text-capitalize">{{$checkin['end_time'] ?? '--'}}</div></td>

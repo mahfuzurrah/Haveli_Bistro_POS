@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Auth;
 use App\CentralLogics\helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Admin;
+use App\Models\AdminActivity;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Contracts\Support\Renderable;
@@ -106,7 +107,8 @@ class LoginController extends Controller
         }
 
         if (auth('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.time.add');
+            // return redirect()->route('admin.dashboard');
         }
 
         return redirect()->back()->withInput($request->only('email', 'remember'))
@@ -118,10 +120,21 @@ class LoginController extends Controller
      */
     public function logout(): RedirectResponse
     {
-        $register = Register::where('admin_id', auth('admin')->user()->id)->whereDate('open_time', date('Y-m-d'))->opened()->first();
+        $date = date('Y-m-d');
+        $admin_id = auth('admin')->user()->id;
+        $register = Register::where('admin_id', $admin_id)->whereDate('open_time', $date)->opened()->first();
         if ($register) {
             Toastr::warning(translate('Please close you register first!'));
             return redirect()->route('admin.registers.create', [$register->id]);
+        }
+        $checkin = AdminActivity::where('admin_id',$admin_id)->where(function($query) use ($date){
+            $query->where('start_date', $date)
+            ->orWhere('start_date', date('Y-m-d',strtotime("-1 days")))
+            ->where('end_date', null);
+        })->first();
+        if (isset($checkin) && $checkin->end_time == null) {
+            Toastr::warning(translate('Please do clock out first!'));
+            return redirect()->route('admin.time.add');
         }
         auth()->guard('admin')->logout();
         return redirect()->route('admin.auth.login');
