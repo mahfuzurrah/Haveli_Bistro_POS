@@ -2147,4 +2147,7 @@
   '(Scheduled)' => '(Scheduled)',
   'Please do clock out first!' => 'Please do clock out first!',
   'Payment reference code is added!' => 'Payment reference code is added!',
+  'Please update payment status first!' => 'Please update payment status first!',
+  'Push notification send failed for Customer!' => 'Push notification send failed for Customer!',
+  'Order preparation time updated' => 'Order preparation time updated',
 );
