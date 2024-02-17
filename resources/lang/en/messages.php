@@ -2151,7 +2151,8 @@
   'Marchant Copy' => 'Marchant Copy',
   'Invalid date range ' => 'Invalid date range',
   'Payment reference code is added!' => 'Payment reference code is added!',
-  '
-                    Invalid date range ' => '
-                    Invalid date range ',
+  'Invalid date range ' => 'Invalid date range ',
+  'Please update payment status first!' => 'Please update payment status first!',
+  'Push notification send failed for Customer!' => 'Push notification send failed for Customer!',
+  'Order preparation time updated' => 'Order preparation time updated',
 );
