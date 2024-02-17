@@ -2149,6 +2149,8 @@
   'Both Copy' => 'Both Copy',
   'Customer Copy' => 'Customer Copy',
   'Marchant Copy' => 'Marchant Copy',
+  'Invalid date range ' => 'Invalid date range',
+  'Payment reference code is added!' => 'Payment reference code is added!',
   '
                     Invalid date range ' => '
                     Invalid date range ',
