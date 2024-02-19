@@ -202,10 +202,10 @@
                             <div class="pos-title">
                                 <div class="d-flex flex-row bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
-                                        @if(!session()->has('hold_btn_hide'))
+                                        <!-- @if(!session()->has('hold_btn_hide'))
                                     <a href="#" class="btn btn-sm btn-primary" onclick="quickViewHold()">
                                     {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
-                                        @endif
+                                        @endif -->
 
 
                                         <div class="p-2 p-sm-4">
