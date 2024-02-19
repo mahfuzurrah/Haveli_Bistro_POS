@@ -1,4 +1,4 @@
-<div style="width:370px;margin-left:18px" id="printableAreaContent">
+<div style="width:480px;margin-left:18px" id="printableAreaContent">
 <div class="marchant-copy-print">
     <div class="text-center pt-4 w-100">
         <h2 style="line-height: 1">{{ \App\Model\BusinessSetting::where(['key' => 'restaurant_name'])->first()->value }}
@@ -13,38 +13,43 @@
         <h5 style="font-size: 16px;font-weight: lighter;line-height: 1">
             {{ translate('Branch: Main Branch') }}
         </h5>
-        <span>--------------------------------------------</span>
+        <span>--------------------------------------------------------</span>
         <h5 style="font-size: 14px;font-weight: lighter;"> {{ translate('Marchant Copy') }}</h5>
     </div>
     
-    <span>--------------------------------------------</span>
+    <span>--------------------------------------------------------</span>
     <div class="row mt-3">
         <div class="col-6">
             <h5>{{ translate('Order ID') }} : {{ $order['id'] }}</h5>
         </div>
         <div class="col-6">
             <h5 style="font-weight: lighter">
-                {{ date('d-M-Y h:i a', strtotime($order['created_at'])) }}
+                {{ date('M d Y, h:i a', strtotime($order['created_at'])) }}
             </h5>
         </div>
+
+        @if($order->admin)
+        <div class="col-6">
+            <h5 style="font-weight: lighter">
+                {{ translate('Server Name:') }} {{ $order->admin->f_name }} {{ $order->admin->l_name }}
+            </h5>
+        </div>
+        @endif
         @if ($order->table_id)
             <div class="col-6">
-
-                <h5>{{ translate('Table No :') }} :{{ $order->table->number ?? '' }}</h5>
+                <h5>{{ translate('Table No :') }} {{ $order->table->number ?? '' }}</h5>
             </div>
         @endif
 
         @if ($order->number_of_people)
             <div class="col-6">
-
-                <h5>{{ translate('People :') }} : {{ $order->number_of_people }}</h5>
-
+                <h5>{{ translate('People :') }} {{ $order->number_of_people }}</h5>
             </div>
         @endif
 
 
         @if ($order->customer)
-            <span>--------------------------------------------</span>
+            <span>--------------------------------------------------------</span>
             <div class="col-12">
                 <h5>{{ translate('Customer Name') }} : {{ $order->customer['f_name'] . ' ' . $order->customer['l_name'] }}
                 </h5>
@@ -53,7 +58,7 @@
         @endif
     </div>
     <h5 class="text-uppercase"></h5>
-    <span>--------------------------------------------</span>
+    <span>--------------------------------------------------------</span>
     <table class="table table-bordered mt-3" style="width: 98%">
         <thead>
             <tr>
@@ -139,9 +144,10 @@
                             @php($add_ons_cost += $add_on_prices[$key2] * $add_on_qty)
                             @php($add_ons_tax_cost += $add_on_taxes[$key2] * $add_on_qty)
                         @endforeach
-
-                        {{ translate('Discount') }} :
-                        {{ \App\CentralLogics\Helpers::set_symbol($detail['discount_on_product'] * $detail['quantity']) }}
+                        <div class="font-size-sm text-body">
+                            <span>{{ translate('Discount') }} : </span>
+                            <span class="font-weight-bold">{{ \App\CentralLogics\Helpers::set_symbol($detail['discount_on_product'] * $detail['quantity']) }}</span>
+                        </div>
                     </td>
                     <td style="width: 28%;padding-right:4px; text-align:right">
                         @php($amount = ($detail['price'] - $detail['discount_on_product']) * $detail['quantity'])
@@ -154,10 +160,10 @@
         @endforeach
     </tbody>
 </table>
-<span>--------------------------------------------</span>
+<span>--------------------------------------------------------</span>
 <div class="row justify-content-md-end">
     <div class="col-md-9 col-lg-9">
-        <dl class="row text-right" style="color: black!important;">
+        <dl class="row text-right" style="color: black!important; padding: 0 10px;">
             <dt class="col-8">{{ translate('Items Price') }}:</dt>
             <dd class="col-4">{{ \App\CentralLogics\Helpers::set_symbol($item_price) }}</dd>
             {{-- <dt class="col-8">{{ translate('Tax') }} / {{ translate('VAT') }}:</dt>
@@ -190,11 +196,11 @@
 <div class="d-flex flex-row justify-content-between border-top">
     <span> {{ translate($order->payment_method) }} {{ translate('Sale') }}</span>
 </div>
-<span>--------------------------------------------</span>
+<span>--------------------------------------------------------</span>
 <h5 class="text-center pt-3">
     """{{ translate('THANK YOU') }}"""
 </h5>
-<span>--------------------------------------------</span>
+<span>--------------------------------------------------------</span>
 </div>
 
 
@@ -214,25 +220,36 @@
         <h5 style="font-size: 16px;font-weight: lighter;line-height: 1">
             {{ translate('Branch: Main Branch') }}
         </h5>
-        <span>--------------------------------------------</span>
+        <span>--------------------------------------------------------</span>
         <h5 style="font-size: 14px;font-weight: lighter;"> {{ translate('Customer Copy') }}</h5>
     </div>
-    <span>--------------------------------------------</span>
+    <span>--------------------------------------------------------</span>
     <div class="row mt-3">
         <div class="col-6">
             <h5>{{ translate('Order ID') }} : {{ $order['id'] }}</h5>
         </div>
         <div class="col-6">
             <h5 style="font-weight: lighter">
-                {{ date('d-M-Y h:i a', strtotime($order['created_at'])) }}
+            {{ date('M d Y, h:i a', strtotime($order['created_at'])) }}
             </h5>
         </div>
+
+        @if($order->admin)
+        <div class="col-6">
+            <h5 style="font-weight: lighter">
+                {{ translate('Server Name:') }} {{ $order->admin->f_name }} {{ $order->admin->l_name }}
+            </h5>
+        </div>
+        @endif
+
         @if ($order->table_id)
             <div class="col-6">
 
                 <h5>{{ translate('Table No :') }} :{{ $order->table->number ?? '' }}</h5>
             </div>
         @endif
+
+       
 
         @if ($order->number_of_people)
             <div class="col-6">
@@ -244,8 +261,8 @@
 
 
         @if ($order->customer)
-            <span>--------------------------------------------</span>
             <div class="col-12">
+                <span>--------------------------------------------------------</span>
                 <h5>{{ translate('Customer Name') }} : {{ $order->customer['f_name'] . ' ' . $order->customer['l_name'] }}
                 </h5>
                 <h5>{{ translate('Phone') }} : {{ $order->customer['phone'] }}</h5>
@@ -253,7 +270,7 @@
         @endif
     </div>
     <h5 class="text-uppercase"></h5>
-    <span>--------------------------------------------</span>
+    <span>--------------------------------------------------------</span>
     <table class="table table-bordered mt-3" style="width: 98%">
         <thead>
             <tr>
@@ -354,16 +371,16 @@
         @endforeach
     </tbody>
 </table>
-<span>--------------------------------------------</span>
+<span>--------------------------------------------------------</span>
 <div class="row justify-content-md-end">
     <div class="col-md-9 col-lg-9">
-        <dl class="row text-right" style="color: black!important;">
+        <dl class="row text-right" style="color: black!important; padding: 0 10px;">
             <dt class="col-8">{{ translate('Items Price') }}:</dt>
             <dd class="col-4">{{ \App\CentralLogics\Helpers::set_symbol($item_price) }}</dd>
             {{-- <dt class="col-8">{{ translate('Tax') }} / {{ translate('VAT') }}:</dt>
             <dd class="col-4">{{ \App\CentralLogics\Helpers::set_symbol($total_tax + $add_ons_tax_cost) }}</dd> --}}
-            <dt class="col-8">{{ translate('Addon Cost') }}:</dt>
-            <dd class="col-4">{{ \App\CentralLogics\Helpers::set_symbol($add_ons_cost) }}
+            <!-- <dt class="col-8">{{ translate('Addon Cost') }}:</dt>
+            <dd class="col-4">{{ \App\CentralLogics\Helpers::set_symbol($add_ons_cost) }} -->
                 <hr>
             </dd>
 
@@ -390,11 +407,11 @@
 <div class="d-flex flex-row justify-content-between border-top">
     <span> {{ translate($order->payment_method) }} {{ translate('Sale') }}</span>
 </div>
-<span>--------------------------------------------</span>
+<span>--------------------------------------------------------</span>
 <h5 class="text-center pt-3">
     """{{ translate('THANK YOU') }}"""
 </h5>
-<span>--------------------------------------------</span>
+<span>--------------------------------------------------------</span>
 </div>
 
 

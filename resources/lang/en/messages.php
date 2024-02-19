@@ -1672,7 +1672,7 @@
   'All Branch' => 'All Branch',
   'Order_Date' => 'Order Date',
   'Total_Amount' => 'Total Amount',
-  'Invalid date range' => 'Invalid date range',
+  'Invalid date range' => 'Invalid date range ',
   'Table status updated!' => 'Table status updated!',
   'Payment Status' => 'Payment Status',
   'priority updated!' => 'Priority updated!',
@@ -2154,5 +2154,14 @@
   'Please update payment status first!' => 'Please update payment status first!',
   'Push notification send failed for Customer!' => 'Push notification send failed for Customer!',
   'Order preparation time updated' => 'Order preparation time updated',
-  'Invalid date range ' => 'Invalid date range ',
+  'Visa' => 'Visa',
+  'Mastercard' => 'Mastercard',
+  'Other CC' => 'Other CC',
+  '
+                    Invalid date range ' => '
+                    Invalid date range ',
+  'Order already refunded.' => 'Order already refunded.',
+  'Item has been already Refunded' => 'Item has been already Refunded',
+  'Waiter Name:' => 'Waiter Name:',
+  'Server Name:' => 'Server Name:',
 );

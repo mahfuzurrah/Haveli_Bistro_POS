@@ -187,49 +187,53 @@
             <div class="pt-4 mb-4">
 
                 <ul class="list-unstyled option-buttons">
-
-                    <li id="cash_payment_li"
-                        style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
-                        <input type="radio" id="Credit" value="Credit_Card" name="type" hidden=""
-                            {{ session('order_type') != 'home_delivery' ? 'checked' : '' }}>
+                    {{--
+                    <li id="cash_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                        <input type="radio" id="Credit" value="Credit_Card" name="type" hidden="" {{ session('order_type') != 'home_delivery' ? 'checked' : '' }}>
                         <label for="Credit" class="btn btn-bordered px-2 mb-0">{{ translate('Credit Card') }}</label>
                     </li>
+                    --}}
 
-                    <li id="card_payment_li"
-                        style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                    <li id="cash_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                        <input type="radio" id="visa-cc" value="Visa" name="type" hidden="" {{ session('order_type') != 'home_delivery' ? 'checked' : '' }}>
+                        <label for="visa-cc" class="btn btn-bordered px-2 mb-0">{{ translate('Visa') }}</label>
+                    </li>
+
+                    <li id="cash_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                        <input type="radio" id="mastercard-cc" value="Mastercard" name="type" hidden="" {{ session('order_type') != 'home_delivery' ? 'checked' : '' }}>
+                        <label for="mastercard-cc" class="btn btn-bordered px-2 mb-0">{{ translate('Mastercard') }}</label>
+                    </li>
+
+                    <li id="card_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                        <input type="radio" value="Amex" id="amex-cc" name="type" hidden="">
+                        <label for="amex-cc" class="btn btn-bordered px-2 mb-0">{{ translate('Amex') }}</label>
+                    </li>
+
+                    <li id="card_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
                         <input type="radio" value="Debit_Card" id="Debit" name="type" hidden="">
                         <label for="Debit" class="btn btn-bordered px-2 mb-0">{{ translate('Debit Card') }}</label>
                     </li>
 
-
-                    <li id="card_payment_li"
-                        style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                    <li id="card_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
                         <input type="radio" value="Cash" id="Cash" name="type" hidden="">
                         <label for="Cash" class="btn btn-bordered px-2 mb-0">{{ translate('Cash') }}</label>
                     </li>
-                    <li id="card_payment_li"
-                        style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
-                        <input type="radio" value="Amex" id="Amex" name="type" hidden="">
-                        <label for="Amex" class="btn btn-bordered px-2 mb-0">{{ translate('Amex') }}</label>
-                    </li>
-                    {{-- <li id="card_payment_li"
-                        style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                    
+                    {{-- <li id="card_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
                         <input type="radio" value="Loyalty_Points" id="Loyalty" name="type" hidden="">
                         <label for="Loyalty" class="btn btn-bordered px-2 mb-0">{{ translate('Loyalty') }}</label>
                     </li> --}}
-             <li id="pay_after_eating_li"
-                        style="display: {{ session('order_type') == 'dine_in' ? 'block' : 'none' }}">
-                        <input type="radio" value="pay_after_eating" id="pay_after_eating" name="type"
-                            hidden="">
-                        <label for="pay_after_eating"
-                            class="btn btn-bordered px-4 mb-0">{{ translate('pay_after_eating') }}</label>
+                    <li id="pay_after_eating_li" style="display: {{ session('order_type') == 'dine_in' ? 'block' : 'none' }}">
+                        <input type="radio" value="pay_after_eating" id="pay_after_eating" name="type" hidden="">
+                        <label for="pay_after_eating" class="btn btn-bordered px-4 mb-0">{{ translate('pay_after_eating') }}</label>
                     </li>
-                    <li id="cash_on_delivery_li"
-                        style="display: {{ session('order_type') == 'home_delivery' ? 'block' : 'none' }}">
-                        <input type="radio" value="cash_on_delivery" id="cash_on_delivery" name="type"
-                            hidden="" {{ session('order_type') == 'home_delivery' ? 'checked' : '' }}>
-                        <label for="cash_on_delivery"
-                            class="btn btn-bordered px-4 mb-0">{{ translate('cash_on_delivery') }}</label>
+                    <li id="cash_on_delivery_li" style="display: {{ session('order_type') == 'home_delivery' ? 'block' : 'none' }}">
+                        <input type="radio" value="cash_on_delivery" id="cash_on_delivery" name="type" hidden="" {{ session('order_type') == 'home_delivery' ? 'checked' : '' }}>
+                        <label for="cash_on_delivery" class="btn btn-bordered px-4 mb-0">{{ translate('cash_on_delivery') }}</label>
+                    </li>
+                    <li id="card_payment_li" style="display: {{ session('order_type') != 'home_delivery' ? 'block' : 'none' }}">
+                        <input type="radio" value="Other CC" id="other-cc" name="type" hidden="">
+                        <label for="other-cc" class="btn btn-bordered px-2 mb-0">{{ translate('Others') }}</label>
                     </li>
                 </ul>
             </div>
