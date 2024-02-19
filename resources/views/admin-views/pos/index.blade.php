@@ -270,7 +270,7 @@
 
 
 
-                                                        <label class="custom-radio d-flex gap-2 align-items-center m-0">
+                                                        <!-- <label class="custom-radio d-flex gap-2 align-items-center m-0">
                                                             <input type="radio" class="" name="order_type"
                                                                 onclick="select_order_type('home_delivery')"
                                                                 {{ session()->has('order_type') && session()->get('order_type') == 'home_delivery' ? 'checked' : '' }}>
@@ -278,7 +278,7 @@
                                                                 <span
                                                                     class="media-body">{{ translate('Home Delivery') }}</span>
                                                             </span>
-                                                        </label>
+                                                        </label> -->
                                                     </div>
                                                     <!-- End Custom Radio -->
                                                 </div>
