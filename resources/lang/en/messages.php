@@ -2156,4 +2156,9 @@
   'Order preparation time updated' => 'Order preparation time updated',
   'In' => 'In',
   'Out' => 'Out',
+  'out' => 'Out',
+  'clock in/ ' => 'Clock in/ ',
+  ' out' => ' out',
+  'clock in / ' => 'Clock in / ',
+  'Timer is already started!' => 'Timer is already started!',
 );
