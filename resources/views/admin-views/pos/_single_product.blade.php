@@ -7,7 +7,7 @@
 
     <div class="pos-product-item_content clickable">
         <div class="pos-product-item_title">
-            {{ Str::limit($product['name'], 15) }}
+            <strong>{{ Str::limit($product['name'], 15) }}</strong>
         </div>
 
         <?php

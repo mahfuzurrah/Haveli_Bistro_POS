@@ -127,7 +127,7 @@
         <section class="section-content padding-y-sm bg-default mt-3">
             <div class="container-fluid">
                 <div class="row gy-3 gx-2">
-                    <div class="col-lg-7">
+                    <div class="col-lg-8">
                         <div class="card">
                             <!-- POS Title -->
                             <div class="pos-title">
@@ -196,7 +196,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-4">
                         <div class="card billing-section-wrap">
                             <!-- POS Title -->
                             <div class="pos-title">
@@ -680,7 +680,9 @@
             @if ($order)
                 $('#refund-cash').modal('show');
             @endif
-
+            if ($('.sidebar-toggle').length) {
+                $('.sidebar-toggle').trigger('click');
+            }
         });
 
         function printDiv(divName) {

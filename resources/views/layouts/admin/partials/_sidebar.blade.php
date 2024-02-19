@@ -30,7 +30,7 @@
 
                     <div class="navbar-nav-wrap-content-left d-none d-xl-block">
                         <!-- Navbar Vertical Toggle -->
-                        <button type="button" class="js-navbar-vertical-aside-toggle-invoker close">
+                        <button type="button" class="js-navbar-vertical-aside-toggle-invoker close sidebar-toggle">
                             <i class="tio-first-page navbar-vertical-aside-toggle-short-align" data-toggle="tooltip"
                                 data-placement="right" title="" data-original-title="Collapse"></i>
                             <i class="tio-last-page navbar-vertical-aside-toggle-full-align"></i>

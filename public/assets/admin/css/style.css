@@ -514,6 +514,7 @@
 .pos-product-item_price {
   font-weight: 700;
   color: #334257;
+  font-size: 12px;
 }
 
 .pos-product-item_hover-content {
