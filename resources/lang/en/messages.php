@@ -2154,5 +2154,6 @@
   'Please update payment status first!' => 'Please update payment status first!',
   'Push notification send failed for Customer!' => 'Push notification send failed for Customer!',
   'Order preparation time updated' => 'Order preparation time updated',
-  'Invalid date range ' => 'Invalid date range ',
+  'In' => 'In',
+  'Out' => 'Out',
 );

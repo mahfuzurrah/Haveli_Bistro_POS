@@ -26,13 +26,20 @@
                        data-toggle="tooltip" data-placement="right" title="Expand"></i>
                 </button>
                 <!-- End Navbar Vertical Toggle -->
-                
+
             </div>
 
             <!-- Secondary Content -->
             <div class="navbar-nav-wrap-content-right">
                 <!-- Navbar -->
                 <ul class="navbar-nav align-items-center flex-row">
+                    <li class="nav-item d-none d-sm-inline-block mr-2">
+                        <a href="{{ route('admin.time.checkin') }}" title="Clock Out"><img width="30px" height="30px" src="{{ asset('assets/admin/img/clock_in.svg') }}" alt=""> {{ translate('') }}</a>
+                    </li>
+                    {{-- <li class="nav-item d-none d-sm-inline-block">
+                        <a href="{{ route('admin.time.checkin') }}" title="Clock In"> <img src="{{ asset('assets/admin/img/clock_in.svg') }}" alt=""> {{ translate('') }}</a>
+                    </li> --}}
+
                     <li class="nav-item d-none d-sm-inline-block">
                         <div class="hs-unfold">
                             <div class="bg-white p-1 rounded">
