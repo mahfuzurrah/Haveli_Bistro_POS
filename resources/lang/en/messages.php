@@ -2164,4 +2164,8 @@
   'Item has been already Refunded' => 'Item has been already Refunded',
   'Waiter Name:' => 'Waiter Name:',
   'Server Name:' => 'Server Name:',
+  'Refunded' => 'Refunded',
+  'Ready To Serve' => 'Ready To Serve',
+  'Voided' => 'Voided',
+  'Others' => 'Others',
 );

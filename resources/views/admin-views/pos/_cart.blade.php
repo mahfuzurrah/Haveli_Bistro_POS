@@ -240,20 +240,20 @@
 
             <div class="row mt-4 gy-2">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary btn-block">
+                    <button type="submit" class="btn btn-success btn-block">
                         <i class="fa fa-shopping-bag"></i>
                         {{ translate('Place_Order') }}
                     </button>
                 </div>
-                <div class="col-md-6">
-                    <a href="#" class="btn btn-outline-danger btn--danger btn-block" onclick="emptyCart()"><i
+                <div class="col-md-12">
+                    <a href="#" class="btn btn-warning btn--danger btn-block" style="background-color:#ff6767; color:#fff;" onclick="emptyCart()"><i
                             class="fa fa-times-circle "></i> {{ translate('Cancel_Order') }} </a>
                 </div>
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                 <a href="#" class="btn btn-outline-danger btn--danger btn-block" onclick="holdOrder()"><i
                             class="fa fa-times-circle "></i> {{ translate('Hold') }} </a>
 
-                </div>
+                </div> -->
 
 
             </div>
