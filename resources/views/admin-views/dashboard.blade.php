@@ -14,8 +14,8 @@
             <div>
                 <div class="row align-items-center">
                     <div class="col-sm mb-2 mb-sm-0">
-                        <h1 class="page-header-title c1">{{translate('welcome')}}, {{auth('admin')->user()->f_name}}.</h1>
-                        <p class="text-dark font-weight-semibold">{{translate('Monitor_your_business_analytics_and_statistics')}}</p>
+                        <h1 class="page-header-title c1 mb-3">{{translate('welcome')}}, {{auth('admin')->user()->f_name}}.</h1>
+                        {{-- <p class="text-dark font-weight-semibold">{{translate('Monitor_your_business_analytics_and_statistics')}}</p> --}}
                     </div>
                 </div>
             </div>

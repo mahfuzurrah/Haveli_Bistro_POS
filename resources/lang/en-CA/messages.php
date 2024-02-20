@@ -1597,7 +1597,7 @@
   'invoice' => 'Invoice',
   'table no' => 'Table no',
   'number of people' => 'Number of people',
-  'walking_customer' => 'Walking customer',
+  'walking_customer' => 'Walk-in Customer',
   'card' => 'Card',
   'No more orders!' => 'No more orders!',
   'Add your payment reference code first!' => 'Add your payment reference code first!',

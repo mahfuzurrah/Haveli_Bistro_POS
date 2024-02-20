@@ -231,6 +231,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('clock-out', 'AdminActivityController@checkout')->name('checkout');
             Route::get('list', 'AdminActivityController@list')->name('list');
             Route::get('report', 'AdminActivityController@report')->name('report');
+            Route::post('filter-report', 'AdminActivityController@reportFilter')->name('filter.report');
         });
 
         Route::group(['prefix' => 'category', 'as' => 'category.', 'middleware' => ['module:product_management']], function () {

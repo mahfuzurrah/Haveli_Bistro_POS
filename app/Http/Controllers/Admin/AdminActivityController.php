@@ -72,8 +72,14 @@ class AdminActivityController extends Controller
         return view('admin-views.admin_activity.list', compact('checkins'));
     }
 
-    public function report(Request $request)
+    public function report()
     {
+        return view('admin-views.report.time_report');
+    }
+
+    public function reportBackup(Request $request)
+    {
+        // return $request->all();
         $checkins = AdminActivity::with('admin')->where(function($query) use($request){
             if ($request->has('admin_id') && $request->has('from') && $request->has('to')) {
                 $start_date = $request->from;
@@ -100,6 +106,47 @@ class AdminActivityController extends Controller
          $min = intval($total_time / 60);
          $sec = $total_time - ($min * 60);
          $total_hours =  $hours.":".$min.":".$sec;
-        return view('admin-views.report.clock_report', compact('checkins','total_hours'));
+        return view('admin-views.report.time_report', compact('checkins','total_hours'));
+    }
+
+    public function reportFilter(Request $request)
+    {
+        $fromDate = Carbon::parse($request->from)->startOfDay();
+        $toDate = Carbon::parse($request->to)->endOfDay();
+
+        $checkins = AdminActivity::with('admin')->where(function($query) use($request){
+            if ($request->has('admin_id') && $request->has('from') && $request->has('to')) {
+                $start_date = $request->from;
+                $end_date = $request->to;
+                $query->where('admin_id', $request->admin_id)
+                ->whereDate('start_date' ,'>=' , $start_date)
+                ->whereDate('end_date','<=' , $end_date);
+            }
+        })->latest()->get();
+        $time_arr = [];
+        foreach($checkins as $checkin){
+            $time_arr[] = $checkin->work_time;
+        }
+         $time_arr;
+         $time = strtotime('00:00:00');
+         $total_time = 0;
+         foreach( $time_arr as $ele )
+         {
+            $sec_time = strtotime($ele) - $time;
+            $total_time = $total_time + $sec_time;
+         }
+         $hours = intval($total_time / 3600);
+         $total_time = $total_time - ($hours * 3600);
+         $min = intval($total_time / 60);
+         $sec = $total_time - ($min * 60);
+         $total_hours =  $hours.":".$min.":".$sec;
+         $total_checkin = count($checkins);
+        session()->put('export_data', $checkins);
+
+        return response()->json([
+            'total_hours' => $total_hours,
+            'total_checkin' => $total_checkin,
+            'view' => view('admin-views.report.partials._table-clock', ['checkins' => $checkins])->render(),
+        ]);
     }
 }
