@@ -26,14 +26,27 @@
                        data-toggle="tooltip" data-placement="right" title="Expand"></i>
                 </button>
                 <!-- End Navbar Vertical Toggle -->
-                
+
             </div>
 
             <!-- Secondary Content -->
             <div class="navbar-nav-wrap-content-right">
                 <!-- Navbar -->
                 <ul class="navbar-nav align-items-center flex-row">
-                    <li class="nav-item d-none d-sm-inline-block">
+                    <li class="nav-item d-none d-sm-inline-block ml-3">
+                        <a href="{{route('admin.registers.create')}}" title="Register Open"><img width="25px" height="25px" src="{{ asset('assets/admin/img/start_reg.svg') }}" alt=""></a>
+                    </li>
+                    {{-- <li class="nav-item d-none d-sm-inline-block ml-3">
+                        <a href="{{route('admin.registers.create')}}" title="Register Close"> <img width="25px" height="25px" src="{{ asset('assets/admin/img/end_reg.svg') }}" alt=""></a>
+                    </li> --}}
+                    <li class="nav-item d-none d-sm-inline-block ml-3">
+                        <a href="{{ route('admin.time.add') }}" title="Clock In"><img width="25px" height="25px" src="{{ asset('assets/admin/img/clock_in.svg') }}" alt=""> {{ translate('') }}</a>
+                    </li>
+                    {{-- <li class="nav-item d-none d-sm-inline-block ml-3">
+                        <a href="{{ route('admin.time.checkin') }}" title="Clock Out"> <img width="25px" height="25px" src="{{ asset('assets/admin/img/clock_out.svg') }}" alt=""> {{ translate('') }}</a>
+                    </li> --}}
+
+                    {{-- <li class="nav-item d-none d-sm-inline-block">
                         <div class="hs-unfold">
                             <div class="bg-white p-1 rounded">
                                 @php( $local = session()->has('local')?session('local'):'en')
@@ -53,7 +66,6 @@
                                                     <li>
                                                         <a class="dropdown-item pr-8 d-flex gap-2 align-items-center"
                                                            href="{{route('admin.lang',[$data['code']])}}">
-                                                            {{--<img class="avatar-img rounded-0" src="{{asset('assets/admin/img/flag.png')}}" alt="Image Description">--}}
                                                             <span class="text-capitalize">{{\App\CentralLogics\Helpers::get_language_name($data['code'])}}</span>
                                                         </a>
                                                     </li>
@@ -64,24 +76,20 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
+                    </li> --}}
 
-                    <li class="nav-item d-none d-sm-inline-block">
-                        <!-- Notification -->
+                    {{-- <li class="nav-item d-none d-sm-inline-block">
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
                                href="{{route('admin.message.list')}}">
                                 <i class="tio-messages-outlined"></i>
                                 @php($message=\App\Model\Conversation::where('checked',0)->distinct('user_id')->count())
-{{--                                @if($message!=0)--}}
                                     <span class="btn-status btn-status-c1">{{$message}}</span>
-{{--                                @endif--}}
                             </a>
                         </div>
-                        <!-- End Notification -->
-                    </li>
+                    </li> --}}
 
-                    <li class="nav-item d-none d-sm-inline-block">
+                    {{-- <li class="nav-item d-none d-sm-inline-block">
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
                                href="{{route('admin.orders.list',['status'=>'pending'])}}">
@@ -89,7 +97,7 @@
                                 <span class="btn-status btn-status-c1">0</span>
                             </a>
                         </div>
-                    </li>
+                    </li> --}}
 
 
                     <li class="nav-item ml-4">
