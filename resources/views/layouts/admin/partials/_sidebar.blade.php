@@ -246,6 +246,31 @@
                                             </span>
                                         </a>
                                     </li>
+                                    <!-- <li class="nav-item {{ Request::is('admin/orders/list/canceled') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.orders.list', ['canceled']) }}"
+                                            title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{ translate('Voided') }}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{ \App\Model\Order::notPos()->notDineIn()->where(['order_status' => 'Refund'])->count() }}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item {{ Request::is('admin/orders/list/refund') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.orders.list', ['canceled']) }}"
+                                            title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{ translate('Refunded') }}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{ \App\Model\Order::notPos()->notDineIn()->where(['order_status' => 'Refund'])->count() }}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li> -->
 
                                     {{-- <li class="nav-item {{ Request::is('admin/orders/list/schedule') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['schedule']) }}"
@@ -320,7 +345,7 @@
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{ translate('Ready_For_Serve') }}
+                                                {{translate('Ready To Serve')}}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
                                                     {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'done'])->notSchedule()->count() }}
                                                 </span>
@@ -381,6 +406,28 @@
                                             </span>
                                         </a>
                                     </li>
+                                    <!-- <li class="nav-item {{Request::is('admin/table/order/list/hold')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('Voided')}}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'hold'])->notSchedule()->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/table/order/list/refund')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate sidebar--badge-container">
+                                                {{translate('Refunded')}}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'Refund'])->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li> -->
                                 </ul>
                             </li>
                             <!-- End Pages -->

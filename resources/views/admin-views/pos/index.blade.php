@@ -202,10 +202,10 @@
                             <div class="pos-title">
                                 <div class="d-flex flex-row bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
-                                        @if(!session()->has('hold_btn_hide'))
+                                        <!-- @if(!session()->has('hold_btn_hide'))
                                     <a href="#" class="btn btn-sm btn-primary" onclick="quickViewHold()">
                                     {{ translate('Hold') }}<span class="badge  ">({{ $hold->count() ?? '' }})</span></a>
-                                        @endif
+                                        @endif -->
 
 
                                         <div class="p-2 p-sm-4">
@@ -267,8 +267,6 @@
                                                                     class="media-body">{{ translate('Take Away') }}</span>
                                                             </span>
                                                         </label>
-
-
 
                                                         <!-- <label class="custom-radio d-flex gap-2 align-items-center m-0">
                                                             <input type="radio" class="" name="order_type"
@@ -492,12 +490,11 @@
 
                             <div class="modal-body row ff-emoji">
                                 <div class="col-md-12">
-                                    <left>
-                                        <input type="button" style="font-size: 20px;"
-                                            class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
-                                            value="{{ translate('Print Receipt') }}" />
-
-                                    </left>
+                                <center>
+                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'marchant')"> {{translate('Marchant Copy')}} </button>
+                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'customer')"> {{translate('Customer Copy')}} </button>
+                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'both')"> {{translate('Both Copy')}} </button>
+                                </center>
 
                                     <hr class="non-printable">
                                 </div>
@@ -657,10 +654,9 @@
     <script src="{{ asset('assets/admin') }}/js/theme.min.js"></script>
     <script src="{{ asset('assets/admin') }}/js/sweet_alert.js"></script>
     <script src="{{ asset('assets/admin') }}/js/toastr.js"></script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key={{ \App\Model\BusinessSetting::where('key', 'map_api_client_key')->first()?->value }}&libraries=places&v=3.51">
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ \App\Model\BusinessSetting::where('key', 'map_api_client_key')->first()?->value }}&libraries=places&v=3.51">
     </script>
-
+    <script src="{{asset('assets/admin')}}/js/invoice-print.js"></script>
     {{-- {!! Toastr::message() !!} --}}
 
     @if ($errors->any())
@@ -685,28 +681,28 @@
             }
         });
 
-        function printDiv(divName) {
+        // function printDiv(divName) {
 
-            if ($('html').attr('dir') === 'rtl') {
-                $('html').attr('dir', 'ltr')
-                var printContents = document.getElementById(divName).innerHTML;
-                var originalContents = document.body.innerHTML;
-                document.body.innerHTML = printContents;
-                $('#printableAreaContent').attr('dir', 'rtl')
-                window.print();
-                document.body.innerHTML = originalContents;
-                $('html').attr('dir', 'rtl')
-                location.reload();
-            } else {
-                var printContents = document.getElementById(divName).innerHTML;
-                var originalContents = document.body.innerHTML;
-                document.body.innerHTML = printContents;
-                window.print();
-                document.body.innerHTML = originalContents;
-                location.reload();
-            }
+        //     if ($('html').attr('dir') === 'rtl') {
+        //         $('html').attr('dir', 'ltr')
+        //         var printContents = document.getElementById(divName).innerHTML;
+        //         var originalContents = document.body.innerHTML;
+        //         document.body.innerHTML = printContents;
+        //         $('#printableAreaContent').attr('dir', 'rtl')
+        //         window.print();
+        //         document.body.innerHTML = originalContents;
+        //         $('html').attr('dir', 'rtl')
+        //         location.reload();
+        //     } else {
+        //         var printContents = document.getElementById(divName).innerHTML;
+        //         var originalContents = document.body.innerHTML;
+        //         document.body.innerHTML = printContents;
+        //         window.print();
+        //         document.body.innerHTML = originalContents;
+        //         location.reload();
+        //     }
 
-        }
+        // }
 
         function set_category_filter(id) {
             var nurl = new URL('{!! url()->full() !!}');

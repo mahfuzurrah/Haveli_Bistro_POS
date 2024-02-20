@@ -6,6 +6,7 @@ use App\Models\GuestUser;
 use App\Models\OfflinePayment;
 use App\Models\OrderPartialPayment;
 use App\User;
+use App\Model\Admin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -44,6 +45,11 @@ class Order extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id')->withCount('orders');
+    }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 
     public function branch(): BelongsTo

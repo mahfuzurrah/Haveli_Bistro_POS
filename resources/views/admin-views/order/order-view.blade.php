@@ -1298,14 +1298,20 @@ $('.decrement-btn').click(function (e) {
                         $('#loading').show();
                     },
                     success: function(data) {
-
-                        console.log(data)
-                        toastr.success('{{ translate('Item has been Refund Successfully') }}!', {
-                            CloseButton: true,
-                            ProgressBar: true
-                        });
-
-
+                        if (data.success==true) {
+                            toastr.success('{{ translate('Item has been Refund Successfully') }}!', {
+                                CloseButton: true,
+                                ProgressBar: true
+                            });
+                        } else {
+                            toastr.warning('{{ translate('Item has been already Refunded') }}!', {
+                                CloseButton: true,
+                                ProgressBar: true
+                            });
+                        }
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     },
                     complete: function() {
                         $('#loading').hide();

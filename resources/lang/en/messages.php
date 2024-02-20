@@ -1672,7 +1672,7 @@
   'All Branch' => 'All Branch',
   'Order_Date' => 'Order Date',
   'Total_Amount' => 'Total Amount',
-  'Invalid date range' => 'Invalid date range',
+  'Invalid date range' => 'Invalid date range ',
   'Table status updated!' => 'Table status updated!',
   'Payment Status' => 'Payment Status',
   'priority updated!' => 'Priority updated!',
@@ -2162,7 +2162,16 @@
   'clock in / ' => 'Clock in / ',
   'Timer is already started!' => 'Timer is already started!',
   'Clock_Report_Overview' => 'Clock Report Overview',
-  '
-                    Invalid date range ' => '
-                    Invalid date range ',
+  'Invalid date range ' => 'Invalid date range',
+  'Visa' => 'Visa',
+  'Mastercard' => 'Mastercard',
+  'Other CC' => 'Other CC',
+  'Order already refunded.' => 'Order already refunded.',
+  'Item has been already Refunded' => 'Item has been already Refunded',
+  'Waiter Name:' => 'Waiter Name:',
+  'Server Name:' => 'Server Name:',
+  'Refunded' => 'Refunded',
+  'Ready To Serve' => 'Ready To Serve',
+  'Voided' => 'Voided',
+  'Others' => 'Others',
 );
