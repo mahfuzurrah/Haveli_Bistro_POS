@@ -3073,3 +3073,7 @@ body>#printableAreaContent {
 .modal-content button {
   font-family: "Inter", sans-serif;
 }
+
+.print-table .table thead th {
+  padding: 5px 5px;
+}

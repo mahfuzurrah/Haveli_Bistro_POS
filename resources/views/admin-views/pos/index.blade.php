@@ -491,9 +491,9 @@
                             <div class="modal-body row ff-emoji">
                                 <div class="col-md-12">
                                 <center>
-                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'marchant')"> {{translate('Marchant Copy')}} </button>
+                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'marchant')"> {{translate('Merchant Copy')}} </button>
                                     <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'customer')"> {{translate('Customer Copy')}} </button>
-                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'both')"> {{translate('Both Copy')}} </button>
+                                    <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'both')"> {{translate('Print Both')}} </button>
                                 </center>
 
                                     <hr class="non-printable">

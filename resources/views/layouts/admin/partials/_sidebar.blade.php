@@ -305,31 +305,31 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <!-- <li class="nav-item {{ Request::is('admin/orders/list/canceled') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.orders.list', ['canceled']) }}"
+                                    <li class="nav-item {{ Request::is('admin/orders/list/void') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.orders.list', ['void']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
                                                 {{ translate('Voided') }}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->notDineIn()->where(['order_status' => 'Refund'])->count() }}
+                                                    {{ \App\Model\Order::notPos()->notDineIn()->where(['order_status' => 'void'])->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
 
                                     <li class="nav-item {{ Request::is('admin/orders/list/refund') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.orders.list', ['canceled']) }}"
+                                        <a class="nav-link " href="{{ route('admin.orders.list', ['refund']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
                                                 {{ translate('Refunded') }}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{ \App\Model\Order::notPos()->notDineIn()->where(['order_status' => 'Refund'])->count() }}
+                                                    {{ \App\Model\Order::notPos()->notDineIn()->where(['order_status' => 'refund'])->count() }}
                                                 </span>
                                             </span>
                                         </a>
-                                    </li> -->
+                                    </li>
 
                                     {{-- <li class="nav-item {{ Request::is('admin/orders/list/schedule') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['schedule']) }}"
@@ -450,28 +450,33 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <!-- <li class="nav-item {{Request::is('admin/table/order/list/hold')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
+
+                                    <li class="nav-item {{ Request::is('admin/table/order/list/void') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['void']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('Voided')}}
+                                                {{ translate('Voided') }}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'hold'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'void'])->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/refund')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
+
+                                    <li class="nav-item {{ Request::is('admin/table/order/list/refund') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['refund']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('Refunded')}}
+                                                {{ translate('Refunded') }}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'Refund'])->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'refund'])->count() }}
                                                 </span>
                                             </span>
                                         </a>
-                                    </li> -->
+                                    </li>
+                                    
                                 </ul>
                             </li>
                             <!-- End Pages -->

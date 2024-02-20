@@ -2171,4 +2171,16 @@
   ' out' => ' out',
   'clock in / ' => 'Clock in / ',
   'Timer is already started!' => 'Timer is already started!',
+  'Merchant Copy' => 'Merchant Copy',
+  'Print Both' => 'Print Both',
+  'THANK YOU FOR VISITING' => 'THANK YOU FOR VISITING',
+  'Retain this copy for your records.' => 'Retain this copy for your records.',
+  'Retain this copy for your records' => 'Retain this copy for your records',
+  'Add [admin_id] to fillable property to allow mass assignment on [App\\Model\\OrderDetail].' => 'Add [admin id] to fillable property to allow mass assignment on [App\\Model\\OrderDetail].',
+  'Add [product_id] to fillable property to allow mass assignment on [App\\Model\\OrderDetail].' => 'Add [product id] to fillable property to allow mass assignment on [App\\Model\\OrderDetail].',
+  'Order Voided Successfully' => 'Order Voided Successfully',
+  '
+                    Invalid date range ' => '
+                    Invalid date range ',
+  'No data to show ' => 'No data to show ',
 );
