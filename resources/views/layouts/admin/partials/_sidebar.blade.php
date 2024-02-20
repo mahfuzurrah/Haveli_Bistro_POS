@@ -141,7 +141,7 @@
                                     href="javascript:">
                                     <i class="tio-clock nav-icon"></i>
                                     <span
-                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('clock in/') }}{{ translate('clock out') }}</span>
+                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('clock in / ') }}{{ translate(' out') }}</span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                     style="display: {{ Request::is('admin/time*') ? 'block' : 'none' }}">

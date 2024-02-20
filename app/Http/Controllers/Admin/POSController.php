@@ -360,8 +360,7 @@ class POSController extends Controller
              $order_details[$key]['order_id'] = $order->id;
          }
          $this->order_detail->insert($order_details);
-         $refund_order->update(['refund_order_id' => $order->id, 'order_status' => 'Refund']);
-
+         
          Toastr::success(translate('order_Refund_successfully'));
          
          //send notification to kitchen

@@ -2149,7 +2149,6 @@
   'Both Copy' => 'Both Copy',
   'Customer Copy' => 'Customer Copy',
   'Marchant Copy' => 'Marchant Copy',
-  'Invalid date range ' => 'Invalid date range ',
   'Payment reference code is added!' => 'Payment reference code is added!',
   'Please update payment status first!' => 'Please update payment status first!',
   'Push notification send failed for Customer!' => 'Push notification send failed for Customer!',
@@ -2157,9 +2156,6 @@
   'Visa' => 'Visa',
   'Mastercard' => 'Mastercard',
   'Other CC' => 'Other CC',
-  '
-                    Invalid date range ' => '
-                    Invalid date range ',
   'Order already refunded.' => 'Order already refunded.',
   'Item has been already Refunded' => 'Item has been already Refunded',
   'Waiter Name:' => 'Waiter Name:',
@@ -2168,4 +2164,11 @@
   'Ready To Serve' => 'Ready To Serve',
   'Voided' => 'Voided',
   'Others' => 'Others',
+  'In' => 'In',
+  'Out' => 'Out',
+  'out' => 'Out',
+  'clock in/ ' => 'Clock in/ ',
+  ' out' => ' out',
+  'clock in / ' => 'Clock in / ',
+  'Timer is already started!' => 'Timer is already started!',
 );
