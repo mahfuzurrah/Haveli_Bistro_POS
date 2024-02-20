@@ -2161,4 +2161,5 @@
   ' out' => ' out',
   'clock in / ' => 'Clock in / ',
   'Timer is already started!' => 'Timer is already started!',
+  'Clock_Report_Overview' => 'Clock Report Overview',
 );

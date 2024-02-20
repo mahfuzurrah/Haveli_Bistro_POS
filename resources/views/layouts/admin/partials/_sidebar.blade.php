@@ -136,7 +136,7 @@
 
 
                             <!-- Pages -->
-                            <li class="navbar-vertical-aside-has-menu {{ Request::is('admin/time*') ? 'active' : '' }}">
+                            <li class="navbar-vertical-aside-has-menu {{ Request::is('admin/time/add') || Request::is('admin/time/list') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                     href="javascript:">
                                     <i class="tio-clock nav-icon"></i>
