@@ -19,8 +19,8 @@
                 {{$key+1}}
             </td>
             <td><div class="text-capitalize">{{$row['admin']['admin_name'] ?? '--'}}</div></td>
-            <td><div class="text-capitalize">{{$row['start_date'] ?? '--'}}</div></td>
-            <td><div class="text-capitalize">{{$row['end_date'] ?? '--'}}</div></td>
+            <td><div class="text-capitalize">{{ date('M-d-y', strtotime($row['start_date'])) ?? '--'}}</div></td>
+            <td><div class="text-capitalize">{{date('M-d-y', strtotime($row['end_date'])) ?? '--'}}</div></td>
             <td><div class="text-capitalize">{{$row['start_time'] ?? '--'}}</div></td>
             <td><div class="text-capitalize">{{$row['end_time'] ?? '--'}}</div></td>
             <td><div class="text-capitalize">{{$row['work_time'] ?? '--'}}</div></td>

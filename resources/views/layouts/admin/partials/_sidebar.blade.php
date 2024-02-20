@@ -7,7 +7,7 @@
                     <!-- Logo -->
                     @php($restaurant_logo = \App\Model\BusinessSetting::where(['key' => 'logo'])->first()->value)
                     <a class="navbar-brand" href="{{ route('admin.dashboard') }}" aria-label="Front">
-                        <img class="navbar-brand-logo" style="object-fit: contain;"
+                        <img class="" style="height:40px !important; width:150px !important;"
                             onerror="this.src='{{ asset('assets/admin/img/logo.png') }}'"
                             src="{{ asset('storage/app/public/restaurant/' . $restaurant_logo) }}" alt="Logo">
                         <img class="navbar-brand-logo-mini" style="object-fit: contain;"
@@ -38,10 +38,20 @@
                         <!-- End Navbar Vertical Toggle -->
                     </div>
                 </div>
-
+                    <ul class="navbar-nav navbar-nav-lg nav-tabs">
+                        <li class="navbar-vertical-aside-has-menu {{ Request::is('admin') ? 'show' : '' }}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link" href="{{ route('admin.dashboard') }}"
+                                title="{{ translate('Dashboards') }}">
+                                <i class="tio-home-vs-1-outlined nav-icon"></i>
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                    {{ translate('dashboard') }}
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
                 <!-- Content -->
                 <div class="navbar-vertical-content">
-                    <div class="sidebar--search-form py-3">
+                    <div class="sidebar--search-form py-2">
                         <div class="search--form-group">
                             <button type="button" class="btn"><i class="tio-search"></i></button>
                             <input type="text" class="js-form-search form-control form--control"
@@ -52,46 +62,16 @@
                     <ul class="navbar-nav navbar-nav-lg nav-tabs">
                         <!-- Dashboards -->
                         {{-- @if (Helpers::module_permission_check(MANAGEMENT_SECTION['dashboard_management'])) --}}
-                        <li class="navbar-vertical-aside-has-menu {{ Request::is('admin') ? 'show' : '' }}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link" href="{{ route('admin.dashboard') }}"
-                                title="{{ translate('Dashboards') }}">
-                                <i class="tio-home-vs-1-outlined nav-icon"></i>
-                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{ translate('dashboard') }}
-                                </span>
-                            </a>
-                        </li>
-                        {{--                        @endif --}}
-                        <!-- End Dashboards -->
 
-                        @if(Helpers::module_permission_check(MANAGEMENT_SECTION['register_management']))
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/registers*')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
-                                    <i class="tio-clock nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Register')}} {{translate('Open / Close')}}</span>
-                                </a>
-                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub" style="display: {{Request::is('admin/registers*')?'block':'none'}}">
-                                    <li class="nav-item {{Request::is('admin/registers/create')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.registers.create')}}" title="{{translate('Register')}} {{translate('Open / Close')}}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{translate('Open / Close')}}</span>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item {{Request::is('admin/registers')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.registers.index')}}" title="{{translate('List')}}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{translate('List')}}</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['pos_management']))
+                            <li class="nav-item">
+                                <small class="nav-subtitle">{{ translate('pos') }}
+                                    {{ translate('management') }}</small>
+                                <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                             </li>
-                        @endif
-
-                        @if(Helpers::module_permission_check(MANAGEMENT_SECTION['pos_management']))
-
                             <!-- POS -->
-                            <li class="navbar-vertical-aside-has-menu {{ Request::is('admin/pos/*') ? 'active' : '' }}">
+                            <li
+                                class="navbar-vertical-aside-has-menu {{ Request::is('admin/pos/*') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                     href="javascript:">
                                     <i class="tio-shopping nav-icon"></i>
@@ -123,48 +103,6 @@
                             </li>
                             <!-- End POS -->
                         @endif
-
-
-
-                        {{-- TIME MANAGEMENT --}}
-                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['time_management']))
-                            <li class="nav-item">
-                                <small class="nav-subtitle">{{ translate('time') }}
-                                    {{ translate('management') }}</small>
-                                <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                            </li>
-
-
-                            <!-- Pages -->
-                            <li class="navbar-vertical-aside-has-menu {{ Request::is('admin/time/add') || Request::is('admin/time/list') ? 'active' : '' }}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
-                                    href="javascript:">
-                                    <i class="tio-clock nav-icon"></i>
-                                    <span
-                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('clock in / ') }}{{ translate(' out') }}</span>
-                                </a>
-                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="display: {{ Request::is('admin/time*') ? 'block' : 'none' }}">
-                                    <li class="nav-item {{ Request::is('admin/time/add') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.time.add') }}"
-                                            title="{{ translate('mark clock in/out') }}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{ translate('mark clock in/out') }}</span>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item {{ Request::is('admin/time/list') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.time.list') }}"
-                                            title="{{ translate('clock-in/out history') }}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{ translate('clock-In/out history') }}</span>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        @endif
-
                         @if (Helpers::module_permission_check(MANAGEMENT_SECTION['order_management']))
                             <li class="nav-item">
                                 <small class="nav-subtitle">{{ translate('order') }}
@@ -205,7 +143,8 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{ Request::is('admin/orders/list/pending') ? 'active' : '' }}">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/orders/list/pending') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['pending']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -217,7 +156,8 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{ Request::is('admin/orders/list/confirmed') ? 'active' : '' }}">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/orders/list/confirmed') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['confirmed']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -293,7 +233,8 @@
                                         </a>
                                     </li> --}}
 
-                                    <li class="nav-item {{ Request::is('admin/orders/list/canceled') ? 'active' : '' }}">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/orders/list/canceled') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.orders.list', ['canceled']) }}"
                                             title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -334,93 +275,108 @@
                                     </span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="display: {{Request::is('admin/table/order*')?'block':'none'}}">
-                                    <li class="nav-item {{Request::is('admin/table/order/list/all')?'active':''}}">
-                                        <a class="nav-link" href="{{route('admin.table.order.list',['all'])}}" title="">
+                                    style="display: {{ Request::is('admin/table/order*') ? 'block' : 'none' }}">
+                                    <li class="nav-item {{ Request::is('admin/table/order/list/all') ? 'active' : '' }}">
+                                        <a class="nav-link" href="{{ route('admin.table.order.list', ['all']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('all')}}
+                                                {{ translate('all') }}
                                                 <span class="badge badge-soft-info badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/confirmed')?'active':''}}">
-                                        <a class="nav-link" href="{{route('admin.table.order.list',['confirmed'])}}" title="">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/table/order/list/confirmed') ? 'active' : '' }}">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.table.order.list', ['confirmed']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('confirmed')}}
+                                                {{ translate('confirmed') }}
                                                 <span class="badge badge-soft-info badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'confirmed'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'confirmed'])->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/cooking')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['cooking'])}}" title="">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/table/order/list/cooking') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['cooking']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('cooking')}}
+                                                {{ translate('cooking') }}
                                                 <span class="badge badge-soft-warning badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'cooking'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'cooking'])->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/done')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['done'])}}" title="">
+                                    <li class="nav-item {{ Request::is('admin/table/order/list/done') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['done']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('Ready_For_Serve')}}
+                                                {{ translate('Ready_For_Serve') }}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'done'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'done'])->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/completed')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['completed'])}}" title="">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/table/order/list/completed') ? 'active' : '' }}">
+                                        <a class="nav-link "
+                                            href="{{ route('admin.table.order.list', ['completed']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('completed')}}
+                                                {{ translate('completed') }}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'completed'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'completed'])->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/canceled')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['canceled'])}}" title="">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/table/order/list/canceled') ? 'active' : '' }}">
+                                        <a class="nav-link "
+                                            href="{{ route('admin.table.order.list', ['canceled']) }}" title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('canceled')}}
+                                                {{ translate('canceled') }}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'canceled'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'canceled'])->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/list/hold')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.list',['hold'])}}" title="">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/table/order/list/hold') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.table.order.list', ['hold']) }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('hold')}}
+                                                {{ translate('hold') }}
                                                 <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{\App\Model\Order::notPos()->dineIn()->where(['order_status'=>'hold'])->notSchedule()->count()}}
+                                                    {{ \App\Model\Order::notPos()->dineIn()->where(['order_status' => 'hold'])->notSchedule()->count() }}
                                                 </span>
                                             </span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/table/order/running')?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.table.order.running')}}" title="">
+                                    <li class="nav-item {{ Request::is('admin/table/order/running') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.table.order.running') }}"
+                                            title="">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate sidebar--badge-container">
-                                                {{translate('on_table')}}
+                                                {{ translate('on_table') }}
                                                 <span class="badge badge-soft-success badge-pill ml-1">
-                                                    {{\App\Model\Order::with('table_order')->whereHas('table_order', function($q){
-                                                                    $q->where('branch_table_token_is_expired', 0);
-                                                                })->count()}}
+                                                    {{ \App\Model\Order::with('table_order')->whereHas('table_order', function ($q) {
+                                                            $q->where('branch_table_token_is_expired', 0);
+                                                        })->count() }}
                                                 </span>
                                             </span>
                                         </a>
@@ -429,7 +385,49 @@
                             </li>
                             <!-- End Pages -->
                         @endif
+                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['table_management']))
+                        <li class="nav-item">
+                            <small class="nav-subtitle">{{ translate('table') }}
+                                {{ translate('management') }}</small>
+                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                        </li>
 
+                        <li
+                            class="navbar-vertical-aside-has-menu {{ Request::is('admin/table/list') || Request::is('admin/table/update*') || Request::is('admin/promotion/create') || Request::is('admin/promotion/edit*') || Request::is('admin/table/index') ? 'active' : '' }}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                href="javascript:">
+                                <i class="tio-gift nav-icon"></i>
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                    {{ translate('table') }}
+                                </span>
+                                {{-- <label class="badge badge-danger">{{translate('addon')}}</label> --}}
+                            </a>
+                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                style="top: 391.823px; display: {{ Request::is('admin/table/list') || Request::is('admin/table/update*') || Request::is('admin/table/index') || Request::is('admin/promotion/*') ? 'block' : '' }};">
+                                <li
+                                    class="nav-item {{ Request::is('admin/table/list') || Request::is('admin/table/update*') ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ route('admin.table.list') }}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{ translate('list') }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{ Request::is('admin/table/index') ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ route('admin.table.index') }}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{ translate('availability') }}</span>
+                                    </a>
+                                </li>
+                                <li
+                                    class="nav-item {{ Request::is('admin/promotion/create') || Request::is('admin/promotion/edit*') ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ route('admin.promotion.create') }}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{ translate('promotion_setup') }}</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+                    @endif
                         @if (Helpers::module_permission_check(MANAGEMENT_SECTION['product_management']))
                             <li class="nav-item">
                                 <small class="nav-subtitle">{{ translate('product') }}
@@ -513,14 +511,16 @@
                                             <span class="text-truncate">{{ translate('product_list') }}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{ Request::is('admin/product/bulk-import') ? 'active' : '' }}">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/product/bulk-import') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.product.bulk-import') }}"
                                             title="{{ translate('bulk import') }}">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate">{{ translate('bulk_import') }}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{ Request::is('admin/product/bulk-export') ? 'active' : '' }}">
+                                    <li
+                                        class="nav-item {{ Request::is('admin/product/bulk-export') ? 'active' : '' }}">
                                         <a class="nav-link " href="{{ route('admin.product.bulk-export') }}"
                                             title="{{ translate('bulk export') }}">
                                             <span class="tio-circle nav-indicator-icon"></span>
@@ -914,49 +914,75 @@
 
 
                         <!-- Table Management-->
-                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['table_management']))
-                            <li class="nav-item">
-                                <small class="nav-subtitle">{{ translate('table') }}
-                                    {{ translate('section') }}</small>
-                                <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                            </li>
 
+                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['time_management']))
+                        <li class="nav-item">
+                            <small class="nav-subtitle">{{ translate('time') }}
+                                {{ translate('management') }}</small>
+                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                        </li>
+
+
+                        <!-- Pages -->
+                        <li
+                            class="navbar-vertical-aside-has-menu {{ Request::is('admin/time/add') || Request::is('admin/time/list') ? 'active' : '' }}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                href="javascript:">
+                                <i class="tio-clock nav-icon"></i>
+                                <span
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('clock in / ') }}{{ translate(' out') }}</span>
+                            </a>
+                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                style="display: {{ Request::is('admin/time*') ? 'block' : 'none' }}">
+                                <li class="nav-item {{ Request::is('admin/time/add') ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ route('admin.time.add') }}"
+                                        title="{{ translate('mark clock in/out') }}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{ translate('mark clock in/out') }}</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item {{ Request::is('admin/time/list') ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ route('admin.time.list') }}"
+                                        title="{{ translate('clock-in/out history') }}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{ translate('clock-In/out history') }}</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        @if (Helpers::module_permission_check(MANAGEMENT_SECTION['register_management']))
                             <li
-                                class="navbar-vertical-aside-has-menu {{ Request::is('admin/table/list') || Request::is('admin/table/update*') || Request::is('admin/promotion/create') || Request::is('admin/promotion/edit*') || Request::is('admin/table/index') ? 'active' : '' }}">
+                                class="navbar-vertical-aside-has-menu {{ Request::is('admin/registers*') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                     href="javascript:">
-                                    <i class="tio-gift nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                        {{ translate('table') }}
-                                    </span>
-                                    {{-- <label class="badge badge-danger">{{translate('addon')}}</label> --}}
+                                    <i class="tio-clock nav-icon"></i>
+                                    <span
+                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{ translate('Register') }}
+                                        {{ translate('Open / Close') }}</span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="top: 391.823px; display: {{ Request::is('admin/table/list') || Request::is('admin/table/update*') || Request::is('admin/table/index') || Request::is('admin/promotion/*') ? 'block' : '' }};">
-                                    <li
-                                        class="nav-item {{ Request::is('admin/table/list') || Request::is('admin/table/update*') ? 'active' : '' }}">
-                                        <a class="nav-link " href="{{ route('admin.table.list') }}">
+                                    style="display: {{ Request::is('admin/registers*') ? 'block' : 'none' }}">
+                                    <li class="nav-item {{ Request::is('admin/registers/create') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.registers.create') }}"
+                                            title="{{ translate('Register') }} {{ translate('Open / Close') }}">
                                             <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{ translate('list') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item {{ Request::is('admin/table/index') ? 'active' : '' }}">
-                                        <a class="nav-link" href="{{ route('admin.table.index') }}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{ translate('availability') }}</span>
-                                        </a>
-                                    </li>
-                                    <li
-                                        class="nav-item {{ Request::is('admin/promotion/create') || Request::is('admin/promotion/edit*') ? 'active' : '' }}">
-                                        <a class="nav-link" href="{{ route('admin.promotion.create') }}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">{{ translate('promotion_setup') }}</span>
+                                            <span class="text-truncate">{{ translate('Open / Close') }}</span>
                                         </a>
                                     </li>
 
+                                    <li class="nav-item {{ Request::is('admin/registers') ? 'active' : '' }}">
+                                        <a class="nav-link " href="{{ route('admin.registers.index') }}"
+                                            title="{{ translate('List') }}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{ translate('List') }}</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         @endif
+                    @endif
                         <!-- Table Management End-->
 
                         <!-- BRANCH -->
@@ -1110,10 +1136,10 @@
                                 </ul>
                             </li> --}}
 
-                            <!-- End 3rd Party -->
+                        <!-- End 3rd Party -->
 
-                            <!-- SYSTEM SETTINGS -->
-                            {{-- <li
+                        <!-- SYSTEM SETTINGS -->
+                        {{-- <li
                                 class="navbar-vertical-aside-has-menu {{ Request::is('admin/business-settings/web-app/system-setup*') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                     href="{{ route('admin.business-settings.web-app.system-setup.language.index') }}">
@@ -1123,13 +1149,13 @@
                                 </a>
                             </li> --}}
 
-                            {{-- <li class="nav-item">
+                        {{-- <li class="nav-item">
                                 <small class="nav-subtitle">{{ translate('system') }}
                                     {{ translate('addon') }}</small>
                                 <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                             </li> --}}
 
-                            {{-- <li
+                        {{-- <li
                                 class="navbar-vertical-aside-has-menu {{ Request::is('admin/system-addon') ? 'active' : '' }}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                     href="{{ route('admin.system-addon.index') }}"
@@ -1141,7 +1167,7 @@
                                 </a>
                             </li> --}}
 
-                            {{-- @if (count(config('addon_admin_routes')) > 0)
+                        {{-- @if (count(config('addon_admin_routes')) > 0)
                                 <li
                                     class="navbar-vertical-aside-has-menu {{ Request::is('admin/payment/configuration/*') || Request::is('admin/sms/configuration/*') ? 'active' : '' }} mb-5">
                                     <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"

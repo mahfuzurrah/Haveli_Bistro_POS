@@ -248,7 +248,7 @@
                                                     class="input-label font-weight-semibold fz-16 text-dark">{{ translate('Select Order Type') }}</label>
                                                 <div class="">
                                                     <!-- Custom Radio -->
-                                                    <div class="form-control d-flex flex-column-3">
+                                                    <div class="form-control d-flex flex-column-2">
 
                                                         <label class="custom-radio d-flex gap-2 align-items-center m-0">
                                                             <input type="radio" class="" name="order_type"
@@ -496,7 +496,7 @@
                                         <input type="button" style="font-size: 20px;"
                                             class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
                                             value="{{ translate('Print Receipt') }}" />
-                                        
+
                                     </left>
 
                                     <hr class="non-printable">
