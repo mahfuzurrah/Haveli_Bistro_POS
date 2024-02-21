@@ -2149,7 +2149,6 @@
   'Both Copy' => 'Both Copy',
   'Customer Copy' => 'Customer Copy',
   'Marchant Copy' => 'Marchant Copy',
-  'Invalid date range ' => 'Invalid date range ',
   'Payment reference code is added!' => 'Payment reference code is added!',
   'Please update payment status first!' => 'Please update payment status first!',
   'Push notification send failed for Customer!' => 'Push notification send failed for Customer!',
@@ -2174,4 +2173,7 @@
   'Ready To Serve' => 'Ready To Serve',
   'Voided' => 'Voided',
   'Others' => 'Others',
+  'No data to show ' => 'No data to show ',
+  'Print Both' => 'Print Both',
+  'Merchant Copy' => 'Merchant Copy',
 );

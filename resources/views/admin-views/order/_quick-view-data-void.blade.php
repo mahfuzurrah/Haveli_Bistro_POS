@@ -5,7 +5,7 @@
     </button>
 </div>
 <div class="modal-body">
-    <form id="add-to-refund-form" action="{{ route('admin.pos.add-to-refund', [$order->id]) }}" method="post">
+    <form id="add-to-void-form" action="{{ route('admin.pos.add-to-void', [$order->id]) }}" method="post">
         @csrf
         <div class="row pl-2">
             <div class="col-12 col-lg-12">
@@ -24,7 +24,7 @@
                         <tbody>
                             @if ($order->details)
                                 @foreach($order->details as $key => $item)
-                                    @if (!in_array($item->product_id, $order->getRefundedOrdersProductsId()) && !in_array($item->product_id, $order->getVoidedOrdersProductsId()))
+                                @if (!in_array($item->product_id, $order->getRefundedOrdersProductsId()) && !in_array($item->product_id, $order->getVoidedOrdersProductsId()))
                                         @php $totalPrice = $item->price * $item->quantity ?? 0 @endphp
                                         <tr>
                                             <td>{{ $key+1 }}</td>
@@ -45,7 +45,7 @@
                                 <td></td>
                                 <td></td>
                                 <td>Subtotal</td>
-                                <td>$<span class="sub-total-refund">0</span></td>
+                                <td>$<span class="sub-total-void">0</span></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -53,7 +53,7 @@
                                 <td></td>
                                 <td></td>
                                 <td>GST 5%</td>
-                                <td>$<span class="gst-refund">0</span></td>
+                                <td>$<span class="gst-void">0</span></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -61,7 +61,7 @@
                                 <td></td>
                                 <td></td>
                                 <td>Total</td>
-                                <td>$<span class="total-refund">0</span></td>
+                                <td>$<span class="total-void">0</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="d-flex justify-content-end">
-            <button type="submit" disabled class="btn btn-primary submit-refund-btn">{{translate('Refund')}}</button>
+            <button type="submit" disabled class="btn btn-primary submit-void-btn">{{translate('Void')}}</button>
         </div>
     </form>
 </div>

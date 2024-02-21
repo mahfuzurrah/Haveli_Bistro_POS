@@ -2,14 +2,14 @@
     <div class="text-center pt-4 mb-3 w-100">
         <h2 style="line-height: 1">{{ \App\Model\BusinessSetting::where(['key' => 'restaurant_name'])->first()->value }}
         </h2>
-        <h5 style="font-size: 20px;font-weight: lighter;line-height: 1">
+        <h5 style="font-size: 16px;font-weight: lighter;line-height: 1">
             {{ \App\Model\BusinessSetting::where(['key' => 'address'])->first()->value }}
         </h5>
         <h5 style="font-size: 16px;font-weight: lighter;line-height: 1">
             {{ translate('Phone') }}
             : {{ \App\Model\BusinessSetting::where(['key' => 'phone'])->first()->value }}
         </h5>
-        <h5 style="font-size: 16px;font-weight: lighter;line-height: 1">
+        <h5 style="font-size: 16px;font-weight: lighter;line-height: 1; margin: 0px;">
             {{ translate('Branch:') }}{{ Auth('branch')->user()->name ?? '' }}
 
 

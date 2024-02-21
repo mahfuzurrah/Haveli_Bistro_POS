@@ -99,35 +99,29 @@
                                             </div>
                                         @endif
                                         @if(!$order->order_amount==0.0)
-                                        @if ($order['refund_order_id']==null)
-                                        <div class="d-flex flex-row bd-highlight mb-3">
-                                            <div class=" p-2 bd-highlight">
+                                           
+                                            <div class="d-flex flex-row bd-highlight mb-3">
+                                            @if (!$order->refund_order_id && !$order->void_order_id)
+                                                <div class=" p-2 bd-highlight">
+                                                    <form id="voidFormId" action="{{ route('admin.pos.quick-view-void') }}" method="get">
+                                                        <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                        <button data-id="{{ $order->id }}" class="btn btn-danger submit-void-form" type="button">
+                                                            {{translate('Void')}}
+                                                        </button>
+                                                    </form>
+                                                </div>
 
-                                                <form id="voidFormId" action="{{ route('admin.pos.quick-view-void') }}" method="get">
-                                                    <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                                    <button class="btn btn-danger submit-void-form" type="button">
-                                                        {{translate('Void')}}
-                                                    </button>
-                                                </form>
-
+                                                <div class="p-2 bd-highlight">
+                                                    <a href="#" class="btn btn-sm btn-primary refund-button" onclick="quickViewRefund({{ $order['id'] }})">
+                                                        {{ translate('Refund') }}</a>
+                                                </div>
+                                                @endif
+                                                <div class="p-2 bd-highlight">
+                                                    <button class="btn btn-info" onclick="print_invoice('{{$order->id}}')"><i class="tio-print"></i></button>                                          
+                                                </div>
                                             </div>
-
-                                            <div class="p-2 bd-highlight">
-                                                <a href="#" class="btn btn-sm btn-primary refund-button" onclick="quickViewRefund({{ $order['id'] }})">
-                                                    {{ translate('Refund') }}</a>
-                                            </div>
-                                            <div class="p-2 bd-highlight">
-                                                <!-- <a class="btn btn-info" href={{route('admin.orders.generate-invoice',[$order['id']])}}>
-                                                    <i class="tio-print"></i>
-                                                </a> -->
-                                                <button class="btn btn-info" onclick="print_invoice('{{$order->id}}')"><i class="tio-print"></i></button>                                          
                                                 
-                                            </div>
-                                          </div>
-                                            @endif
-
                                           @endif
-
                                     </div>
 
                                     <div class="d-flex gap-3 justify-content-sm-end my-3">
@@ -1201,6 +1195,11 @@
 
     $(document).ready(function () {
 
+        $('body').on('click', '.order_products', function(){
+            updateRefundAmount();
+            updateVoidAmount();
+        });
+
         $('body').on('click', '.submit-void-form', function() {
 
            if(batchStatus == 'close') {
@@ -1209,23 +1208,34 @@
                     text: '{{translate("Batch Closed, Process Refund.")}}',
                     type: 'warning',
                 });
-           } else {
-                Swal.fire({
-                    title: '{{translate("Are you sure?")}}',
-                    text: '{{translate("You want to void this order?")}}',
-                    type: 'warning',
-                    showCancelButton: true,
-                    cancelButtonColor: 'default',
-                    confirmButtonColor: '#FC6A57',
-                    cancelButtonText: '{{translate("No")}}',
-                    confirmButtonText:'{{translate("Yes")}}',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value) {
-                        $('form#voidFormId').submit();
-                    }
-                });
+
+                return false;
            }
+           var orderId = $(this).attr('data-id');
+
+           $.ajax({
+                url: '{{route('admin.pos.quick-view-void')}}',
+                type: 'GET',
+                data: {
+                    order_id: orderId
+                },
+                dataType: 'json', // added data type
+                beforeSend: function () {
+                    // $('#loading').show();
+                },
+                success: function (data) {
+
+                    $('#quick-view').modal('show');
+                    $('#quick-view-modal').empty().html(data.view);
+
+                    setTimeout(() => {
+                        updateVoidAmount();
+                    }, 100);
+                },
+                complete: function () {
+                    // $('#loading').hide();
+                },
+            });
         });
 
 
@@ -1254,105 +1264,13 @@ $('.decrement-btn').click(function (e) {
 });
 
 });
-    function removeFromCartRefund(key) {
-
-            $.ajax({
-                url: '{{ route('admin.pos.remove-from-cart-refund') }}',
-                type: 'GET',
-                data: {
-                    key: key
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    $('#loading').show();
-                },
-                success: function(data) {
-                    console.log("success...");
-                    console.log(data);
-                    // $("#quick-view").removeClass('fade');
-                    // $("#quick-view").addClass('show');
-
-                    $('#quick-view-refund').modal('show');
-                    $('#quick-view-modal-refund').empty().html(data.view);
-                },
-                complete: function() {
-                    $('#loading').hide();
-                },
-            });
-
-        }
+    
 </script>
 
-<script>
- function addRefund(form_id = 'add-to-refund-form') {
-
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                    }
-                });
-                $.get({
-                    url: '{{ route('admin.pos.add-to-refund') }}',
-                    data: $('#' + form_id).serializeArray(),
-                    beforeSend: function() {
-                        $('#loading').show();
-                    },
-                    success: function(data) {
-                        if (data.success==true) {
-                            toastr.success('{{ translate('Item has been Refund Successfully') }}!', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                        } else {
-                            toastr.warning('{{ translate('Item has been already Refunded') }}!', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                        }
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    },
-                    complete: function() {
-                        $('#loading').hide();
-                    }
-                });
-
-        }
-</script>
 
 
 
     <script>
-        //  function quickViewVoid(product_id) {
-        //     $.ajax({
-        //         url: '{{route('admin.pos.quick-view-void')}}',
-        //         type: 'GET',
-        //         alert(1)
-        //         data: {
-        //             product_id: product_id
-        //         },
-        //         dataType: 'json', // added data type
-        //         beforeSend: function () {
-        //             $('#loading').show();
-        //         },
-        //         success: function (data) {
-        //             console.log("success...");
-        //             console.log(data);
-
-        //             // $("#quick-view").removeClass('fade');
-        //             // $("#quick-view").addClass('show');
-
-        //             $('#quick-view').modal('show');
-        //             $('#quick-view-modal').empty().html(data.view);
-        //         },
-        //         complete: function () {
-        //             $('#loading').hide();
-        //         },
-        //     });
-
-        // }
-
         function route_alert(route, message) {
             Swal.fire({
                 title: '{{translate("Are you sure?")}}',
@@ -1591,20 +1509,70 @@ $('.decrement-btn').click(function (e) {
                     $('#loading').show();
                 },
                 success: function(data) {
-                    console.log("success...");
-                    console.log(data);
-
-                    // $("#quick-view").removeClass('fade');
-                    // $("#quick-view").addClass('show');
-
                     $('#quick-view-refund').modal('show');
                     $('#quick-view-modal-refund').empty().html(data.view);
+
+                   setTimeout(() => {
+                    updateRefundAmount();
+                   }, 100);
                 },
                 complete: function() {
                     $('#loading').hide();
                 },
             });
 
+        }
+
+        function updateRefundAmount() {
+            var totalAmount = 0;
+            var gstAmount = 0;
+            var subTotal = 0;
+
+            if ($('.order_products:checked').length) {
+                $('.submit-refund-btn').removeAttr('disabled');
+            } else {
+                $('.submit-refund-btn').attr('disabled', 'disabled');
+            }
+
+            $('.order_products').each(function() {
+                if ($(this).prop('checked')) {
+                    var amount = parseFloat($(this).attr('data-price'));
+                    subTotal = parseFloat(subTotal + amount);
+                }
+            });
+
+            gstAmount = subTotal * 5 / 100;
+            totalAmount = parseFloat(parseFloat(subTotal) + parseFloat(gstAmount)).toFixed(2);
+
+            $('.sub-total-refund').text(parseFloat(subTotal).toFixed(2));
+            $('.gst-refund').text(parseFloat(gstAmount).toFixed(2));
+            $('.total-refund').text(parseFloat(totalAmount).toFixed(2));
+        }
+
+        function updateVoidAmount() {
+            var totalAmount = 0;
+            var gstAmount = 0;
+            var subTotal = 0;
+
+            if ($('.order_products:checked').length) {
+                $('.submit-void-btn').removeAttr('disabled');
+            } else {
+                $('.submit-void-btn').attr('disabled', 'disabled');
+            }
+
+            $('.order_products').each(function() {
+                if ($(this).prop('checked')) {
+                    var amount = parseFloat($(this).attr('data-price'));
+                    subTotal = parseFloat(subTotal + amount);
+                }
+            });
+
+            gstAmount = subTotal * 5 / 100;
+            totalAmount = parseFloat(parseFloat(subTotal) + parseFloat(gstAmount)).toFixed(2);
+
+            $('.sub-total-void').text(parseFloat(subTotal).toFixed(2));
+            $('.gst-void').text(parseFloat(gstAmount).toFixed(2));
+            $('.total-void').text(parseFloat(totalAmount).toFixed(2));
         }
     </script>
 @endpush

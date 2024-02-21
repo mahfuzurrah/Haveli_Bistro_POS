@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     protected $guarded = [];
+
     protected $casts = [
         'order_amount' => 'float',
         'coupon_discount_amount' => 'float',
@@ -103,6 +104,26 @@ class Order extends Model
         return $query->whereDate('delivery_date', '<=', \Carbon\Carbon::now()->format('Y-m-d'));
     }
 
+    public function scopeVoided($query)
+    {
+        return $query->whereDate('order_status', 'void');
+    }
+
+    public function scopeNotVoided($query)
+    {
+        return $query->whereDate('order_status', '!=', 'void');
+    }
+
+    public function scopeRefunded($query)
+    {
+        return $query->whereDate('order_status', 'refund');
+    }
+
+    public function scopeNotRefunded($query)
+    {
+        return $query->whereDate('order_status', '!=', 'refund');
+    }
+
     public function scopeEarningReport($query)
     {
         return $query->whereIn('order_status', ['delivered', 'completed']);
@@ -126,5 +147,25 @@ class Order extends Model
     public function guest()
     {
         return $this->belongsTo(GuestUser::class, 'user_id');
+    }
+
+    public function refundOrders()
+    {
+        return $this->hasMany(self::class, 'refund_order_id', 'id');
+    }
+
+    public function getRefundedOrdersProductsId()
+    {
+        return OrderDetail::whereIn('order_id', $this->refundOrders->pluck('id'))->pluck('product_id')->toArray();
+    }
+
+    public function voidOrders()
+    {
+        return $this->hasMany(self::class, 'void_order_id', 'id');
+    }
+
+    public function getVoidedOrdersProductsId()
+    {
+        return OrderDetail::whereIn('order_id', $this->voidOrders->pluck('id'))->pluck('product_id')->toArray();
     }
 }

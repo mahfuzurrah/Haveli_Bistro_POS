@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrderDetail extends Model
 {
+    protected $guarded = [];
+    
     protected $casts = [
         'product_id' => 'integer',
         'order_id' => 'integer',
@@ -33,5 +35,11 @@ class OrderDetail extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class, 'order_id', 'order_id');
+    }
+
+    public function getProductName()
+    {
+        $data = $this->product_details ? json_decode($this->product_details, true) : [];
+        return count($data) ? $data['name'] : '';
     }
 }

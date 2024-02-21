@@ -64,7 +64,8 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::post('order-refund', 'POSController@orderRefund')->name('orderRefund');
             Route::post('variant_price', 'POSController@variant_price')->name('variant_price');
             Route::get('add-to-cart', 'POSController@addToCart')->name('add-to-cart');
-            Route::get('add-to-refund', 'POSController@addRefund')->name('add-to-refund');
+            Route::post('add-to-refund/{id}', 'POSController@addRefund')->name('add-to-refund');
+            Route::post('add-to-void/{id}', 'POSController@voidOrder')->name('add-to-void');
             Route::get('hold-add-to-cart', 'POSController@holdAddToCart')->name('hold-add-to-cart');
             Route::post('remove-from-cart', 'POSController@removeFromCart')->name('remove-from-cart');
             Route::get('remove-from-cart-refund', 'POSController@removeFromCartRefund')->name('remove-from-cart-refund');

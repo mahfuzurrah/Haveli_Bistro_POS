@@ -47,7 +47,8 @@ class POSController extends Controller
         private OrderDetail     $order_detail,
         private Notification    $notification,
         private DeliveryMan     $delivery_man
-    ){}
+    ) {
+    }
 
     public function index(Request $request)
     {
@@ -86,8 +87,8 @@ class POSController extends Controller
 
         $current_branch = $this->admin->find(auth('admin')->id());
         $branches = $this->branch->select('id', 'name')->get();
-        $hold=$this->order->where('order_status','hold')->get();
-        return view('admin-views.pos.index', compact('hold','categories', 'products', 'category', 'keyword', 'current_branch', 'branches', 'selected_customer', 'selected_table', 'tables'));
+        $hold = $this->order->where('order_status', 'hold')->get();
+        return view('admin-views.pos.index', compact('hold', 'categories', 'products', 'category', 'keyword', 'current_branch', 'branches', 'selected_customer', 'selected_table', 'tables'));
     }
 
     /**
@@ -96,578 +97,130 @@ class POSController extends Controller
      */
 
 
-     public function quick_view_void(Request $request)
-     {
-        // dd($request->order_id);
-         $order = $this->order->findOrFail($request->order_id);
-         $order->update([
-            'order_status'=>'Cancel',
-            'order_amount'=>'0.0'
-         ]);
-      return redirect()->back();
-
-     }
-     public function refund_view(Request $request): JsonResponse
-     {
-        if(session()->has('refund_item')){
-            session::forget('refund_item');
-        }
-        if(session()->has('refund_order_id')){
-            session::forget('refund_order_id');
-        }
-       session()->put('refund_order_id', $request->order_id);
+    public function quick_view_void(Request $request): JsonResponse
+    {
         $order = $this->order->findOrFail($request->order_id);
-        foreach($order->details as $product){
-            $data = array();
-            $data['id'] = $product->product_id;
-            $str = '';
-            $variations = [];
-            $price = 0;
-            $addon_price = 0;
-            $addon_total_tax = 0;
-            $variation_price = 0;
-
-            $branch_product = $this->product_by_branch->where(['product_id' => $product->product_id, 'branch_id' => $order->branch_id])->first();
-
-            $branch_product_price = 0;
-            $discount_data = [];
-            if (isset($branch_product)) {
-                $branch_product_variations = $branch_product->variations;
-
-                if ($request->variations && count($branch_product_variations)) {
-                    foreach ($request->variations as $key => $value) {
-
-                        if ($value['required'] == 'on' && !isset($value['values'])) {
-                            return response()->json([
-                                'data' => 'variation_error',
-                                'message' => translate('Please select items from') . ' ' . $value['name'],
-                            ]);
-                        }
-                        if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
-                            return response()->json([
-                                'data' => 'variation_error',
-                                'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
-                            ]);
-                        }
-                        if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
-                            return response()->json([
-                                'data' => 'variation_error',
-                                'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
-                            ]);
-                        }
-                    }
-                    $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
-                    $variation_price = $variation_data['price'];
-                    $variations = $request->variations;
-
-                }
-
-                $branch_product_price = $branch_product['price'];
-                $discount_data = [
-                    'discount_type' => $branch_product['discount_type'],
-                    'discount' => $branch_product['discount']
-                ];
-            }
-
-            $price = $branch_product_price + $variation_price;
-            $data['variation_price'] = $variation_price;
-
-            $discount_on_product = Helpers::discount_calculate($discount_data, $price);
-
-            $data['variations'] = $variations;
-            $data['variant'] = $str;
-            $data['quantity'] = $product->quantity;
-            $data['price'] = $price;
-            $data['name'] = $product->product->name;
-            $data['discount'] = $discount_on_product;
-            $data['image'] = $product->product->image;
-            $data['add_ons'] = [];
-            $data['add_on_qtys'] = [];
-            $data['add_on_prices'] = [];
-            $data['add_on_tax'] = [];
-
-            if ($request['addon_id']) {
-                foreach ($request['addon_id'] as $id) {
-                    $addon_price += $request['addon-price' . $id] * $request['addon-quantity' . $id];
-                    $data['add_on_qtys'][] = $request['addon-quantity' . $id];
-
-                    $add_on = AddOn::find($id);
-                    $data['add_on_prices'][] = $add_on['price'];
-                    $add_on_tax = ($add_on['price'] * $add_on['tax']/100);
-                    $addon_total_tax += (($add_on['price'] * $add_on['tax']/100) * $request['addon-quantity' . $id]);
-                    $data['add_on_tax'][] = $add_on_tax;
-                }
-                $data['add_ons'] = $request['addon_id'];
-            }
-
-            $data['addon_price'] = $addon_price;
-            $data['addon_total_tax'] = $addon_total_tax;
-
-            if ($request->session()->has('refund_item')) {
-                $refund_item = $request->session()->get('refund_item', collect([]));
-                $refund_item->push($data);
-            } else {
-                $refund_item = collect([$data]);
-                $request->session()->put('refund_item', $refund_item);
-            }
-        }
-
-         return response()->json([
-             'success' => 1,
-             'view' => view('admin-views.order._quick-view-data-refund', compact('order'))->render(),
-         ]);
-     }
-
-     public function addRefund(Request $request): JsonResponse
-     {
-         $refund_order = $this->order->find($request->refund_order_id);
         
-         if ($refund_order->refund_order_id) {
-            Toastr::error(translate('Order already refunded.'));
-             return response()->json(['success'=>false]);
-         }
-
-         $refund_product_id = $request->refund_product_id;
-         $refund_quantity = $request->refund_product_qty;
-         $order_product=$this->order_detail::where('order_id',$request->refund_order_id)->whereIn('product_id',$request->refund_product_id)->get();
-         $order_id = 100000 + $this->order->all()->count() + 1;
-         if ($this->order->find($order_id)) {
-             $order_id = $this->order->orderBy('id', 'DESC')->first()->id + 1;
-         }
-         
-         $order = $this->order;
-         $order->id = $order_id;
-         $order->refund_order_id = $request->refund_order_id;
-         $order->user_id = $refund_order->user_id ?? null;
-         $order->coupon_discount_title = $refund_order->coupon_discount_title ?? '';
-         $order->payment_status = $refund_order->payment_status ?? 'paid';
-         $order->order_status = 'Refund';
-         $order->order_type = $refund_order->order_type;
-         $order->coupon_code = $refund_order->coupon_code ?? null;
-         $order->payment_method = $refund_order->type ?? '';
-         $order->transaction_reference = $refund_order->transaction_reference ?? null;
-         $order->delivery_charge = $refund_order->delivery_charge;
-         $order->delivery_address_id = null;
-         $order->delivery_date = Carbon::now()->format('Y-m-d');
-         $order->delivery_time = Carbon::now()->format('H:i:s');
-         $order->order_note = null;
-         $order->checked = 1;
-         $order->created_at = now();
-         $order->updated_at = now();
-         
-         $total_product_main_price = 0;
-         
-         // check if discount is more than total price
-         $total_price_for_discount_validation = 0;
-         $product_price=0;
-         $total_tax_amount=0;
-         $discount_on_product = 0;
-         $discount = 0;
-         $total_addon_tax=0;
-         $total_addon_price=0;
-         foreach ($order_product as $c) {
-             $product_subtotal = ($c['price']) * $c['quantity'];
-             
-             $discount_on_product += ($c['discount_on_product'] * $c['quantity']);
-             
-             $total_price_for_discount_validation += $c['price'];
-             
-             $product = $this->product->find($c['product_id']);
-             if ($product) {
-                 $price = $c['price'];
-                 
-                 
-                 $product = Helpers::product_data_formatting($product);
-                 
-                 $addon_data = $c['add_on_ids'];
-                 
-                 $add_on_qtys = $c['add_on_qtys'];
-                 
-                 //***end***
-                 
-                 $branch_product = $this->product_by_branch->where(['product_id' => $c['product_id'], 'branch_id' => $refund_order->branch_id])->first();
-                 
-                 $discount_data = [];
-                 if (isset($branch_product)) {
-                     $variation_data = $c['variation'];
-                     
-                     $discount_data = [
-                     'discount_type' => $branch_product['discount_type'],
-                     'discount' => $branch_product['discount']
-                     ];
-                     
-                 }
-                 
-                 
-                 $discount = Helpers::discount_calculate($discount_data, $price);
-                 
-                 // $variations = $variation_data['variations'];
-                 
-                 $or_d = [
-                 'product_id' => $c['product_id'],
-                 'product_details' => $product,
-                 'quantity' => $c['quantity'],
-                 'price' => $product->price,
-                 'tax_amount' => Helpers::tax_calculate($product, $price),
-                 'discount_on_product' => $discount,
-                 'discount_type' => 'discount_on_product',
-                 //'variant' => json_encode($c['variant']),
-                 'variation' => $c['variation'],
-                 'add_on_ids' => $c['add_on_ids'],
-                 'add_on_qtys' => $c['add_on_qtys'],
-                 'add_on_prices' => $c['add_on_prices'],
-                 'add_on_taxes' => $c['add_on_tax'],
-                 'add_on_tax_amount' => $c['add_on_tax_amount'],
-                 'created_at' => now(),
-                 'updated_at' => now()
-                 ];
-                 
-                 
-                 $total_tax_amount += $refund_order->total_tax_amount * $c['quantity'];
-                 
-                 // $total_addon_price += $addon_data['total_add_on_price'];
-                 
-                 $total_addon_tax += $c['addon_total_tax'];
-                 
-                 $product_price += $product_subtotal - $discount_on_product;
-                 
-                 $total_product_main_price += $product_subtotal;
-                 
-                 $order_details[] = $or_d;
-                 
-             }
-             
-         }
-         
-         $total_price = $product_price + $total_addon_price;
-         
-         
-         
-         $gst=($total_price*5)/100;
-         
-         
-         $order->extra_discount = $extra_discount ?? 0;
-         $order->total_tax_amount = $total_tax_amount;
-         $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax+$gst;
-         $order->coupon_discount_amount = 0.00;
-         $order->branch_id = $refund_order->branch_id;
-         $order->table_id = $refund_order->table_id;
-         $order->number_of_people = $refund_order->number_of_people;
-         
-         $order->save();
-         
-         foreach ($order_details as $key => $item) {
-             $order_details[$key]['order_id'] = $order->id;
-         }
-         $this->order_detail->insert($order_details);
-         $refund_order->update(['refund_order_id' => $order->id, 'order_status' => 'Refund']);
-
-         Toastr::success(translate('order_Refund_successfully'));
-         
-         //send notification to kitchen
-         
-         //send notification to customer for home delivery
-         
-         return response()->json(['success'=>true]);
-         
-     }
-     public function addReddfund(Request $request): RedirectResponse
-     {
-         dd(1);
-         if ($request->session()->has('cart')) {
-             if (count($request->session()->get('cart')) < 1) {
-                 Toastr::error(translate('cart_empty_warning'));
-                 return back();
-             }
-         } else {
-             Toastr::error(translate('cart_empty_warning'));
-             return back();
-         }
-         
-         $order_type = session()->has('order_type') ? session()->get('order_type') : 'take_away';
-         
-         if ($order_type == 'dine_in'){
-             if (!session()->has('table_id')){
-                 Toastr::error(translate('please select a table number'));
-                 return back();
-             }
-             if (!session()->has('people_number')){
-                 Toastr::error(translate('please enter people number'));
-                 return back();
-             }
-             
-             $table = Table::find(session('table_id'));
-             if (isset($table) && session('people_number') > $table->capacity  || session('people_number') < 1 ) {
-                 Toastr::error(translate('enter valid people number between 1 to '. $table->capacity));
-                 return back();
-             }
-         }
-         
-         $delivery_charge = 0;
-         // store customer address for home delivery
-         if ($order_type == 'home_delivery'){
-             if (!session()->has('customer_id')){
-                 Toastr::error(translate('please select a customer'));
-                 return back();
-             }
-             
-             if (!session()->has('address')){
-                 Toastr::error(translate('please select a delivery address'));
-                 return back();
-             }
-             
-             $address_data = session()->get('address');
-             $distance = $address_data['distance'] ?? 0;
-             $delivery_type = Helpers::get_business_settings('delivery_management');
-             if ($delivery_type['status'] == 1){
-                 $delivery_charge = Helpers::get_delivery_charge($distance);
-             }else{
-                 $delivery_charge = Helpers::get_business_settings('delivery_charge');
-             }
-             
-             $address = [
-             'address_type' => 'Home',
-             'contact_person_name' => $address_data['contact_person_name'],
-             'contact_person_number' => $address_data['contact_person_number'],
-             'address' => $address_data['address'],
-             'floor' => $address_data['floor'],
-             'road' => $address_data['road'],
-             'house' => $address_data['house'],
-             'longitude' => (string)$address_data['longitude'],
-             'latitude' => (string)$address_data['latitude'],
-             'user_id' => session()->get('customer_id'),
-             'is_guest' => 0,
-             ];
-             $customer_address = CustomerAddress::create($address);
-         }
-         
-         $cart = $request->session()->get('cart');
-         $total_tax_amount = 0;
-         $total_addon_price = 0;
-         $total_addon_tax = 0;
-         $product_price = 0;
-         $order_details = [];
-         
-         $order_id = 100000 + $this->order->all()->count() + 1;
-         if ($this->order->find($order_id)) {
-             $order_id = $this->order->orderBy('id', 'DESC')->first()->id + 1;
-         }
-         
-         $order = $this->order;
-         $order->id = $order_id;
-         
-         $order->user_id = session()->get('customer_id') ?? null;
-         $order->coupon_discount_title = $request->coupon_discount_title == 0 ? null : 'coupon_discount_title';
-         $order->payment_status = ($order_type == 'take_away') ? 'paid' : (($order_type == 'dine_in' && $request->type != 'pay_after_eating') ? 'paid' : 'unpaid');
-         $order->order_status = $order_type == 'take_away' ? 'delivered' : 'confirmed' ;
-         $order->order_type = ($order_type == 'take_away') ? 'take_away' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
-         $order->coupon_code = $request->coupon_code ?? null;
-         $order->payment_method = $request->type;
-         $order->transaction_reference = $request->transaction_reference ?? null;
-         $order->delivery_charge = $delivery_charge;
-         $order->delivery_address_id = $order_type == 'home_delivery' ? $customer_address->id : null;
-         $order->delivery_date = Carbon::now()->format('Y-m-d');
-         $order->delivery_time = Carbon::now()->format('H:i:s');
-         $order->order_note = null;
-         $order->checked = 1;
-         $order->created_at = now();
-         $order->updated_at = now();
-         
-         $total_product_main_price = 0;
-         
-         // check if discount is more than total price
-         $total_price_for_discount_validation = 0;
-         
-         foreach ($cart as $c) {
-             if (is_array($c)) {
-                 $discount_on_product = 0;
-                 $discount = 0;
-                 $product_subtotal = ($c['price']) * $c['quantity'];
-                 $discount_on_product += ($c['discount'] * $c['quantity']);
-                 
-                 $total_price_for_discount_validation += $c['price'];
-                 
-                 $product = $this->product->find($c['id']);
-                 if ($product) {
-                     $price = $c['price'];
-                     
-                     $product = Helpers::product_data_formatting($product);
-                     $addon_data = Helpers::calculate_addon_price(AddOn::whereIn('id', $c['add_ons'])->get(), $c['add_on_qtys']);
-                     
-                     //*** addon quantity integer casting ***
-                     array_walk($c['add_on_qtys'], function (&$add_on_qtys) {
-                         $add_on_qtys = (int)$add_on_qtys;
-                     });
-                     //***end***
-                     
-                     $branch_product = $this->product_by_branch->where(['product_id' => $c['id'], 'branch_id' => session()->get('branch_id')])->first();
-                     
-                     $discount_data = [];
-                     if (isset($branch_product)) {
-                         $variation_data = Helpers::get_varient($branch_product->variations, $c['variations']);
-                         
-                         $discount_data = [
-                         'discount_type' => $branch_product['discount_type'],
-                         'discount' => $branch_product['discount']
-                         ];
-                     }
-                     
-                     $discount = Helpers::discount_calculate($discount_data, $price);
-                     $variations = $variation_data['variations'];
-                     
-                     $or_d = [
-                     'product_id' => $c['id'],
-                     'product_details' => $product,
-                     'quantity' => $c['quantity'],
-                     'price' => $price,
-                     'tax_amount' => Helpers::tax_calculate($product, $price),
-                     'discount_on_product' => $discount,
-                     'discount_type' => 'discount_on_product',
-                     //'variant' => json_encode($c['variant']),
-                     'variation' => json_encode($variations),
-                     'add_on_ids' => json_encode($addon_data['addons']),
-                     'add_on_qtys' => json_encode($c['add_on_qtys']),
-                     'add_on_prices' => json_encode($c['add_on_prices']),
-                     'add_on_taxes' => json_encode($c['add_on_tax']),
-                     'add_on_tax_amount' => $c['addon_total_tax'],
-                     'created_at' => now(),
-                     'updated_at' => now()
-                     ];
-                     $total_tax_amount += $or_d['tax_amount'] * $c['quantity'];
-                     $total_addon_price += $addon_data['total_add_on_price'];
-                     
-                     $total_addon_tax += $c['addon_total_tax'];
-                     
-                     $product_price += $product_subtotal - $discount_on_product;
-                     $total_product_main_price += $product_subtotal;
-                     $order_details[] = $or_d;
-                 }
-             }
-         }
-         
-         $total_price = $product_price + $total_addon_price;
-         if (isset($cart['extra_discount'])) {
-             $extra_discount = $cart['extra_discount_type'] == 'percent' && $cart['extra_discount'] > 0 ? (($total_product_main_price * $cart['extra_discount']) / 100) : $cart['extra_discount'];
-             $total_price -= $extra_discount;
-         }
-         if (isset($cart['extra_discount']) && $cart['extra_discount_type'] == 'amount') {
-             if ($cart['extra_discount'] > $total_price_for_discount_validation) {
-                 Toastr::error(translate('discount_can_not_be_more_total_product_price'));
-                 return back();
-             }
-         }
-         
-         $tax = isset($cart['tax']) ? $cart['tax'] : 0;
-         
-         $total_tax_amount = ($tax > 0) ? (($total_price * $tax) / 100) : $total_tax_amount;
-         $gst=($total_price*5)/100;
-         
-         try {
-             $order->extra_discount = $extra_discount ?? 0;
-             $order->total_tax_amount = $total_tax_amount;
-             $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax+$gst;
-             $order->coupon_discount_amount = 0.00;
-             $order->branch_id = session()->get('branch_id');
-             $order->table_id = session()->get('table_id');
-             $order->number_of_people = session()->get('people_number');
-             
-             if (session('branch_id')) {
-                 $order->save();
-                 
-                 foreach ($order_details as $key => $item) {
-                     $order_details[$key]['order_id'] = $order->id;
-                 }
-                 $this->order_detail->insert($order_details);
-                 
-                 session()->forget('cart');
-                 session(['last_order' => $order->id]);
-                 session()->forget('customer_id');
-                 session()->forget('branch_id');
-                 session()->forget('table_id');
-                 session()->forget('people_number');
-                 session()->forget('address');
-                 session()->forget('order_type');
-                 session()->forget('hold_btn_hide');
-                 
-                 
-                 
-                 Toastr::success(translate('order_placed_successfully'));
-                 
-                 //send notification to kitchen
-                 if ($order->order_type == 'dine_in') {
-                     $notification = $this->notification;
-                     $notification->title = "You have a new order from POS - (Order Confirmed). ";
-                     $notification->description = $order->id;
-                     $notification->status = 1;
-                     
-                     try {
-                         Helpers::send_push_notif_to_topic($notification, "kitchen-{$order->branch_id}", 'general');
-                         Toastr::success(translate('Notification sent successfully!'));
-                     } catch (\Exception $e) {
-                         Toastr::warning(translate('Push notification failed!'));
-                     }
-                 }
-                 //send notification to customer for home delivery
-                 if ($order->order_type == 'delivery'){
-                     $value = Helpers::order_status_update_message('confirmed');
-                     $customer = $this->user->find($order->user_id);
-                     $fcm_token = $customer?->fcm_token;
-                     
-                     if ($value && isset($fcm_token)) {
-                         $data = [
-                         'title' => translate('Order'),
-                         'description' => $value,
-                         'order_id' => $order_id,
-                         'image' => '',
-                         'type' => 'order_status',
-                         ];
-                         Helpers::send_push_notif_to_device($fcm_token, $data);
-                     }
-                     //send email
-                     try {
-                         $emailServices = Helpers::get_business_settings('mail_config');
-                         $order_mail_status = Helpers::get_business_settings('place_order_mail_status_user');
-                         if (isset($emailServices['status']) && $emailServices['status'] == 1 && $order_mail_status == 1 && isset($customer)) {
-                             Mail::to($customer->email)->send(new \App\Mail\OrderPlaced($order_id));
-                         }
-                     }catch (\Exception $e) {
-                         //dd($e);
-                     }
-                 }
-                 
-                 return back();
-             } else {
-                 Toastr::warning(translate('Branch select is required'));
-             }
-             
-         } catch (\Exception $e) {
-             info($e);
-         }
-         //Toastr::warning(translate('failed_to_place_order'));
-         return back();
-     }
-
-     public function removeFromCartRefund(Request $request): JsonResponse
-     {
-
-
-         if ($request->session()->has('refund_item')) {
-             $refund_item = $request->session()->get('refund_item', collect([]));
-             $refund_item->forget($request->key);
-             $request->session()->put('refund_item', $refund_item);
-         }
-
-         return response()->json([
+        return response()->json([
             'success' => 1,
-            'view' => view('admin-views.order._quick-view-data-refund')->render(),
+            'view' => view('admin-views.order._quick-view-data-void', ['order' => $order])->render(),
         ]);
-        //  return response()->json([], 200);
-     }
+    }
 
+    public function refund_view(Request $request): JsonResponse
+    {
+        $order = $this->order->findOrFail($request->order_id);
 
+        return response()->json([
+            'success' => 1,
+            'view' => view('admin-views.order._quick-view-data-refund', ['order' => $order])->render(),
+        ]);
+    }
+
+    public function addRefund(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $order = Order::findOrFail($id);
+            $orderProducts = OrderDetail::whereIn('id', $request->order_products)->get();
+            $gstAmount = 0;
+            $subtotalAmount = 0;
+            $totalAmount = 0;
+            $taxAmount = 0;
+            $discountAmount = 0;
+
+            foreach ($orderProducts as $orderProduct) {
+                $subtotalAmount = $subtotalAmount + $orderProduct->price;
+            }
+
+            $gstAmount = ($subtotalAmount * 5) / 100;
+
+            $totalAmount = $gstAmount + $subtotalAmount + $taxAmount;
+            $orderData = $order->toArray();
+            unset($orderData['id']);
+            unset($orderData['created_at']);
+            unset($orderData['updated_at']);
+
+            $orderData['order_status'] = 'refund';
+            $orderData['order_amount'] = $totalAmount;
+            $orderData['total_tax_amount'] = $gstAmount;
+            $orderData['refund_order_id'] = $order->id;
+            $orderCreated = Order::create($orderData);
+           
+            foreach ($orderProducts as $orderProduct) {
+                $orderDetailData = $orderProduct->toArray();
+                unset($orderDetailData['id']);
+                unset($orderDetailData['created_at']);
+                unset($orderDetailData['updated_at']);
+                $orderDetailData['order_id'] = $orderCreated->id;
+                OrderDetail::create($orderDetailData);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            Toastr::error(translate($e->getMessage()));
+            return back();
+        }
+    
+        Toastr::success(translate('order_Refund_successfully'));
+        return back();
+    }
+
+    public function voidOrder(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $order = Order::findOrFail($id);
+            $orderProducts = OrderDetail::whereIn('id', $request->order_products)->get();
+            $gstAmount = 0;
+            $subtotalAmount = 0;
+            $totalAmount = 0;
+            $taxAmount = 0;
+            $discountAmount = 0;
+
+            foreach ($orderProducts as $orderProduct) {
+                $subtotalAmount = $subtotalAmount + $orderProduct->price;
+            }
+
+            $gstAmount = ($subtotalAmount * 5) / 100;
+
+            $totalAmount = $gstAmount + $subtotalAmount + $taxAmount;
+            $orderData = $order->toArray();
+            unset($orderData['id']);
+            unset($orderData['created_at']);
+            unset($orderData['updated_at']);
+
+            $orderData['order_status'] = 'void';
+            $orderData['order_amount'] = $totalAmount;
+            $orderData['total_tax_amount'] = $gstAmount;
+            $orderData['void_order_id'] = $order->id;
+            $orderCreated = Order::create($orderData);
+           
+            foreach ($orderProducts as $orderProduct) {
+                $orderDetailData = $orderProduct->toArray();
+                unset($orderDetailData['id']);
+                unset($orderDetailData['created_at']);
+                unset($orderDetailData['updated_at']);
+                $orderDetailData['order_id'] = $orderCreated->id;
+                OrderDetail::create($orderDetailData);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            Toastr::error(translate("Something went wrong!"));
+            return back();
+        }
+    
+        Toastr::success(translate('Order Voided Successfully'));
+        return back();
+    }
+
+    
     public function hold_view(Request $request): JsonResponse
     {
-        $orders = $this->order->where('order_status','hold')->get();
+        $orders = $this->order->where('order_status', 'hold')->get();
 
         return response()->json([
             'success' => 1,
@@ -683,13 +236,13 @@ class POSController extends Controller
             'view' => view('admin-views.pos._quick-view-data', compact('product'))->render(),
         ]);
     }
-     public function orderRefund(Request $request): JsonResponse
+    public function orderRefund(Request $request): JsonResponse
     {
         $order = $this->order->findOrFail($request->id);
 
         $order->update([
-            'order_amount'=>$request->amount
-         ]);
+            'order_amount' => $request->amount
+        ]);
 
 
         return response()->json([
@@ -697,43 +250,6 @@ class POSController extends Controller
             'view' => view('admin-views.pos._quick-view-data', compact('product'))->render(),
         ]);
     }
-
-    /*public function variant_price(Request $request)
-    {
-        $product = $this->product->find($request->id);
-
-        $str = '';
-        $quantity = 0;
-        $price = 0;
-        $addon_price = 0;
-
-        foreach (json_decode($product->choice_options) as $key => $choice) {
-            if ($str != null) {
-                $str .= '-' . str_replace(' ', '', $request[$choice->name]);
-            } else {
-                $str .= str_replace(' ', '', $request[$choice->name]);
-            }
-        }
-
-        if ($request['addon_id']) {
-            foreach ($request['addon_id'] as $id) {
-                $addon_price += $request['addon-price' . $id] * $request['addon-quantity' . $id];
-            }
-        }
-
-        if ($str != null) {
-            $count = count(json_decode($product->variations));
-            for ($i = 0; $i < $count; $i++) {
-                if (json_decode($product->variations)[$i]->type == $str) {
-                    $price = json_decode($product->variations)[$i]->price - Helpers::discount_calculate($product, $product->price);
-                }
-            }
-        } else {
-            $price = $product->price - Helpers::discount_calculate($product, $product->price);
-        }
-
-        return array('price' =>  \App\CentralLogics\Helpers::set_symbol(($price * $request->quantity) + $addon_price));
-    }*/
 
     /**
      * @param Request $request
@@ -931,7 +447,6 @@ class POSController extends Controller
                 $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
                 $variation_price = $variation_data['price'];
                 $variations = $request->variations;
-
             }
 
             $branch_product_price = $branch_product['price'];
@@ -966,8 +481,8 @@ class POSController extends Controller
 
                 $add_on = AddOn::find($id);
                 $data['add_on_prices'][] = $add_on['price'];
-                $add_on_tax = ($add_on['price'] * $add_on['tax']/100);
-                $addon_total_tax += (($add_on['price'] * $add_on['tax']/100) * $request['addon-quantity' . $id]);
+                $add_on_tax = ($add_on['price'] * $add_on['tax'] / 100);
+                $addon_total_tax += (($add_on['price'] * $add_on['tax'] / 100) * $request['addon-quantity' . $id]);
                 $data['add_on_tax'][] = $add_on_tax;
             }
             $data['add_ons'] = $request['addon_id'];
@@ -988,137 +503,132 @@ class POSController extends Controller
         ]);
     }
 
-     public function holdAddToCart(Request $request): JsonResponse
-     {
+    public function holdAddToCart(Request $request): JsonResponse
+    {
 
-    $order = $this->order->find($request->id);
+        $order = $this->order->find($request->id);
 
-   foreach($order->details as $product){
-    $data = array();
-    $data['id'] = $product->product_id;
-    $str = '';
-    $variations = [];
-    $price = 0;
-    $addon_price = 0;
-    $addon_total_tax = 0;
-    $variation_price = 0;
+        foreach ($order->details as $product) {
+            $data = array();
+            $data['id'] = $product->product_id;
+            $str = '';
+            $variations = [];
+            $price = 0;
+            $addon_price = 0;
+            $addon_total_tax = 0;
+            $variation_price = 0;
 
-    $branch_product = $this->product_by_branch->where(['product_id' => $product->product_id, 'branch_id' => session()->get('branch_id')])->first();
+            $branch_product = $this->product_by_branch->where(['product_id' => $product->product_id, 'branch_id' => session()->get('branch_id')])->first();
 
-    $branch_product_price = 0;
-    $discount_data = [];
+            $branch_product_price = 0;
+            $discount_data = [];
 
-    if (isset($branch_product)) {
-        $branch_product_variations = $branch_product->variations;
+            if (isset($branch_product)) {
+                $branch_product_variations = $branch_product->variations;
 
-        if ($request->variations && count($branch_product_variations)) {
-            foreach ($request->variations as $key => $value) {
+                if ($request->variations && count($branch_product_variations)) {
+                    foreach ($request->variations as $key => $value) {
 
-                if ($value['required'] == 'on' && !isset($value['values'])) {
-                    return response()->json([
-                        'data' => 'variation_error',
-                        'message' => translate('Please select items from') . ' ' . $value['name'],
-                    ]);
+                        if ($value['required'] == 'on' && !isset($value['values'])) {
+                            return response()->json([
+                                'data' => 'variation_error',
+                                'message' => translate('Please select items from') . ' ' . $value['name'],
+                            ]);
+                        }
+                        if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
+                            return response()->json([
+                                'data' => 'variation_error',
+                                'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
+                            ]);
+                        }
+                        if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
+                            return response()->json([
+                                'data' => 'variation_error',
+                                'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
+                            ]);
+                        }
+                    }
+                    $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
+                    $variation_price = $variation_data['price'];
+                    $variations = $request->variations;
                 }
-                if (isset($value['values']) && $value['min'] != 0 && $value['min'] > count($value['values']['label'])) {
-                    return response()->json([
-                        'data' => 'variation_error',
-                        'message' => translate('Please select minimum ') . $value['min'] . translate(' For ') . $value['name'] . '.',
-                    ]);
-                }
-                if (isset($value['values']) && $value['max'] != 0 && $value['max'] < count($value['values']['label'])) {
-                    return response()->json([
-                        'data' => 'variation_error',
-                        'message' => translate('Please select maximum ') . $value['max'] . translate(' For ') . $value['name'] . '.',
-                    ]);
-                }
+
+                $branch_product_price = $branch_product['price'];
+                $discount_data = [
+                    'discount_type' => $branch_product['discount_type'],
+                    'discount' => $branch_product['discount']
+                ];
             }
-            $variation_data = Helpers::get_varient($branch_product_variations, $request->variations);
-            $variation_price = $variation_data['price'];
-            $variations = $request->variations;
 
+            $price = $branch_product_price + $variation_price;
+            $data['variation_price'] = $variation_price;
+
+            $discount_on_product = Helpers::discount_calculate($discount_data, $price);
+
+            $data['variations'] = $variations;
+            $data['variant'] = $str;
+            $data['quantity'] = $product->quantity;
+            $data['price'] = $price;
+            $data['name'] = $product->product->name;
+            $data['discount'] = $discount_on_product;
+            $data['image'] = $product->product->image;
+            $data['add_ons'] = [];
+            $data['add_on_qtys'] = [];
+            $data['add_on_prices'] = [];
+            $data['add_on_tax'] = [];
+
+            if ($request['addon_id']) {
+                foreach ($request['addon_id'] as $id) {
+                    $addon_price += $request['addon-price' . $id] * $request['addon-quantity' . $id];
+                    $data['add_on_qtys'][] = $request['addon-quantity' . $id];
+
+                    $add_on = AddOn::find($id);
+                    $data['add_on_prices'][] = $add_on['price'];
+                    $add_on_tax = ($add_on['price'] * $add_on['tax'] / 100);
+                    $addon_total_tax += (($add_on['price'] * $add_on['tax'] / 100) * $request['addon-quantity' . $id]);
+                    $data['add_on_tax'][] = $add_on_tax;
+                }
+                $data['add_ons'] = $request['addon_id'];
+            }
+
+            $data['addon_price'] = $addon_price;
+            $data['addon_total_tax'] = $addon_total_tax;
+
+            if ($request->session()->has('cart')) {
+                $cart = $request->session()->get('cart', collect([]));
+                $cart->push($data);
+            } else {
+                $cart = collect([$data]);
+                $request->session()->put('cart', $cart);
+            }
         }
 
-        $branch_product_price = $branch_product['price'];
-        $discount_data = [
-            'discount_type' => $branch_product['discount_type'],
-            'discount' => $branch_product['discount']
-        ];
-    }
 
-    $price = $branch_product_price + $variation_price;
-    $data['variation_price'] = $variation_price;
-
-    $discount_on_product = Helpers::discount_calculate($discount_data, $price);
-
-    $data['variations'] = $variations;
-    $data['variant'] = $str;
-    $data['quantity'] = $product->quantity;
-    $data['price'] = $price;
-    $data['name'] = $product->product->name;
-    $data['discount'] = $discount_on_product;
-    $data['image'] = $product->product->image;
-    $data['add_ons'] = [];
-    $data['add_on_qtys'] = [];
-    $data['add_on_prices'] = [];
-    $data['add_on_tax'] = [];
-
-    if ($request['addon_id']) {
-        foreach ($request['addon_id'] as $id) {
-            $addon_price += $request['addon-price' . $id] * $request['addon-quantity' . $id];
-            $data['add_on_qtys'][] = $request['addon-quantity' . $id];
-
-            $add_on = AddOn::find($id);
-            $data['add_on_prices'][] = $add_on['price'];
-            $add_on_tax = ($add_on['price'] * $add_on['tax']/100);
-            $addon_total_tax += (($add_on['price'] * $add_on['tax']/100) * $request['addon-quantity' . $id]);
-            $data['add_on_tax'][] = $add_on_tax;
+        if ($order->branch_id) {
+            Session::put('branch_id', $order->branch_id);
         }
-        $data['add_ons'] = $request['addon_id'];
-    }
+        if ($order->user_id) {
+            Session::put('customer_id', $order->user_id);
+        }
+        if ($order->order_type) {
+            Session::put('order_type', $order->order_type);
+        }
+        if ($order->table_id) {
+            Session::put('table_id', $order->table_id);
+        }
 
-    $data['addon_price'] = $addon_price;
-    $data['addon_total_tax'] = $addon_total_tax;
+        if ($order->number_of_people) {
+            Session::put('people_number', $order->number_of_people);
+        }
 
-    if ($request->session()->has('cart')) {
-        $cart = $request->session()->get('cart', collect([]));
-        $cart->push($data);
-    } else {
-        $cart = collect([$data]);
-        $request->session()->put('cart', $cart);
-    }
-}
-
-
-if($order->branch_id){
-    Session::put('branch_id', $order->branch_id);
-
-}
-if($order->user_id){
-    Session::put('customer_id', $order->user_id);
-}
-if($order->order_type){
-    Session::put('order_type', $order->order_type);
-
-}
-if($order->table_id){
-    Session::put('table_id', $order->table_id);
-}
-
-if($order->number_of_people){
-    Session::put('people_number', $order->number_of_people);
-}
-
-Session::put('hold_btn_hide', "hide");
+        Session::put('hold_btn_hide', "hide");
 
 
-$this->order_detail->where('order_id',$order->id)->delete();
-$order->delete();
-return response()->json([
-    'data' => $data
-]);
-
-
+        $this->order_detail->where('order_id', $order->id)->delete();
+        $order->delete();
+        return response()->json([
+            'data' => $data
+        ]);
     }
 
     /**
@@ -1142,44 +652,44 @@ return response()->json([
 
         $order_type = session()->has('order_type') ? session()->get('order_type') : 'take_away';
 
-        if ($order_type == 'dine_in'){
-            if (!session()->has('table_id')){
+        if ($order_type == 'dine_in') {
+            if (!session()->has('table_id')) {
                 Toastr::error(translate('please select a table number'));
                 return back();
             }
-            if (!session()->has('people_number')){
+            if (!session()->has('people_number')) {
                 Toastr::error(translate('please enter people number'));
                 return back();
             }
 
             $table = Table::find(session('table_id'));
-            if (isset($table) && session('people_number') > $table->capacity  || session('people_number') < 1 ) {
-                Toastr::error(translate('enter valid people number between 1 to '. $table->capacity));
+            if (isset($table) && session('people_number') > $table->capacity  || session('people_number') < 1) {
+                Toastr::error(translate('enter valid people number between 1 to ' . $table->capacity));
                 return back();
             }
         }
 
         $delivery_charge = 0;
         // store customer address for home delivery
-        if ($order_type == 'home_delivery'){
-           if (!session()->has('customer_id')){
-               Toastr::error(translate('please select a customer'));
-               return back();
-           }
+        if ($order_type == 'home_delivery') {
+            if (!session()->has('customer_id')) {
+                Toastr::error(translate('please select a customer'));
+                return back();
+            }
 
-           if (!session()->has('address')){
-               Toastr::error(translate('please select a delivery address'));
-               return back();
-           }
+            if (!session()->has('address')) {
+                Toastr::error(translate('please select a delivery address'));
+                return back();
+            }
 
-           $address_data = session()->get('address');
-           $distance = $address_data['distance'] ?? 0;
-           $delivery_type = Helpers::get_business_settings('delivery_management');
-           if ($delivery_type['status'] == 1){
-               $delivery_charge = Helpers::get_delivery_charge($distance);
-           }else{
-               $delivery_charge = Helpers::get_business_settings('delivery_charge');
-           }
+            $address_data = session()->get('address');
+            $distance = $address_data['distance'] ?? 0;
+            $delivery_type = Helpers::get_business_settings('delivery_management');
+            if ($delivery_type['status'] == 1) {
+                $delivery_charge = Helpers::get_delivery_charge($distance);
+            } else {
+                $delivery_charge = Helpers::get_business_settings('delivery_charge');
+            }
 
             $address = [
                 'address_type' => 'Home',
@@ -1215,7 +725,7 @@ return response()->json([
         $order->user_id = session()->get('customer_id') ?? null;
         $order->coupon_discount_title = $request->coupon_discount_title == 0 ? null : 'coupon_discount_title';
         $order->payment_status = ($order_type == 'take_away') ? 'paid' : (($order_type == 'dine_in' && $request->type != 'pay_after_eating') ? 'paid' : 'unpaid');
-        $order->order_status = $order_type == 'take_away' ? 'delivered' : 'confirmed' ;
+        $order->order_status = $order_type == 'take_away' ? 'delivered' : 'confirmed';
         $order->order_type = ($order_type == 'take_away') ? 'take_away' : (($order_type == 'dine_in') ? 'dine_in' : (($order_type == 'home_delivery') ? 'delivery' : null));
         $order->coupon_code = $request->coupon_code ?? null;
         $order->payment_method = $request->type;
@@ -1316,12 +826,12 @@ return response()->json([
         $tax = isset($cart['tax']) ? $cart['tax'] : 0;
 
         $total_tax_amount = ($tax > 0) ? (($total_price * $tax) / 100) : $total_tax_amount;
-        $gst=($total_price*5)/100;
+        $gst = ($total_price * 5) / 100;
 
         try {
             $order->extra_discount = $extra_discount ?? 0;
             $order->total_tax_amount = $total_tax_amount;
-            $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax+$gst;
+            $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax + $gst;
             $order->coupon_discount_amount = 0.00;
             $order->branch_id = session()->get('branch_id');
             $order->table_id = session()->get('table_id');
@@ -1364,7 +874,7 @@ return response()->json([
                     }
                 }
                 //send notification to customer for home delivery
-                if ($order->order_type == 'delivery'){
+                if ($order->order_type == 'delivery') {
                     $value = Helpers::order_status_update_message('confirmed');
                     $customer = $this->user->find($order->user_id);
                     $fcm_token = $customer?->fcm_token;
@@ -1386,7 +896,7 @@ return response()->json([
                         if (isset($emailServices['status']) && $emailServices['status'] == 1 && $order_mail_status == 1 && isset($customer)) {
                             Mail::to($customer->email)->send(new \App\Mail\OrderPlaced($order_id));
                         }
-                    }catch (\Exception $e) {
+                    } catch (\Exception $e) {
                         //dd($e);
                     }
                 }
@@ -1395,7 +905,6 @@ return response()->json([
             } else {
                 Toastr::warning(translate('Branch select is required'));
             }
-
         } catch (\Exception $e) {
             info($e);
         }
@@ -1417,44 +926,44 @@ return response()->json([
 
         $order_type = session()->has('order_type') ? session()->get('order_type') : 'take_away';
 
-        if ($order_type == 'dine_in'){
-            if (!session()->has('table_id')){
+        if ($order_type == 'dine_in') {
+            if (!session()->has('table_id')) {
                 Toastr::error(translate('please select a table number'));
                 return back();
             }
-            if (!session()->has('people_number')){
+            if (!session()->has('people_number')) {
                 Toastr::error(translate('please enter people number'));
                 return back();
             }
 
             $table = Table::find(session('table_id'));
-            if (isset($table) && session('people_number') > $table->capacity  || session('people_number') < 1 ) {
-                Toastr::error(translate('enter valid people number between 1 to '. $table->capacity));
+            if (isset($table) && session('people_number') > $table->capacity  || session('people_number') < 1) {
+                Toastr::error(translate('enter valid people number between 1 to ' . $table->capacity));
                 return back();
             }
         }
 
         $delivery_charge = 0;
         // store customer address for home delivery
-        if ($order_type == 'home_delivery'){
-           if (!session()->has('customer_id')){
-               Toastr::error(translate('please select a customer'));
-               return back();
-           }
+        if ($order_type == 'home_delivery') {
+            if (!session()->has('customer_id')) {
+                Toastr::error(translate('please select a customer'));
+                return back();
+            }
 
-           if (!session()->has('address')){
-               Toastr::error(translate('please select a delivery address'));
-               return back();
-           }
+            if (!session()->has('address')) {
+                Toastr::error(translate('please select a delivery address'));
+                return back();
+            }
 
-           $address_data = session()->get('address');
-           $distance = $address_data['distance'] ?? 0;
-           $delivery_type = Helpers::get_business_settings('delivery_management');
-           if ($delivery_type['status'] == 1){
-               $delivery_charge = Helpers::get_delivery_charge($distance);
-           }else{
-               $delivery_charge = Helpers::get_business_settings('delivery_charge');
-           }
+            $address_data = session()->get('address');
+            $distance = $address_data['distance'] ?? 0;
+            $delivery_type = Helpers::get_business_settings('delivery_management');
+            if ($delivery_type['status'] == 1) {
+                $delivery_charge = Helpers::get_delivery_charge($distance);
+            } else {
+                $delivery_charge = Helpers::get_business_settings('delivery_charge');
+            }
 
             $address = [
                 'address_type' => 'Home',
@@ -1591,12 +1100,12 @@ return response()->json([
         $tax = isset($cart['tax']) ? $cart['tax'] : 0;
 
         $total_tax_amount = ($tax > 0) ? (($total_price * $tax) / 100) : $total_tax_amount;
-        $gst=($total_price*5)/100;
+        $gst = ($total_price * 5) / 100;
 
         try {
             $order->extra_discount = $extra_discount ?? 0;
             $order->total_tax_amount = $total_tax_amount;
-            $order->order_amount =$total_price + $total_tax_amount + $total_addon_tax+$gst;
+            $order->order_amount = $total_price + $total_tax_amount + $total_addon_tax + $gst;
             $order->coupon_discount_amount = 0.00;
             $order->branch_id = session()->get('branch_id');
             $order->table_id = session()->get('table_id');
@@ -1640,7 +1149,7 @@ return response()->json([
                     }
                 }
                 //send notification to customer for home delivery
-                if ($order->order_type == 'delivery'){
+                if ($order->order_type == 'delivery') {
                     $value = Helpers::order_status_update_message('confirmed');
                     $customer = $this->user->find($order->user_id);
                     $fcm_token = $customer?->fcm_token;
@@ -1662,7 +1171,7 @@ return response()->json([
                         if (isset($emailServices['status']) && $emailServices['status'] == 1 && $order_mail_status == 1 && isset($customer)) {
                             Mail::to($customer->email)->send(new \App\Mail\OrderPlaced($order_id));
                         }
-                    }catch (\Exception $e) {
+                    } catch (\Exception $e) {
                         //dd($e);
                     }
                 }
@@ -1671,7 +1180,6 @@ return response()->json([
             } else {
                 Toastr::warning(translate('Branch select is required'));
             }
-
         } catch (\Exception $e) {
             info($e);
         }
@@ -1777,7 +1285,6 @@ return response()->json([
                 })
                 ->get();
             $query_param = ['filter' => '', 'branch_id' => $request['branch_id'] ?? '', 'from' => $request['from'] ?? '', 'to' => $request['to'] ?? ''];
-
         }
 
         $orders = $query->latest()->paginate(Helpers::getPagination())->appends($query_param);
@@ -1797,8 +1304,8 @@ return response()->json([
             return back();
         }
 
-        $delivery_man = $this->delivery_man->where(['is_active'=>1])
-            ->where(function($query) use ($order) {
+        $delivery_man = $this->delivery_man->where(['is_active' => 1])
+            ->where(function ($query) use ($order) {
                 $query->where('branch_id', $order->branch_id)
                     ->orWhere('branch_id', 0);
             })
@@ -1875,7 +1382,6 @@ return response()->json([
                         ->orWhere('transaction_reference', 'like', "%{$value}%");
                 }
             })->get();
-
         } else {
             $branch_id = $request->branch_id != null ? $request->branch_id : 'all';
             $to = $request->to;
@@ -1910,12 +1416,12 @@ return response()->json([
                 'Order Date' => date('d M Y', strtotime($order['created_at'])) . ' ' . date("h:i A", strtotime($order['created_at'])),
                 'Customer Info' => $order['user_id'] == null ? 'Walk in Customer' : $order->customer['f_name'] . ' ' . $order->customer['l_name'],
                 'Branch' => $order->branch ? $order->branch->name : 'Branch Deleted',
-                'Credit Card' => $order['payment_method']=='Credit_Card' ? Helpers::set_symbol($order['order_amount']) :'',
-                'Debit Card' => $order['payment_method']=='Debit_Card' ? Helpers::set_symbol($order['order_amount']) :'',
-                'Amex' => $order['payment_method']=='Amex' ? Helpers::set_symbol($order['order_amount']) :'',
-                'Loyalty Points' => $order['payment_method']=='Loyalty_Points' ? Helpers::set_symbol($order['order_amount']) :'',
-                'Pay After Eating' => $order['payment_method']=='pay_after_eating' ? Helpers::set_symbol($order['order_amount']) :'',
-                'Cash' => $order['payment_method']=='Loyalty_Points' ? Helpers::set_symbol($order['order_amount']) :'',
+                'Credit Card' => $order['payment_method'] == 'Credit_Card' ? Helpers::set_symbol($order['order_amount']) : '',
+                'Debit Card' => $order['payment_method'] == 'Debit_Card' ? Helpers::set_symbol($order['order_amount']) : '',
+                'Amex' => $order['payment_method'] == 'Amex' ? Helpers::set_symbol($order['order_amount']) : '',
+                'Loyalty Points' => $order['payment_method'] == 'Loyalty_Points' ? Helpers::set_symbol($order['order_amount']) : '',
+                'Pay After Eating' => $order['payment_method'] == 'pay_after_eating' ? Helpers::set_symbol($order['order_amount']) : '',
+                'Cash' => $order['payment_method'] == 'Loyalty_Points' ? Helpers::set_symbol($order['order_amount']) : '',
                 'Total Amount' => Helpers::set_symbol($order['order_amount']),
                 'Payment Status' => $order->payment_status == 'paid' ? 'Paid' : 'Unpaid',
                 'Order Status' => $order['order_status'] == 'pending' ? 'Pending' : ($order['order_status'] == 'confirmed' ? 'Confirmed' : ($order['order_status'] == 'processing' ? 'Processing' : ($order['order_status'] == 'delivered' ? 'Delivered' : ($order['order_status'] == 'picked_up' ? 'Out For Delivery' : str_replace('_', ' ', $order['order_status']))))),
@@ -1940,13 +1446,13 @@ return response()->json([
         ]);
 
         $user_phone = $this->user->where('phone', $request->phone)->first();
-        if (isset($user_phone)){
+        if (isset($user_phone)) {
             Toastr::error(translate('The phone is already taken'));
             return back();
         }
 
         $user_email = $this->user->where('email', $request->email)->first();
-        if (isset($user_email)){
+        if (isset($user_email)) {
             Toastr::error(translate('The email is already taken'));
             return back();
         }
@@ -2007,7 +1513,7 @@ return response()->json([
         //return $response->json();
         $data = json_decode($response, true);
         $distance_value = $data['rows'][0]['elements'][0]['distance']['value'];
-        $distance = $distance_value/1000;
+        $distance = $distance_value / 1000;
 
         $address = [
             'contact_person_name' => $request->contact_person_name,
@@ -2050,5 +1556,4 @@ return response()->json([
         session()->put('order_type', $request['order_type']);
         return response()->json($request['order_type'], 200);
     }
-
 }

@@ -10,9 +10,9 @@
             <div class="modal-body row" style="font-family: emoji;">
                 <div class="col-md-12">
                     <center>
-                        <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'marchant')"> {{translate('Marchant Copy')}} </button>
+                        <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'marchant')"> {{translate('Merchant Copy')}} </button>
                         <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'customer')"> {{translate('Customer Copy')}} </button>
-                        <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'both')"> {{translate('Both Copy')}} </button>
+                        <button type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea', 'both')"> {{translate('Print Both')}} </button>
                     </center>
                     <hr class="non-printable">
                 </div>
